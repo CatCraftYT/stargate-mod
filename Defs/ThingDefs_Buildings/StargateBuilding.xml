@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<ThingDef Name="StargateMod_StargateBase" ParentName="BuildingBase" Abstract="True">
+		<rotatable>false</rotatable>
+		<minifiedDef>MinifiedThing</minifiedDef>
+		<stealable>false</stealable>
+		<pathCost>3</pathCost>
+		<constructEffect>ConstructMetal</constructEffect>
+		<altitudeLayer>Building</altitudeLayer>
+		<fillPercent>0.20</fillPercent>
+		<canOverlapZones>true</canOverlapZones>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<thingCategories>
+		  <li>BuildingsSpecial</li>
+		</thingCategories>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<tickerType>Normal</tickerType>
+		<drawerType>RealtimeOnly</drawerType>
+		<hasInteractionCell>True</hasInteractionCell>
+		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
+		<placeWorkers>
+		  <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+		</placeWorkers>
+	</ThingDef>
+
+	<ThingDef ParentName="StargateMod_StargateBase">
+		<defName>StargateMod_Stargate</defName>
+		<label>stargate</label>
+		<description>An ancient device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.\n\n"By the time you get to the other side, you're frozen stiff. Like you'd just been through a blizzard... naked."</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Stargate/stargate_sg1</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(9,9)</drawSize>
+		</graphicData>
+		<costList>
+		  <Steel>600</Steel>
+		  <ComponentIndustrial>100</ComponentIndustrial>
+		  <ComponentSpacer>50</ComponentSpacer>
+		  <Gold>300</Gold>
+		</costList>
+		<statBases>
+			<MaxHitPoints>6000</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Mass>290</Mass>
+		</statBases>
+		<size>(5,1)</size>
+		<comps>
+			<li Class="StargatesMod.CompProperties_Stargate">
+				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
+				<irisTexture>Things/Building/Stargate/iris</irisTexture>
+				<puddleDrawSize>(9,9)</puddleDrawSize>
+			</li>
+			<li Class="CompProperties_AffectedByFacilities">
+				<linkableFacilities><li>StargateMod_DialHomeDevice</li></linkableFacilities>
+			</li>
+		</comps>
+	</ThingDef>
+
+	<ThingDef ParentName="StargateMod_StargateBase">
+		<defName>StargateMod_OrlinStargate</defName>
+		<label>makeshift stargate</label>
+		<description>An device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.\nThis stargate in particular was made using easily available resources, but is quite unstable and unreliable.\n\n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
+		<thingClass>Building</thingClass>
+			<graphicData>
+			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(7,7)</drawSize>
+		</graphicData>
+		<designationCategory>Misc</designationCategory>
+		<costList>
+		  <Steel>350</Steel>
+		  <ComponentIndustrial>25</ComponentIndustrial>
+		  <ComponentSpacer>15</ComponentSpacer>
+		  <Gold>30</Gold>
+		</costList>
+		<statBases>
+			<WorkToBuild>6000</WorkToBuild>
+			<MaxHitPoints>6000</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Mass>290</Mass>
+		</statBases>
+		<size>(3,1)</size>
+		<comps>
+			<li Class="StargatesMod.CompProperties_Stargate">
+				<hasIris>False</hasIris>
+				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
+				<puddleDrawSize>(7,7)</puddleDrawSize>
+			</li>
+			<li Class="StargatesMod.CompProperties_DialHomeDevice">
+				<selfDialler>True</selfDialler>
+			</li>
+		</comps>
+		<researchPrerequisites><li>StargateMod_StargateMakingResearch</li></researchPrerequisites>
+	</ThingDef>
+
+</Defs>

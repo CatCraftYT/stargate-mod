@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<ResearchTabDef>
+		<defName>StargateMod_ResearchTab</defName>
+		<label>Stargates</label>
+	</ResearchTabDef>
+	
+	<ResearchProjectDef Name="StargateMod_ResearchBase" Abstract="True">
+		<tab>StargateMod_ResearchTab</tab>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef ParentName="StargateMod_ResearchBase">
+		<defName>StargateMod_StargateMakingResearch</defName>
+		<label>stargate creation</label>
+		<description>The materials used to build the ancient stargates aren't available on this planet, but we might be able to create a makeshift version.</description>
+		<baseCost>3500</baseCost>
+		<techLevel>Ultra</techLevel>
+		<prerequisites>
+		  <li>AdvancedFabrication</li>
+		  <li>StargateMod_GlyphDeciphering</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<requiredResearchFacilities>
+		  <li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+		<researchViewX>1.00</researchViewX>
+		<researchViewY>0.00</researchViewY>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef ParentName="StargateMod_ResearchBase">
+		<defName>StargateMod_StargateIrisResearch</defName>
+		<label>stargate irises</label>
+		<description>To prevent people invading our base through our stargate, we could put a barrier microns from the event horizon.</description>
+		<baseCost>10000</baseCost>
+		<techLevel>Ultra</techLevel>
+		<prerequisites>
+		  <li>AdvancedFabrication</li>
+		  <li>StargateMod_StargateMakingResearch</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<requiredResearchFacilities>
+		  <li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+		<researchViewX>2.00</researchViewX>
+		<researchViewY>0.00</researchViewY>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef ParentName="StargateMod_ResearchBase">
+		<defName>StargateMod_GlyphDeciphering</defName>
+		<label>glyph deciphering</label>
+		<description>The glyphs both engraved on stargates and on mysterious scraps of paper have meaning. Deciphering them and locating where they go may unlock a new way of travel.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Industrial</techLevel>
+		<researchViewX>0.00</researchViewX>
+		<researchViewY>0.00</researchViewY>
+	</ResearchProjectDef>
+  
+</Defs>

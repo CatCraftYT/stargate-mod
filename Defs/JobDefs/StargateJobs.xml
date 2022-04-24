@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<JobDef>
+		<defName>StargateMod_EnterStargate</defName>
+		<driverClass>StargatesMod.JobDriver_EnterStargate</driverClass>
+		<reportString>entering TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	
+	<JobDef>
+		<defName>StargateMod_DialStargate</defName>
+		<driverClass>StargatesMod.JobDriver_DialStargate</driverClass>
+		<reportString>using TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+ 
+</Defs>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<SitePartDef>
+	<defName>StargateMod_SGComplex</defName>
+	<label>stargate site</label>
+	<description>A site known to hold a stargate within.</description>
+	<siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
+	<expandingIconTexture>World/WorldObjects/Expanding/Sites/Stargate/sgcomplex</expandingIconTexture>
+	<approachOrderString>Investigate {0}</approachOrderString>
+	<approachingReportString>Investigate {0}</approachingReportString>
+	<arrivedLetterDef>NeutralEvent</arrivedLetterDef>
+	<wantsThreatPoints>true</wantsThreatPoints>
+	<minMapSize>(200, 1, 200)</minMapSize>
+	<tags>
+		<li>StargateSite</li>
+	</tags>
+	</SitePartDef>
+
+	<GenStepDef>
+		<defName>AncientComplex</defName>
+		<linkWithSite>AncientComplex</linkWithSite>
+		<order>310</order>
+		<genStep Class="GenStep_AncientComplex" />
+	</GenStepDef>
+
+
+</Defs>
