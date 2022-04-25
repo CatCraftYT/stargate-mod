@@ -29,8 +29,8 @@
 	
 	<ResearchProjectDef ParentName="StargateMod_ResearchBase">
 		<defName>StargateMod_StargateIrisResearch</defName>
-		<label>stargate irises</label>
-		<description>To prevent people invading our base through our stargate, we could put a barrier microns from the event horizon.</description>
+		<label>irises</label>
+		<description>To prevent people invading our base through our stargate, we could put a barrier microns from the event horizon, which would stop anything from reintegrating.</description>
 		<baseCost>10000</baseCost>
 		<techLevel>Ultra</techLevel>
 		<prerequisites>

@@ -14,5 +14,12 @@
 		<reportString>using TargetA.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
+	
+	<JobDef>
+		<defName>StargateMod_BringToStargate</defName>
+		<driverClass>StargatesMod.JobDriver_BringToStargate</driverClass>
+		<reportString>bringing TargetA to TargetB.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
  
 </Defs>

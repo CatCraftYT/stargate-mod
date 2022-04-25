@@ -93,7 +93,7 @@ namespace StargatesMod
             CompStargate sgComp = connectedStargate.TryGetComp<CompStargate>();
             if (closeOtherGate)
             {
-                if (connectedStargate == null || sgComp == null) { Log.Error($"Recieving stargate connected to stargate {this.parent.ThingID} didn't have a Stargate component, but this stargate wanted it closed."); }
+                if (connectedStargate == null || sgComp == null) { Log.Error($"Recieving stargate connected to stargate {this.parent.ThingID} didn't have CompStargate, but this stargate wanted it closed."); }
                 sgComp.CloseStargate(false);
             }
 
@@ -107,8 +107,28 @@ namespace StargatesMod
             puddleCloseDef.PlayOneShot(SoundInfo.InMap(this.parent));
             if (sgComp != null) { puddleCloseDef.PlayOneShot(SoundInfo.InMap(sgComp.parent)); }
             puddleSustainer.End();
+
+            if (Props.explodeOnUse)
+            {
+                CompExplosive explosive = this.parent.TryGetComp<CompExplosive>();
+                if (explosive == null) { Log.Error($"Stargate {this.parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive."); }
+                explosive.StartWick();
+            }
         }
         #endregion
+
+        public static Thing GetStargateOnMap(Map map)
+        {
+            Thing gateOnMap = null;
+            foreach (Thing thing in map.listerThings.AllThings)
+            {
+                if (thing.TryGetComp<CompStargate>() != null)
+                {
+                    gateOnMap = thing;
+                }
+            }
+            return gateOnMap;
+        }
 
         private Thing GetDialledStargate()
         {
@@ -122,10 +142,10 @@ namespace StargatesMod
             {
                 //generate stargate map
             }
-            List<Thing> connectedGateList = connectedMap.Map.listerThings.ThingsOfDef(this.parent.def);
-            if (connectedGateList.Count == 0) { Log.Error($"Tried to get dialled stargate in map {connectedMap.ID}, but it did not exist!"); return null; }
-            if (connectedGateList.Count > 1) {  Log.Warning($"There were multiple stargates in map {connectedMap.ID}. Using the first found."); }
-            return connectedGateList[0];
+
+            Thing gate = GetStargateOnMap(connectedMap.Map);
+            if (gate == null) { Log.Error($"Tried to get dialled stargate in map {connectedMap.Map.uniqueID}, but it did not exist!"); return null; }
+            return gate;
         }
 
         private void PlayTeleportSound()
@@ -143,6 +163,17 @@ namespace StargatesMod
         {
             recvBuffer.Add(thing);
         }
+
+        private void CleanupGate()
+        {
+            if (connectedStargate != null)
+            {
+                CloseStargate(true);
+            }
+            Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(gateAddress);
+        }
+
+        #region Comp Overrides
 
         public override void PostDraw()
         {
@@ -264,6 +295,23 @@ namespace StargatesMod
                 Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), this.parent);
                 selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
             });
+            yield return new FloatMenuOption("Haul thing to stargate", () =>
+            {
+                TargetingParameters targetingParameters = new TargetingParameters()
+                {
+                    mapObjectTargetsMustBeAutoAttackable = false,
+                    onlyTargetIncapacitatedPawns = true,
+                    canTargetBuildings = false,
+                    canTargetItems = true,
+                    canTargetPlants = false
+                };
+
+                Find.Targeter.BeginTargeting(targetingParameters, delegate (LocalTargetInfo t)
+                {
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), t.Thing, this.parent);
+                    selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                });
+            });
             yield break;
         }
 
@@ -280,22 +328,13 @@ namespace StargatesMod
             }
             yield return new FloatMenuOption("Enter stargate with selected", () =>
             {
-                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), this.parent);
                 foreach (Pawn selPawn in allowedPawns)
                 {
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), this.parent);
                     selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 }
             });
             yield break;
-        }
-
-        private void CleanupGate()
-        {
-            if (connectedStargate != null)
-            {
-                CloseStargate(true);
-            }
-            Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(gateAddress);
         }
 
         public override void PostDeSpawn(Map map)
@@ -321,6 +360,7 @@ namespace StargatesMod
             Scribe_Collections.Look(ref recvBuffer, "recvBuffer", LookMode.GlobalTargetInfo);
             Scribe_Collections.Look(ref sendBuffer, "sendBuffer", LookMode.GlobalTargetInfo);
         }
+        #endregion
     }
 
     public class CompProperties_Stargate : CompProperties
@@ -330,6 +370,7 @@ namespace StargatesMod
             this.compClass = typeof(CompStargate);
         }
         public bool hasIris = true;
+        public bool explodeOnUse = false;
         public string puddleTexture;
         public string irisTexture;
         public Vector2 puddleDrawSize;

@@ -24,7 +24,6 @@ namespace StargatesMod
             sgComp.OpenStargate(-1);
             foreach (Pawn pawn in pawns)
             {
-                Log.Message(pawn.ToString());
                 sgComp.AddToRecieveBuffer(pawn);
             }
         }

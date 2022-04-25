@@ -1,5 +1,6 @@
 ﻿using System;
 using RimWorld;
+using RimWorld.Planet;
 using Verse;
 using Verse.AI;
 using UnityEngine;
@@ -54,7 +55,9 @@ namespace StargatesMod
                 {
                     if (i != stargate.gateAddress)
                     {
-                        yield return new FloatMenuOption($"Dial {i}", () =>
+                        MapParent sgMap = Find.WorldObjects.MapParentAt(i);
+                        
+                        yield return new FloatMenuOption($"Dial {i} ({sgMap.Label})", () =>
                         {
                             lastDialledAddress = i;
                             Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
@@ -87,6 +90,7 @@ namespace StargatesMod
                     stargate.CloseStargate(true);
                 };
                 if (!stargate.stargateIsActive) { command.Disable("Stargate is not active."); }
+                else if (stargate.isRecievingGate) { command.Disable("Cannot disengage an incoming wormhole."); }
                 yield return command;
             }
         }
