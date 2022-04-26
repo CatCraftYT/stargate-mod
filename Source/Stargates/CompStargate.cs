@@ -93,8 +93,8 @@ namespace StargatesMod
             CompStargate sgComp = connectedStargate.TryGetComp<CompStargate>();
             if (closeOtherGate)
             {
-                if (connectedStargate == null || sgComp == null) { Log.Error($"Recieving stargate connected to stargate {this.parent.ThingID} didn't have CompStargate, but this stargate wanted it closed."); }
-                sgComp.CloseStargate(false);
+                if (connectedStargate == null || sgComp == null) { Log.Warning($"Recieving stargate connected to stargate {this.parent.ThingID} didn't have CompStargate, but this stargate wanted it closed."); }
+                else { sgComp.CloseStargate(false); }
             }
 
             stargateIsActive = false;
@@ -111,8 +111,8 @@ namespace StargatesMod
             if (Props.explodeOnUse)
             {
                 CompExplosive explosive = this.parent.TryGetComp<CompExplosive>();
-                if (explosive == null) { Log.Error($"Stargate {this.parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive."); }
-                explosive.StartWick();
+                if (explosive == null) { Log.Warning($"Stargate {this.parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive."); }
+                else { explosive.StartWick(); }
             }
         }
         #endregion
@@ -299,11 +299,9 @@ namespace StargatesMod
             {
                 TargetingParameters targetingParameters = new TargetingParameters()
                 {
-                    mapObjectTargetsMustBeAutoAttackable = false,
                     onlyTargetIncapacitatedPawns = true,
                     canTargetBuildings = false,
                     canTargetItems = true,
-                    canTargetPlants = false
                 };
 
                 Find.Targeter.BeginTargeting(targetingParameters, delegate (LocalTargetInfo t)
