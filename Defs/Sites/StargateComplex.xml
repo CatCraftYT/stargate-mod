@@ -15,9 +15,19 @@
 		<arrivedLetterDef>NeutralEvent</arrivedLetterDef>
 		<wantsThreatPoints>true</wantsThreatPoints>
 		<tags>
-			<li>StargateSite</li>
-			<li>HasStargate</li>
+			<li>StargateMod_StargateSite</li>
 		</tags>
 	</SitePartDef>
+	
+	<GenStepDef>
+		<defName>StargateMod_StargateSite</defName>
+		<linkWithSite>StargateMod_StargateSite</linkWithSite>
+		<order>460</order>
+		<genStep Class="KCSG.GenStep_CustomStructureGen">
+			<structureLayoutDefs>
+				<li>VFEM_Factory1</li>
+			</structureLayoutDefs>
+		</genStep>
+	</GenStepDef>
 
 </Defs>

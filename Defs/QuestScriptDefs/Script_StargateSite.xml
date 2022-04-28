@@ -2,9 +2,11 @@
 <Defs>
 
 	<QuestScriptDef>
-		<defName>OpportunitySite_ItemStash</defName>
+		<defName>StargatesMod_StargateSiteScript</defName>
+		<rootSelectionWeight>0.6</rootSelectionWeight>
 		<rootMinPoints>0</rootMinPoints>
 		<autoAccept>true</autoAccept>
+		<defaultChallengeRating>1</defaultChallengeRating>
 		<questNameRules>
 			<rulesStrings>
 				<li>questName->[ancient] stargate [site]</li>
@@ -21,25 +23,90 @@
 		</questNameRules>
 		<questDescriptionRules>
 			<rulesStrings>
-				<li>We have found a site containing a stargate. It may contain treasure guarded by ancient enemies, or it may contain nothing. In either case, the stargate there will be extremely useful if we can retrieve it.</li>
+				<li>questDescription(askerIsNull==true)->We have found a site containing a stargate. It may contain treasure guarded by ancient enemies, or it may contain nothing. In either case, the stargate there will be extremely useful if we can retrieve it.</li>
 			</rulesStrings>
 		</questDescriptionRules>
 		<root Class="QuestNode_Sequence">
 			<nodes>
 				<li Class="QuestNode_SubScript">
-					<def>Util_RandomizePointsChallengeRating</def>
-					<parms>
-						<pointsFactorTwoStar>1.5</pointsFactorTwoStar>
-						<pointsFactorThreeStar>2</pointsFactorThreeStar>
-					</parms>
+					<def>Util_GetDefaultRewardValueFromPoints</def>
 				</li>
+				<li Class="QuestNode_GetMap" />
+
+				<li Class="QuestNode_IsSet">
+					<name>asker</name>
+					<elseNode Class="QuestNode_RandomNode">
+						<nodes>
+							<li Class="QuestNode_Set">
+							<name>askerIsNull</name>
+							<value>true</value>
+							<selectionWeight>0.4</selectionWeight>
+							</li>
+						</nodes>
+					</elseNode>
+				</li>
+
+				<li Class="QuestNode_GetSiteTile">
+					<storeAs>siteTile</storeAs>
+					<preferCloserTiles>false</preferCloserTiles>
+				</li>
+
+				<li Class="StargatesMod.QuestNode_AddStargateAddresses">
+					<address>$siteTile</address>
+					<remove>false</remove>
+				</li>
+
 				<li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
 					<storeAs>sitePartDefs</storeAs>
 					<storeFactionAs>siteFaction</storeFactionAs>
 					<sitePartsTags>
-						<li><tag>VFEV_AbandonedFactory</tag></li>
+						<li><tag>StargateMod_StargateSite</tag></li>
 					</sitePartsTags>
-					<mustBeHostileToFactionOf>$asker</mustBeHostileToFactionOf>
+				</li>
+
+				<li Class="QuestNode_GetDefaultSitePartsParams">
+					<tile>$siteTile</tile>
+					<faction>$siteFaction</faction>
+					<sitePartDefs>$sitePartDefs</sitePartDefs>
+					<storeSitePartsParamsAs>sitePartsParams</storeSitePartsParamsAs>
+				</li>
+
+				<li Class="QuestNode_SubScript">
+					<def>Util_GenerateSite</def>
+					<parms>
+					<hiddenSitePartsPossible>true</hiddenSitePartsPossible>
+					</parms>
+				</li>
+
+				<li Class="QuestNode_SpawnWorldObjects">
+					<worldObjects>$site</worldObjects>
+				</li>
+
+				<li Class="QuestNode_WorldObjectTimeout">
+					<worldObject>$site</worldObject>
+					<isQuestTimeout>true</isQuestTimeout>
+					<delayTicks>$(randInt(12,28)*60000)</delayTicks>
+					<inSignalDisable>site.MapGenerated</inSignalDisable>
+					<node Class="QuestNode_Sequence">
+						<nodes>
+							<li Class="QuestNode_Letter">
+								<label>Quest expired: [resolvedQuestName]</label>
+								<text>Intercepted communications indicate the site has been scavenged, including the stargate. The quest [resolvedQuestName] has expired.</text>
+							</li>
+							<li Class="StargatesMod.QuestNode_AddStargateAddresses">
+								<address>$siteTile</address>
+								<remove>true</remove>
+							</li>
+							<li Class="QuestNode_End">
+								<outcome>Fail</outcome>
+							</li>
+						</nodes>
+					</node>
+				</li>
+				
+				<li Class="QuestNode_NoWorldObject">
+					<worldObject>$site</worldObject>
+					<node Class="QuestNode_End" />
 				</li>
 			</nodes>
 		</root>

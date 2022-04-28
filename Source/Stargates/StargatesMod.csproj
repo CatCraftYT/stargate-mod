@@ -57,6 +57,7 @@
     <Compile Include="PlaceWorker_OnePerMap.cs" />
     <Compile Include="PawnsArrivalModeWorker_Stargate.cs" />
     <Compile Include="JobDriver_DialStargate.cs" />
+    <Compile Include="QuestNode_RemoveFromStargateAddresses.cs" />
     <Compile Include="WorldComp_StargateAddresses.cs" />
     <Compile Include="CompDialHomeDevice.cs" />
     <Compile Include="JobDriver_EnterStargate.cs" />

@@ -22,7 +22,7 @@ namespace StargatesMod
 
             yield return new FloatMenuOption("Decode symbols", () =>
             {
-                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), this.parent);
+                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DecodeGlyphs"), this.parent);
                 selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
             });
         }

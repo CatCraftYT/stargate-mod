@@ -149,15 +149,12 @@ namespace StargatesMod
             MapParent connectedMap = Find.WorldObjects.MapParentAt(connectedAddress);
             if (connectedMap == null)
             {
-                Log.Error($"Tried to get a paired stargate at address {connectedAddress} but it does not exist!");
+                Log.Error($"Tried to get a paired stargate at address {connectedAddress} but the map parent does not exist!");
                 return null;
             }
-            if (!connectedMap.HasMap)
-            {
-                //generate stargate map
-            }
+            Map map = GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap.def);
 
-            Thing gate = GetStargateOnMap(connectedMap.Map);
+            Thing gate = GetStargateOnMap(map);
             if (gate == null) { Log.Error($"Tried to get dialled stargate in map {connectedMap.Map.uniqueID}, but it did not exist!"); return null; }
             return gate;
         }

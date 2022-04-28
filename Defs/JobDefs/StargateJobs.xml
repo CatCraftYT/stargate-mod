@@ -28,5 +28,12 @@
 		<reportString>installing iris on TargetB.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
+	
+	<JobDef>
+		<defName>StargateMod_DecodeGlyphs</defName>
+		<driverClass>StargatesMod.JobDriver_DecodeGlyphs</driverClass>
+		<reportString>decoding stargate glyphs.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
  
 </Defs>
