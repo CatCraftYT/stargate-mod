@@ -49,6 +49,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompTargetable_Stargate.cs" />
+    <Compile Include="JobDriver_InstallIris.cs" />
     <Compile Include="JobDriver_BringToStargate.cs" />
     <Compile Include="PlaceWorker_OnePerMap.cs" />
     <Compile Include="PawnsArrivalModeWorker_Stargate.cs" />

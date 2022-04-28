@@ -19,6 +19,7 @@ namespace StargatesMod
         public int gateAddress;
         public bool stargateIsActive = false;
         public bool isRecievingGate;
+        public bool hasIris = false;
         bool irisIsActivated = false;
         int connectedAddress = -1;
         Thing connectedStargate;
@@ -266,7 +267,7 @@ namespace StargatesMod
                 yield return gizmo;
             }
 
-            if (Props.hasIris && DefDatabase<ResearchProjectDef>.GetNamed("StargateMod_StargateIrisResearch").IsFinished)
+            if (Props.canHaveIris && hasIris)
             {
                 Command_Action command = new Command_Action
                 {
@@ -295,7 +296,7 @@ namespace StargatesMod
                 Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), this.parent);
                 selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
             });
-            yield return new FloatMenuOption("Haul thing to stargate", () =>
+            yield return new FloatMenuOption("Bring downed pawn to stargate", () =>
             {
                 TargetingParameters targetingParameters = new TargetingParameters()
                 {
@@ -367,7 +368,7 @@ namespace StargatesMod
         {
             this.compClass = typeof(CompStargate);
         }
-        public bool hasIris = true;
+        public bool canHaveIris = true;
         public bool explodeOnUse = false;
         public string puddleTexture;
         public string irisTexture;
