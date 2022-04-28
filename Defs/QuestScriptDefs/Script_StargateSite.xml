@@ -1,1 +1,48 @@
-﻿
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<QuestScriptDef>
+		<defName>OpportunitySite_ItemStash</defName>
+		<rootMinPoints>0</rootMinPoints>
+		<autoAccept>true</autoAccept>
+		<questNameRules>
+			<rulesStrings>
+				<li>questName->[ancient] stargate [site]</li>
+				<li>ancient->Ancient</li>
+				<li>ancient->Old</li>
+				<li>ancient->Abandoned</li>
+				<li>ancient->Forgotten</li>
+				<li>site->site</li>
+				<li>site->complex</li>
+				<li>site->vault</li>
+				<li>site->fortress</li>
+				<li>site->post</li>
+			</rulesStrings>
+		</questNameRules>
+		<questDescriptionRules>
+			<rulesStrings>
+				<li>We have found a site containing a stargate. It may contain treasure guarded by ancient enemies, or it may contain nothing. In either case, the stargate there will be extremely useful if we can retrieve it.</li>
+			</rulesStrings>
+		</questDescriptionRules>
+		<root Class="QuestNode_Sequence">
+			<nodes>
+				<li Class="QuestNode_SubScript">
+					<def>Util_RandomizePointsChallengeRating</def>
+					<parms>
+						<pointsFactorTwoStar>1.5</pointsFactorTwoStar>
+						<pointsFactorThreeStar>2</pointsFactorThreeStar>
+					</parms>
+				</li>
+				<li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
+					<storeAs>sitePartDefs</storeAs>
+					<storeFactionAs>siteFaction</storeFactionAs>
+					<sitePartsTags>
+						<li><tag>VFEV_AbandonedFactory</tag></li>
+					</sitePartsTags>
+					<mustBeHostileToFactionOf>$asker</mustBeHostileToFactionOf>
+				</li>
+			</nodes>
+		</root>
+	</QuestScriptDef>
+	
+</Defs>

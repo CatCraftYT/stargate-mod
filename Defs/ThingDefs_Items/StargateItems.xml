@@ -1,39 +1,65 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-
-  <ThingDef ParentName="ResourceBase">
-    <defName>StargateMod_IrisInstallKit</defName>
-    <label>iris installation kit</label>
-    <description>A kit containing all of the pre-assembled materials needed to install an iris on a stargate.</description>
+	
+	<ThingDef ParentName="ResourceBase">
+		<defName>StargateMod_GlyphScrap</defName>
+		<label>stargate glyphs</label>
+		<description>A mysterious cracked stone with stargate symbols engraved on it.</description>
+		<thingClass>ThingWithComps</thingClass>
+		<graphicData>
+		  <texPath>Things/Items/Stargate/glyph_scrap</texPath>
+		  <graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<stackLimit>1</stackLimit>
+		<useHitPoints>true</useHitPoints>
+		<statBases>
+		  <MaxHitPoints>100</MaxHitPoints>
+		  <Mass>80</Mass>
+		  <Flammability>0</Flammability>
+		</statBases>
+		<techLevel>Ultra</techLevel>
+		<thingCategories>
+		  <li>Items</li>
+		</thingCategories>
+		<tradeability>None</tradeability>
+		<comps>
+		  <li Class="CompProperties_GlyphScrap" />
+	</ThingDef>
+	
+	<!--==================== Iris Stuff ====================-->
+	<ThingDef ParentName="ResourceBase">
+	<defName>StargateMod_IrisInstallKit</defName>
+	<label>iris installation kit</label>
+	<description>A kit containing all of the pre-assembled materials needed to install an iris on a stargate.</description>
 	<thingClass>ThingWithComps</thingClass>
-    <graphicData>
-      <texPath>Things/Items/Stargate/iris_upgrade_kit</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <stackLimit>1</stackLimit>
+	<graphicData>
+	  <texPath>Things/Items/Stargate/iris_upgrade_kit</texPath>
+	  <graphicClass>Graphic_Single</graphicClass>
+	</graphicData>
+	<stackLimit>1</stackLimit>
 	<useHitPoints>true</useHitPoints>
-    <statBases>
+	<statBases>
 	  <MaxHitPoints>100</MaxHitPoints>
-      <Mass>80</Mass>
-      <Flammability>0</Flammability>
-    </statBases>
+	  <Mass>80</Mass>
+	  <Flammability>0</Flammability>
+	</statBases>
 	<techLevel>Ultra</techLevel>
-    <thingCategories>
-      <li>Items</li>
-    </thingCategories>
-    <tradeability>None</tradeability>
-    <comps>
-      <li Class="CompProperties_Usable">
-        <useJob>StargateMod_InstallIris</useJob>
-        <useLabel>Install iris</useLabel>
-        <useDuration>5000</useDuration>
-      </li>
+	<thingCategories>
+	  <li>Items</li>
+	</thingCategories>
+	<tradeability>None</tradeability>
+	<comps>
+	  <li Class="CompProperties_Usable">
+		<useJob>StargateMod_InstallIris</useJob>
+		<useLabel>Install iris</useLabel>
+		<useDuration>5000</useDuration>
+	  </li>
 	  
 	  <li Class="CompProperties_Targetable">
-        <compClass>StargatesMod.CompTargetable_Stargate</compClass>
-      </li>
-    </comps>
-  </ThingDef>
+		<compClass>StargatesMod.CompTargetable_Stargate</compClass>
+	  </li>
+	</comps>
+	</ThingDef>
   
   <RecipeDef>
     <defName>StargateMod_MakeIrisInstallKit</defName>

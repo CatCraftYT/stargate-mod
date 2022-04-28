@@ -13,6 +13,8 @@ namespace StargatesMod
 {
     public class CompStargate : ThingComp
     {
+        const int glowRadius = 10;
+
         List<Thing> sendBuffer = new List<Thing>();
         List<Thing> recvBuffer = new List<Thing>();
         int ticksSinceBufferUnloaded;
@@ -72,11 +74,18 @@ namespace StargatesMod
 
                 sgComp.puddleSustainer = puddleSustainerDef.TrySpawnSustainer(SoundInfo.InMap(sgComp.parent));
                 puddleOpenDef.PlayOneShot(SoundInfo.InMap(sgComp.parent));
+
+                CompGlower otherGlowComp = sgComp.parent.GetComp<CompGlower>();
+                otherGlowComp.Props.glowRadius = glowRadius;
+                otherGlowComp.PostSpawnSetup(false);
             }
 
             puddleSustainer = puddleSustainerDef.TrySpawnSustainer(SoundInfo.InMap(this.parent));
             puddleOpenDef.PlayOneShot(SoundInfo.InMap(this.parent));
-            
+
+            CompGlower glowComp = this.parent.GetComp<CompGlower>();
+            glowComp.Props.glowRadius = glowRadius;
+            glowComp.PostSpawnSetup(false);
         }
 
         public void CloseStargate(bool closeOtherGate)
@@ -108,6 +117,10 @@ namespace StargatesMod
             puddleCloseDef.PlayOneShot(SoundInfo.InMap(this.parent));
             if (sgComp != null) { puddleCloseDef.PlayOneShot(SoundInfo.InMap(sgComp.parent)); }
             puddleSustainer.End();
+
+            CompGlower glowComp = this.parent.GetComp<CompGlower>();
+            glowComp.Props.glowRadius = 0;
+            glowComp.PostSpawnSetup(false);
 
             if (Props.explodeOnUse)
             {
@@ -213,7 +226,7 @@ namespace StargatesMod
                     }
                 }
 
-                if (ticksSinceBufferUnloaded > Rand.Range(20, 40) && recvBuffer.Any())
+                if (recvBuffer.Any() && ticksSinceBufferUnloaded > Rand.Range(20, 40))
                 {
                     ticksSinceBufferUnloaded = 0;
                     if (!irisIsActivated)

@@ -23,6 +23,12 @@
 		  <li>PlaceWorker_PreventInteractionSpotOverlap</li>
 		  <li>StargatesMod.PlaceWorker_OnePerMap</li>
 		</placeWorkers>
+		<comps>
+			<li Class="CompProperties_Glower">
+				<glowRadius>0</glowRadius> <!-- This is changed in C# -->
+				<glowColor>(115,171,224,0)</glowColor>
+			</li>
+		</comps>
 	</ThingDef>
 
 	<ThingDef ParentName="StargateMod_StargateBase">
