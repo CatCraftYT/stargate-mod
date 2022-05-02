@@ -58,7 +58,7 @@ namespace StargatesMod
                     {
                         MapParent sgMap = Find.WorldObjects.MapParentAt(i);
                         
-                        yield return new FloatMenuOption($"Dial {i} ({sgMap.Label})", () =>
+                        yield return new FloatMenuOption($"Dial {CompStargate.GetStargateDesignation(i)} ({sgMap.Label})", () =>
                         {
                             lastDialledAddress = i;
                             Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);

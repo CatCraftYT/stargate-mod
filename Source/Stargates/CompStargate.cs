@@ -14,6 +14,7 @@ namespace StargatesMod
     public class CompStargate : ThingComp
     {
         const int glowRadius = 10;
+        const string alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         List<Thing> sendBuffer = new List<Thing>();
         List<Thing> recvBuffer = new List<Thing>();
@@ -144,6 +145,15 @@ namespace StargatesMod
             return gateOnMap;
         }
 
+        public static string GetStargateDesignation(int address)
+        {
+            Rand.PushState(address);
+            //pattern: P(num)(char)-(num)(num)(num)
+            string designation = $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 26)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
+            Rand.PopState();
+            return designation;
+        }
+
         private Thing GetDialledStargate()
         {
             MapParent connectedMap = Find.WorldObjects.MapParentAt(connectedAddress);
@@ -152,7 +162,16 @@ namespace StargatesMod
                 Log.Error($"Tried to get a paired stargate at address {connectedAddress} but the map parent does not exist!");
                 return null;
             }
-            Map map = GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap.def);
+            if (!connectedMap.HasMap)
+            {
+                LongEventHandler.QueueLongEvent(delegate ()
+                {
+                    SettleUtility.AddNewHome(connectedMap.Tile, Faction.OfPlayer);
+                    GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, Find.World.info.initialMapSize, null);
+                }, "Generating map", false, null
+                );
+            }
+            Map map = GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, Find.World.info.initialMapSize, null);
 
             Thing gate = GetStargateOnMap(map);
             if (gate == null) { Log.Error($"Tried to get dialled stargate in map {connectedMap.Map.uniqueID}, but it did not exist!"); return null; }
@@ -261,11 +280,11 @@ namespace StargatesMod
         public override string CompInspectStringExtra()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Gate address: {gateAddress}");
+            sb.AppendLine($"Gate address: {GetStargateDesignation(gateAddress)}");
             if (!stargateIsActive) { sb.Append("Inactive"); }
             else
             {
-                sb.Append($"Connected to stargate: {connectedAddress}");
+                sb.Append($"Connected to stargate: {GetStargateDesignation(connectedAddress)}");
             }
             return sb.ToString();
         }

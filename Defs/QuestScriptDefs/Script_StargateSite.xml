@@ -17,7 +17,7 @@
 				<li>site->site</li>
 				<li>site->complex</li>
 				<li>site->vault</li>
-				<li>site->fortress</li>
+				<li>site->compound</li>
 				<li>site->post</li>
 			</rulesStrings>
 		</questNameRules>
@@ -51,11 +51,6 @@
 					<preferCloserTiles>false</preferCloserTiles>
 				</li>
 
-				<li Class="StargatesMod.QuestNode_AddStargateAddresses">
-					<address>$siteTile</address>
-					<remove>false</remove>
-				</li>
-
 				<li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
 					<storeAs>sitePartDefs</storeAs>
 					<storeFactionAs>siteFaction</storeFactionAs>
@@ -74,14 +69,19 @@
 				<li Class="QuestNode_SubScript">
 					<def>Util_GenerateSite</def>
 					<parms>
-					<hiddenSitePartsPossible>true</hiddenSitePartsPossible>
+						<hiddenSitePartsPossible>true</hiddenSitePartsPossible>
 					</parms>
 				</li>
 
 				<li Class="QuestNode_SpawnWorldObjects">
 					<worldObjects>$site</worldObjects>
 				</li>
-
+				
+				<li Class="StargatesMod.QuestNode_AddStargateAddresses">
+					<address>$siteTile</address>
+					<remove>false</remove>
+				</li>
+				
 				<li Class="QuestNode_WorldObjectTimeout">
 					<worldObject>$site</worldObject>
 					<isQuestTimeout>true</isQuestTimeout>
@@ -93,10 +93,7 @@
 								<label>Quest expired: [resolvedQuestName]</label>
 								<text>Intercepted communications indicate the site has been scavenged, including the stargate. The quest [resolvedQuestName] has expired.</text>
 							</li>
-							<li Class="StargatesMod.QuestNode_AddStargateAddresses">
-								<address>$siteTile</address>
-								<remove>true</remove>
-							</li>
+
 							<li Class="QuestNode_End">
 								<outcome>Fail</outcome>
 							</li>

@@ -12,10 +12,11 @@ namespace StargatesMod
         {
             return true;
         }
+
         protected override void RunInt()
         {
             Slate slate = QuestGen.slate;
-            int tile = slate.Get<int>("tile");
+            int tile = address.GetValue(slate);
 
             WorldComp_StargateAddresses sgWorldComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
             if (sgWorldComp != null)

@@ -5,10 +5,10 @@
 		<defName>StargateMod_StargateSite</defName>
 		<label>stargate site</label>
 		<description>A remote site known to contain a stargate.</description>
-		<workerClass>SitePartWorker_Outpost</workerClass>
+		<workerClass>StargatesMod.SitePartWorker_Stargate</workerClass>
 		<siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
 		<expandingIconTexture>World/WorldObjects/Expanding/Sites/Stargate/sgcomplex</expandingIconTexture>
-		<requiresFaction>false</requiresFaction>
+		<requiresFaction>true</requiresFaction>
 		<approachOrderString>Investigate {0}</approachOrderString>
 		<approachingReportString>Investigating {0}</approachingReportString>
 		<arrivedLetter>There is a stargate in this area.</arrivedLetter>

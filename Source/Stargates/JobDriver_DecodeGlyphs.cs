@@ -16,18 +16,11 @@ namespace StargatesMod
 
         private void GenerateStargateQuest()
         {
+            //i was setting individual values like the points in the slate which was causing NullReferenceExceptions, it took me so long to debug and i just got lucky ;(
             Slate slate = new Slate();
-            float threatPoints = StorytellerUtility.DefaultThreatPointsNow(pawn.Map);
-            slate.Set("points", threatPoints, false);
-            slate.Set("population", PawnsFinder.AllMaps_FreeColonists.Count, false);
-            slate.Set("colonistsSingularOrPlural", 1, false);
-            slate.Set("passengersSingularOrPlural", 1, false);
-            slate.Set("enemyFaction", Find.FactionManager.RandomEnemyFaction(true), false);
-
             QuestScriptDef questDef = DefDatabase<QuestScriptDef>.GetNamed("StargatesMod_StargateSiteScript");
-            Quest quest = QuestGen.Generate(questDef, slate);
-            Find.SignalManager.RegisterReceiver(quest);
-            quest.Initiate();
+            Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
+            QuestUtility.SendLetterQuestAvailable(quest);
         }
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
