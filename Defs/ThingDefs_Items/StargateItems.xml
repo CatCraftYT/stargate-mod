@@ -3,7 +3,7 @@
 	
 	<ThingDef ParentName="ResourceBase">
 		<defName>StargateMod_GlyphScrap</defName>
-		<label>stargate glyphs</label>
+		<label>stargate glyph slab</label>
 		<description>A mysterious cracked stone with stargate symbols engraved on it.</description>
 		<thingClass>ThingWithComps</thingClass>
 		<graphicData>
@@ -11,6 +11,7 @@
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<stackLimit>1</stackLimit>
+		<tradeNeverStack>true</tradeNeverStack>
 		<useHitPoints>true</useHitPoints>
 		<statBases>
 			<MaxHitPoints>100</MaxHitPoints>
@@ -19,9 +20,12 @@
 		</statBases>
 		<techLevel>Ultra</techLevel>
 		<thingCategories>
-			<li>Items</li>
+			<li>Artifacts</li>
 		</thingCategories>
-		<tradeability>None</tradeability>
+		<tradeTags>
+			<li>Artifact</li>
+		</tradeTags>
+		<tradeability>Sellable</tradeability>
 		<comps>
 			<li Class="StargatesMod.CompProperties_GlyphScrap" />
 		</comps>

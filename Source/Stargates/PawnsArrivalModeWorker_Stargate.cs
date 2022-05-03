@@ -21,6 +21,7 @@ namespace StargatesMod
             List<Thing> stargatesOnMap = GetStargatesOnMap(map);
 
             CompStargate sgComp = stargatesOnMap[0].TryGetComp<CompStargate>();
+            sgComp.ticksSinceBufferUnloaded = -450;
             sgComp.OpenStargate(-1);
             foreach (Pawn pawn in pawns)
             {

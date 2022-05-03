@@ -18,7 +18,7 @@ namespace StargatesMod
 
         List<Thing> sendBuffer = new List<Thing>();
         List<Thing> recvBuffer = new List<Thing>();
-        int ticksSinceBufferUnloaded;
+        public int ticksSinceBufferUnloaded;
         public int gateAddress;
         public bool stargateIsActive = false;
         public bool isRecievingGate;
@@ -166,12 +166,11 @@ namespace StargatesMod
             {
                 LongEventHandler.QueueLongEvent(delegate ()
                 {
-                    SettleUtility.AddNewHome(connectedMap.Tile, Faction.OfPlayer);
                     GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, Find.World.info.initialMapSize, null);
                 }, "Generating map", false, null
                 );
             }
-            Map map = GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, Find.World.info.initialMapSize, null);
+            Map map = connectedMap.Map;
 
             Thing gate = GetStargateOnMap(map);
             if (gate == null) { Log.Error($"Tried to get dialled stargate in map {connectedMap.Map.uniqueID}, but it did not exist!"); return null; }
@@ -242,7 +241,7 @@ namespace StargatesMod
                     }
                 }
 
-                if (recvBuffer.Any() && ticksSinceBufferUnloaded > Rand.Range(20, 40))
+                if (recvBuffer.Any() && ticksSinceBufferUnloaded > Rand.Range(20, 100))
                 {
                     ticksSinceBufferUnloaded = 0;
                     if (!irisIsActivated)

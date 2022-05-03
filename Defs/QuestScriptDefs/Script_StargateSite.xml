@@ -38,9 +38,9 @@
 					<elseNode Class="QuestNode_RandomNode">
 						<nodes>
 							<li Class="QuestNode_Set">
-							<name>askerIsNull</name>
-							<value>true</value>
-							<selectionWeight>0.4</selectionWeight>
+								<name>askerIsNull</name>
+								<value>true</value>
+								<selectionWeight>0.4</selectionWeight>
 							</li>
 						</nodes>
 					</elseNode>

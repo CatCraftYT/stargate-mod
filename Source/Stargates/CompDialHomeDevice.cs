@@ -57,13 +57,16 @@ namespace StargatesMod
                     if (i != stargate.gateAddress)
                     {
                         MapParent sgMap = Find.WorldObjects.MapParentAt(i);
-                        
-                        yield return new FloatMenuOption($"Dial {CompStargate.GetStargateDesignation(i)} ({sgMap.Label})", () =>
+                        if (!(sgMap.HasMap && CompStargate.GetStargateOnMap(sgMap.Map).TryGetComp<CompStargate>().stargateIsActive))
                         {
-                            lastDialledAddress = i;
-                            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
-                            selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                        });
+
+                            yield return new FloatMenuOption($"Dial {CompStargate.GetStargateDesignation(i)} ({sgMap.Label})", () =>
+                            {
+                                lastDialledAddress = i;
+                                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
+                                selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                            });
+                        }
                     }
                 }
             }
