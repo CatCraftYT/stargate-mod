@@ -14,6 +14,7 @@
 		<arrivedLetter>There is a stargate in this area.</arrivedLetter>
 		<arrivedLetterDef>NeutralEvent</arrivedLetterDef>
 		<wantsThreatPoints>true</wantsThreatPoints>
+		<minThreatPoints>90</minThreatPoints>
 		<tags>
 			<li>StargateMod_StargateSite</li>
 		</tags>
@@ -22,10 +23,11 @@
 	<GenStepDef>
 		<defName>StargateMod_StargateSite</defName>
 		<linkWithSite>StargateMod_StargateSite</linkWithSite>
-		<order>460</order>
+		<order>2000</order>
 		<genStep Class="KCSG.GenStep_CustomStructureGen">
 			<structureLayoutDefs>
-				<li>VFEM_Factory1</li>
+				<li>StargateMod_Structure_StoneHenge</li>
+<!-->				<li>StargateMod_Structure_SGC</li><-->
 			</structureLayoutDefs>
 		</genStep>
 	</GenStepDef>

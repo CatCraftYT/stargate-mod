@@ -35,7 +35,11 @@ namespace StargatesMod
             Toil toil = Toils_General.Wait(useDuration);
             toil.WithProgressBarToilDelay(glyphScrapItem);
             yield return toil;
-            yield return new Toil { initAction = () => { GenerateStargateQuest(); } };
+            yield return new Toil { initAction = () =>
+            {
+                GenerateStargateQuest();
+                this.job.GetTarget(glyphScrapItem).Thing.Destroy();
+            } };
         }
     }
 }

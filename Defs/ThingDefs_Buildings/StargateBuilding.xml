@@ -7,7 +7,7 @@
 		<stealable>false</stealable>
 		<pathCost>3</pathCost>
 		<constructEffect>ConstructMetal</constructEffect>
-		<altitudeLayer>Building</altitudeLayer>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<fillPercent>0.20</fillPercent>
 		<canOverlapZones>true</canOverlapZones>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
@@ -70,7 +70,7 @@
 		<label>makeshift stargate</label>
 		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
 This stargate in particular was made using easily available resources, but is quite unstable and unreliable. It is both too weak and too small to have an iris. It has an integrated DHD.
-"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
+\n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
 		<thingClass>Building</thingClass>
 			<graphicData>
 			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
@@ -102,7 +102,7 @@ This stargate in particular was made using easily available resources, but is qu
 				<selfDialler>True</selfDialler>
 			</li>
 			<li Class="CompProperties_Explosive">
-				<explosiveRadius>6</explosiveRadius>
+				<explosiveRadius>3</explosiveRadius>
 				<explosiveDamageType>Bomb</explosiveDamageType>
 				<wickTicks>250</wickTicks>
 				<chanceNeverExplodeFromDamage>1</chanceNeverExplodeFromDamage>
@@ -116,7 +116,7 @@ This stargate in particular was made using easily available resources, but is qu
 		<label>advanced stargate</label>
 		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
 This stargate is identical in nearly every way to a normal stargate. It has an integrated DHD.
-"Way smarter than we are."</description>
+\n"Way smarter than we are."</description>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>

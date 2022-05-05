@@ -3,11 +3,7 @@ using RimWorld;
 using RimWorld.Planet;
 using Verse;
 using Verse.AI;
-using Verse.Sound;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace StargatesMod
 {
@@ -20,11 +16,18 @@ namespace StargatesMod
                 yield break;
             }
 
-            yield return new FloatMenuOption("Decode symbols", () =>
+            if (DefDatabase<ResearchProjectDef>.GetNamed("StargateMod_GlyphDeciphering").IsFinished)
             {
-                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DecodeGlyphs"), this.parent);
-                selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-            });
+                yield return new FloatMenuOption("Decode symbols", () =>
+                {
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DecodeGlyphs"), this.parent);
+                    selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                });
+            }
+            else
+            {
+                yield return new FloatMenuOption("Decode symbols (glyph deciphering not researched)", null);
+            }
         }
     }
 

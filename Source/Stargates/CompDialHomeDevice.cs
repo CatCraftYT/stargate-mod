@@ -52,11 +52,14 @@ namespace StargatesMod
             CompStargate stargate = GetLinkedStargate();
             if (!stargate.stargateIsActive)
             {
-                foreach (int i in Find.World.GetComponent<WorldComp_StargateAddresses>().addressList)
+                WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
+                foreach (int i in addressComp.addressList)
                 {
                     if (i != stargate.gateAddress)
                     {
                         MapParent sgMap = Find.WorldObjects.MapParentAt(i);
+                        //TODO: fix this, stops quest maps from appearing
+                        if (sgMap == null || (!sgMap.HasMap && !sgMap.questTags.Contains("StargateMod_StargateSite"))) { addressComp.RemoveAddress(i); break; }
                         if (!(sgMap.HasMap && CompStargate.GetStargateOnMap(sgMap.Map).TryGetComp<CompStargate>().stargateIsActive))
                         {
 

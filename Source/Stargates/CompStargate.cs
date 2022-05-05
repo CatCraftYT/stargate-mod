@@ -108,16 +108,10 @@ namespace StargatesMod
                 else { sgComp.CloseStargate(false); }
             }
 
-            stargateIsActive = false;
-            ticksSinceBufferUnloaded = 0;
-            connectedAddress = -1;
-            connectedStargate = null;
-            isRecievingGate = false;
-
             SoundDef puddleCloseDef = DefDatabase<SoundDef>.GetNamed("StargateMod_SGClose");
             puddleCloseDef.PlayOneShot(SoundInfo.InMap(this.parent));
             if (sgComp != null) { puddleCloseDef.PlayOneShot(SoundInfo.InMap(sgComp.parent)); }
-            puddleSustainer.End();
+            if (puddleSustainer != null) { puddleSustainer.End(); }
 
             CompGlower glowComp = this.parent.GetComp<CompGlower>();
             glowComp.Props.glowRadius = 0;
@@ -129,6 +123,12 @@ namespace StargatesMod
                 if (explosive == null) { Log.Warning($"Stargate {this.parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive."); }
                 else { explosive.StartWick(); }
             }
+
+            stargateIsActive = false;
+            ticksSinceBufferUnloaded = 0;
+            connectedAddress = -1;
+            connectedStargate = null;
+            isRecievingGate = false;
         }
         #endregion
 
@@ -164,11 +164,7 @@ namespace StargatesMod
             }
             if (!connectedMap.HasMap)
             {
-                LongEventHandler.QueueLongEvent(delegate ()
-                {
-                    GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, Find.World.info.initialMapSize, null);
-                }, "Generating map", false, null
-                );
+                GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, Find.World.info.initialMapSize, null);
             }
             Map map = connectedMap.Map;
 
@@ -209,11 +205,11 @@ namespace StargatesMod
             base.PostDraw();
             if (irisIsActivated)
             {
-                StargateIris.Draw(this.parent.Position.ToVector3Shifted(), Rot4.North, this.parent);
+                StargateIris.Draw(this.parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.Building), Rot4.North, this.parent);
             }
             else if (stargateIsActive)
             {
-                StargatePuddle.Draw(this.parent.Position.ToVector3Shifted(), Rot4.North, this.parent);
+                StargatePuddle.Draw(this.parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.Building), Rot4.North, this.parent);
             }
         }
 
@@ -222,6 +218,10 @@ namespace StargatesMod
             base.CompTick();
             if (stargateIsActive)
             {
+                if (this.parent.Fogged())
+                {
+                    this.parent.Map.fogGrid.Unfog(this.parent.Position);
+                }
                 CompStargate sgComp = connectedStargate.TryGetComp<CompStargate>();
 
                 if (!isRecievingGate && sendBuffer.Any())
@@ -307,6 +307,19 @@ namespace StargatesMod
                         irisIsActivated = !irisIsActivated;
                         if (irisIsActivated) { DefDatabase<SoundDef>.GetNamed("StargateMod_IrisOpen").PlayOneShot(SoundInfo.InMap(this.parent)); }
                         else { DefDatabase<SoundDef>.GetNamed("StargateMod_IrisClose").PlayOneShot(SoundInfo.InMap(this.parent)); }
+                    }
+                };
+                yield return command;
+            }
+
+            if (Prefs.DevMode)
+            {
+                Command_Action command = new Command_Action
+                {
+                    defaultLabel = "Add/remove iris",
+                    action = delegate ()
+                    {
+                        this.hasIris = !this.hasIris;
                     }
                 };
                 yield return command;

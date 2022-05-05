@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -51,6 +55,7 @@
   <ItemGroup>
     <Compile Include="CompGlyphScrap.cs" />
     <Compile Include="CompTargetable_Stargate.cs" />
+    <Compile Include="HarmonyPatches.cs" />
     <Compile Include="JobDriver_DecodeGlyphs.cs" />
     <Compile Include="JobDriver_InstallIris.cs" />
     <Compile Include="JobDriver_BringToStargate.cs" />

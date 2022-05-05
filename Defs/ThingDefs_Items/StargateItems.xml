@@ -4,7 +4,7 @@
 	<ThingDef ParentName="ResourceBase">
 		<defName>StargateMod_GlyphScrap</defName>
 		<label>stargate glyph slab</label>
-		<description>A mysterious cracked stone with stargate symbols engraved on it.</description>
+		<description>A mysterious cracked stone with stargate symbols engraved on it.\n\n"Dial it up!"</description>
 		<thingClass>ThingWithComps</thingClass>
 		<graphicData>
 			<texPath>Things/Items/Stargate/glyph_scrap</texPath>
@@ -14,18 +14,19 @@
 		<tradeNeverStack>true</tradeNeverStack>
 		<useHitPoints>true</useHitPoints>
 		<statBases>
+			<MarketValue>900</MarketValue>
 			<MaxHitPoints>100</MaxHitPoints>
 			<Mass>80</Mass>
 			<Flammability>0</Flammability>
 		</statBases>
-		<techLevel>Ultra</techLevel>
+		<techLevel>Medieval</techLevel>
 		<thingCategories>
 			<li>Artifacts</li>
 		</thingCategories>
 		<tradeTags>
-			<li>Artifact</li>
+			<li>ExoticMisc</li>
 		</tradeTags>
-		<tradeability>Sellable</tradeability>
+		<thingSetMakerTags><li>RewardStandardHighFreq</li></thingSetMakerTags>
 		<comps>
 			<li Class="StargatesMod.CompProperties_GlyphScrap" />
 		</comps>
@@ -35,7 +36,7 @@
 	<ThingDef ParentName="ResourceBase">
 	<defName>StargateMod_IrisInstallKit</defName>
 	<label>iris installation kit</label>
-	<description>A kit containing all of the pre-assembled materials needed to install an iris on a stargate.</description>
+	<description>A kit containing all of the pre-assembled materials needed to install an iris on a stargate.\n\n"We have in place an impenetrable shield called an iris."</description>
 	<thingClass>ThingWithComps</thingClass>
 	<graphicData>
 		<texPath>Things/Items/Stargate/iris_upgrade_kit</texPath>

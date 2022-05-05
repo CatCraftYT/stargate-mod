@@ -56,6 +56,7 @@
 					<storeFactionAs>siteFaction</storeFactionAs>
 					<sitePartsTags>
 						<li><tag>StargateMod_StargateSite</tag></li>
+						<li><tag>KCSG_EnnemiesPresence</tag></li>
 					</sitePartsTags>
 				</li>
 
