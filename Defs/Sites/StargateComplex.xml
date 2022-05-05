@@ -27,7 +27,7 @@
 		<genStep Class="KCSG.GenStep_CustomStructureGen">
 			<structureLayoutDefs>
 				<li>StargateMod_Structure_StoneHenge</li>
-<!-->				<li>StargateMod_Structure_SGC</li><-->
+				<li>StargateMod_Structure_SGC</li>
 			</structureLayoutDefs>
 		</genStep>
 	</GenStepDef>
