@@ -16,6 +16,7 @@ namespace StargatesMod
 
         public void RemoveAddress(int address)
         {
+            CleanupAddresses();
             addressList.Remove(address);
         }
 
@@ -24,6 +25,20 @@ namespace StargatesMod
             if (!addressList.Contains(address))
             {
                 addressList.Add(address);
+            }
+        }
+
+        public void CleanupAddresses()
+        {
+            foreach (int i in new List<int>(this.addressList))
+            {
+                MapParent sgMap = Find.WorldObjects.MapParentAt(i);
+                Site site = sgMap as Site;
+
+                if (sgMap == null || (!sgMap.HasMap && site != null && !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")))
+                {
+                    this.RemoveAddress(i);
+                }
             }
         }
 

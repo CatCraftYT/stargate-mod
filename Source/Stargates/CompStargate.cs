@@ -19,11 +19,14 @@ namespace StargatesMod
         List<Thing> sendBuffer = new List<Thing>();
         List<Thing> recvBuffer = new List<Thing>();
         public int ticksSinceBufferUnloaded;
+        public int ticksSinceOpened;
         public int gateAddress;
         public bool stargateIsActive = false;
         public bool isRecievingGate;
         public bool hasIris = false;
         bool irisIsActivated = false;
+        int ticksUntilOpen;
+        int queuedAddress;
         int connectedAddress = -1;
         Thing connectedStargate;
         Sustainer puddleSustainer;
@@ -57,8 +60,18 @@ namespace StargatesMod
         }
 
         #region DHD Controls
+        public void OpenStargateDelayed(int address, int delay)
+        {
+            queuedAddress = address;
+            ticksUntilOpen = delay;
+        }
+
         public void OpenStargate(int address)
         {
+            if (connectedAddress > -1 && GetDialledStargate(address).TryGetComp<CompStargate>().stargateIsActive)
+            {
+                DefDatabase<SoundDef>.GetNamed("StargateMod_SGFailDial").PlayOneShot(SoundInfo.InMap(this.parent));
+            }
             stargateIsActive = true;
             connectedAddress = address;
 
@@ -66,7 +79,7 @@ namespace StargatesMod
             SoundDef puddleOpenDef = DefDatabase<SoundDef>.GetNamed("StargateMod_SGOpen");
             if (connectedAddress != -1)
             {
-                connectedStargate = GetDialledStargate();
+                connectedStargate = GetDialledStargate(connectedAddress);
                 CompStargate sgComp = connectedStargate.TryGetComp<CompStargate>();
                 sgComp.stargateIsActive = true;
                 sgComp.isRecievingGate = true;
@@ -126,6 +139,7 @@ namespace StargatesMod
 
             stargateIsActive = false;
             ticksSinceBufferUnloaded = 0;
+            ticksSinceOpened = 0;
             connectedAddress = -1;
             connectedStargate = null;
             isRecievingGate = false;
@@ -147,6 +161,7 @@ namespace StargatesMod
 
         public static string GetStargateDesignation(int address)
         {
+            if (address < 0) { return "unknown"; }
             Rand.PushState(address);
             //pattern: P(num)(char)-(num)(num)(num)
             string designation = $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 26)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
@@ -154,12 +169,12 @@ namespace StargatesMod
             return designation;
         }
 
-        private Thing GetDialledStargate()
+        private Thing GetDialledStargate(int address)
         {
-            MapParent connectedMap = Find.WorldObjects.MapParentAt(connectedAddress);
+            MapParent connectedMap = Find.WorldObjects.MapParentAt(address);
             if (connectedMap == null)
             {
-                Log.Error($"Tried to get a paired stargate at address {connectedAddress} but the map parent does not exist!");
+                Log.Error($"Tried to get a paired stargate at address {address} but the map parent does not exist!");
                 return null;
             }
             if (!connectedMap.HasMap)
@@ -176,6 +191,22 @@ namespace StargatesMod
         private void PlayTeleportSound()
         {
             DefDatabase<SoundDef>.GetNamed($"StargateMod_teleport_{Rand.RangeInclusive(1, 4)}").PlayOneShot(SoundInfo.InMap(this.parent));
+        }
+
+        private void DoUnstableVortex()
+        {
+            foreach (IntVec3 pos in Props.vortexPattern)
+            {
+                DamageDef damType = DefDatabase<DamageDef>.GetNamed("StargateMod_KawooshExplosion");
+
+                Explosion explosion = (Explosion)GenSpawn.Spawn(ThingDefOf.Explosion, this.parent.Position, this.parent.Map, WipeMode.Vanish);
+                explosion.damageFalloff = false;
+                explosion.damAmount = damType.defaultDamage;
+                explosion.Position = this.parent.Position + pos;
+                explosion.radius = 0.5f;
+                explosion.damType = damType;
+                explosion.StartExplosion(null, new List<Thing>() { this.parent });
+            }
         }
 
         public void AddToSendBuffer(Thing thing)
@@ -205,19 +236,34 @@ namespace StargatesMod
             base.PostDraw();
             if (irisIsActivated)
             {
-                StargateIris.Draw(this.parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.Building), Rot4.North, this.parent);
+                StargateIris.Draw(this.parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.01f), Rot4.North, this.parent);
             }
-            else if (stargateIsActive)
+            if (stargateIsActive)
             {
-                StargatePuddle.Draw(this.parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.Building), Rot4.North, this.parent);
+                StargatePuddle.Draw(this.parent.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingOnTop) - (Vector3.one * 0.02f), Rot4.North, this.parent);
             }
         }
 
         public override void CompTick()
         {
             base.CompTick();
+            if (ticksUntilOpen > 0)
+            {
+                ticksUntilOpen--;
+                if (ticksUntilOpen == 0)
+                {
+                    ticksUntilOpen = -1;
+                    OpenStargate(queuedAddress);
+                    queuedAddress = -1;
+                }
+            }
             if (stargateIsActive)
             {
+                if (!irisIsActivated && ticksSinceOpened < 150 && ticksSinceOpened % 10 == 0)
+                {
+                    DoUnstableVortex();
+                }
+
                 if (this.parent.Fogged())
                 {
                     this.parent.Map.fogGrid.Unfog(this.parent.Position);
@@ -259,6 +305,7 @@ namespace StargatesMod
                 }
                 if (connectedAddress == -1 && !recvBuffer.Any()) { CloseStargate(false); }
                 ticksSinceBufferUnloaded++;
+                ticksSinceOpened++;
                 if (ticksSinceBufferUnloaded > 2500) { CloseStargate(true); }
             }
         }
@@ -271,7 +318,7 @@ namespace StargatesMod
 
             if (stargateIsActive)
             {
-                if (connectedStargate == null && connectedAddress != -1) { connectedStargate = GetDialledStargate(); }
+                if (connectedStargate == null && connectedAddress != -1) { connectedStargate = GetDialledStargate(connectedAddress); }
                 puddleSustainer = DefDatabase<SoundDef>.GetNamed("StargateMod_SGIdle").TrySpawnSustainer(SoundInfo.InMap(this.parent));
             }
         }
@@ -280,12 +327,13 @@ namespace StargatesMod
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Gate address: {GetStargateDesignation(gateAddress)}");
-            if (!stargateIsActive) { sb.Append("Inactive"); }
+            if (!stargateIsActive) { sb.AppendLine("Inactive"); }
             else
             {
-                sb.Append($"Connected to stargate: {GetStargateDesignation(connectedAddress)}");
+                sb.AppendLine($"Connected to stargate: {GetStargateDesignation(connectedAddress)}");
             }
-            return sb.ToString();
+            if (ticksUntilOpen > 0) { sb.AppendLine($"Time until lock: {ticksUntilOpen.ToStringTicksToPeriod()}"); }
+            return sb.ToString().TrimEndNewlines();
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -414,5 +462,21 @@ namespace StargatesMod
         public string puddleTexture;
         public string irisTexture;
         public Vector2 puddleDrawSize;
+        public List<IntVec3> vortexPattern = new List<IntVec3>
+        {
+            new IntVec3(0,0,1),
+            new IntVec3(1,0,1),
+            new IntVec3(-1,0,1),
+            new IntVec3(0,0,0),
+            new IntVec3(1,0,0),
+            new IntVec3(-1,0,0),
+            new IntVec3(0,0,-1),
+            new IntVec3(1,0,-1),
+            new IntVec3(-1,0,-1),
+            new IntVec3(0,0,-2),
+            new IntVec3(1,0,-2),
+            new IntVec3(-1,0,-2),
+            new IntVec3(0,0,-3)
+        };
     }
 }

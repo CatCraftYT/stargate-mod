@@ -2,6 +2,7 @@
 <Defs>
 
 	<ThingDef Name="StargateMod_StargateBase" ParentName="BuildingBase" Abstract="True">
+		<thingClass>Building</thingClass>
 		<rotatable>false</rotatable>
 		<minifiedDef>MinifiedThing</minifiedDef>
 		<stealable>false</stealable>
@@ -18,11 +19,12 @@
 		<tickerType>Normal</tickerType>
 		<drawerType>RealtimeOnly</drawerType>
 		<hasInteractionCell>True</hasInteractionCell>
-		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
+		<interactionCellOffset>(0,0,0)</interactionCellOffset>
 		<placeWorkers>
 		  <li>PlaceWorker_PreventInteractionSpotOverlap</li>
-		  <li>StargatesMod.PlaceWorker_OnePerMap</li>
+		  <li>StargatesMod.PlaceWorker_Stargate</li>
 		</placeWorkers>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<comps>
 			<li Class="CompProperties_Glower">
 				<glowRadius>0</glowRadius> <!-- This is changed in C# -->
@@ -35,7 +37,6 @@
 		<defName>StargateMod_Stargate</defName>
 		<label>stargate</label>
 		<description>An ancient device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.\n\n"By the time you get to the other side, you're frozen stiff. Like you'd just been through a blizzard... naked."</description>
-		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_sg1</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -71,8 +72,7 @@
 		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
 This stargate in particular was made using easily available resources, but is quite unstable and unreliable. It is both too weak and too small to have an iris. It has an integrated DHD.
 \n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
-		<thingClass>Building</thingClass>
-			<graphicData>
+		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(7,7)</drawSize>
@@ -117,7 +117,6 @@ This stargate in particular was made using easily available resources, but is qu
 		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
 This stargate is identical in nearly every way to a normal stargate. It has an integrated DHD.
 \n"Way smarter than we are."</description>
-		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
 			<graphicClass>Graphic_Single</graphicClass>

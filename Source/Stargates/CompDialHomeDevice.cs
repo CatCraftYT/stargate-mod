@@ -53,17 +53,13 @@ namespace StargatesMod
             if (!stargate.stargateIsActive)
             {
                 WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
-                foreach (int i in new List<int>(addressComp.addressList))
+                addressComp.CleanupAddresses();
+
+                foreach (int i in addressComp.addressList)
                 {
                     if (i != stargate.gateAddress)
                     {
                         MapParent sgMap = Find.WorldObjects.MapParentAt(i);
-                        Site site = sgMap as Site;
-                        if (sgMap == null || (!sgMap.HasMap && site != null && !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")))
-                        {
-                            addressComp.RemoveAddress(i);
-                            continue;
-                        }
                         if (!(sgMap.HasMap && CompStargate.GetStargateOnMap(sgMap.Map).TryGetComp<CompStargate>().stargateIsActive))
                         {
 

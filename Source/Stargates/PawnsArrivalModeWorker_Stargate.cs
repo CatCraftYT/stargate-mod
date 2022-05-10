@@ -10,19 +10,14 @@ namespace StargatesMod
 {
     public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
     {
-        private List<Thing> GetStargatesOnMap(Map map)
-        {
-            return map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("StargateMod_Stargate"));
-        }
-
         public override void Arrive(List<Pawn> pawns, IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            List<Thing> stargatesOnMap = GetStargatesOnMap(map);
+            Thing stargateOnMap = CompStargate.GetStargateOnMap(map);
 
-            CompStargate sgComp = stargatesOnMap[0].TryGetComp<CompStargate>();
-            sgComp.ticksSinceBufferUnloaded = -450;
-            sgComp.OpenStargate(-1);
+            CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
+            sgComp.OpenStargateDelayed(-1, 450);
+            sgComp.ticksSinceBufferUnloaded = -150;
             foreach (Pawn pawn in pawns)
             {
                 sgComp.AddToRecieveBuffer(pawn);
@@ -32,15 +27,15 @@ namespace StargatesMod
         {
             Map map = (Map)parms.target;
             parms.spawnRotation = Rot4.South;
-            List<Thing> stargatesOnMap = GetStargatesOnMap(map);
-            CompStargate sgComp = stargatesOnMap[0].TryGetComp<CompStargate>();
-            if (stargatesOnMap.Count == 0 || sgComp == null || sgComp.stargateIsActive)
+            Thing stargateOnMap = CompStargate.GetStargateOnMap(map);
+            CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
+            if (stargateOnMap == null|| sgComp == null || sgComp.stargateIsActive)
             {
                 parms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn;
                 return parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);
             }
 
-            parms.spawnCenter = stargatesOnMap[0].Position;
+            parms.spawnCenter = stargateOnMap.Position;
             return true;
         }
     }

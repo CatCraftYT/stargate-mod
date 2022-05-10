@@ -19,17 +19,17 @@ namespace StargatesMod
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
+            CompDialHomeDevice dhdComp = this.job.GetTarget(targetDHD).Thing.TryGetComp<CompDialHomeDevice>();
             this.FailOnDestroyedOrNull(targetDHD);
+            this.FailOn(() => dhdComp.GetLinkedStargate().stargateIsActive);
 
             yield return Toils_Goto.GotoCell(job.GetTarget(targetDHD).Thing.InteractionCell, PathEndMode.OnCell);
             yield return new Toil
             {
                 initAction = () =>
                 {
-                    CompDialHomeDevice dhdComp = this.job.GetTarget(targetDHD).Thing.TryGetComp<CompDialHomeDevice>();
                     CompStargate linkedStargate = dhdComp.GetLinkedStargate();
-
-                    linkedStargate.OpenStargate(dhdComp.lastDialledAddress);
+                    linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, 200);
                 }
             };
             yield break;

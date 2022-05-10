@@ -19,7 +19,7 @@ namespace StargatesMod
 				validator = (TargetInfo x) =>
 				{
 					CompStargate sgComp = x.Thing.TryGetComp<CompStargate>();
-					if (x.Thing != null && sgComp != null && sgComp.Props.canHaveIris)
+					if (x.Thing != null && sgComp != null && sgComp.Props.canHaveIris && !sgComp.hasIris)
                     {
 						return true;
                     }

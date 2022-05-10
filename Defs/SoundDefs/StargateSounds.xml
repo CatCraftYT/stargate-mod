@@ -19,6 +19,39 @@
 	</SoundDef>
 	
 	<SoundDef>
+		<defName>StargateMod_SGFailDial</defName>
+		<context>MapOnly</context>
+		<maxSimultaneous>1</maxSimultaneous>
+		<subSounds>
+			<li>
+				<muteWhenPaused>False</muteWhenPaused>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Misc/Stargate/fail</clipPath>
+					</li>
+				</grains>
+				<volumeRange>12</volumeRange>
+			</li>
+		</subSounds>
+	</SoundDef>
+	
+	<SoundDef>
+		<defName>StargateMod_SGKawooshExplosion</defName>
+		<maxSimultaneous>1</maxSimultaneous>
+			<subSounds>
+				<li>
+					<onCamera>True</onCamera>
+					<grains>
+						<li Class="AudioGrain_Clip">
+							<clipPath>UI/TinyBell</clipPath>
+						</li>
+					</grains>
+					<volumeRange>0~0</volumeRange>
+				</li>
+			</subSounds>
+	</SoundDef>
+	
+	<SoundDef>
 		<defName>StargateMod_SGIdle</defName>
 		<sustain>True</sustain>
 		<context>MapOnly</context>
