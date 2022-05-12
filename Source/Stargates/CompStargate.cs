@@ -164,7 +164,7 @@ namespace StargatesMod
             if (address < 0) { return "unknown"; }
             Rand.PushState(address);
             //pattern: P(num)(char)-(num)(num)(num)
-            string designation = $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 26)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
+            string designation = $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
             Rand.PopState();
             return designation;
         }
@@ -266,7 +266,7 @@ namespace StargatesMod
 
                 if (this.parent.Fogged())
                 {
-                    this.parent.Map.fogGrid.Unfog(this.parent.Position);
+                    FloodFillerFog.FloodUnfog(this.parent.Position, this.parent.Map);
                 }
                 CompStargate sgComp = connectedStargate.TryGetComp<CompStargate>();
 

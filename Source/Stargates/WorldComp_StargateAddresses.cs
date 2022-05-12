@@ -16,7 +16,6 @@ namespace StargatesMod
 
         public void RemoveAddress(int address)
         {
-            CleanupAddresses();
             addressList.Remove(address);
         }
 

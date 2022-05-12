@@ -21,6 +21,7 @@ namespace StargatesMod
             WorldComp_StargateAddresses sgWorldComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
             if (sgWorldComp != null)
             {
+                sgWorldComp.CleanupAddresses();
                 if (remove.GetValue(slate)) { sgWorldComp.addressList.Remove(tile); }
                 else { sgWorldComp.addressList.Add(tile); }
             }
