@@ -70,7 +70,7 @@
 		<defName>StargateMod_OrlinStargate</defName>
 		<label>makeshift stargate</label>
 		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
-This stargate in particular was made using easily available resources, but is quite unstable and unreliable. It is both too weak and too small to have an iris. It has an integrated DHD.
+This stargate in particular was made using easily available resources, but is quite unstable and unreliable. It is both too weak and too small to have an iris. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...
 \n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
@@ -79,10 +79,10 @@ This stargate in particular was made using easily available resources, but is qu
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>
-		  <Steel>350</Steel>
-		  <ComponentIndustrial>25</ComponentIndustrial>
-		  <ComponentSpacer>15</ComponentSpacer>
-		  <Gold>30</Gold>
+		  <Steel>200</Steel>
+		  <ComponentIndustrial>15</ComponentIndustrial>
+		  <ComponentSpacer>8</ComponentSpacer>
+		  <Gold>25</Gold>
 		</costList>
 		<statBases>
 			<WorkToBuild>6000</WorkToBuild>
@@ -115,7 +115,7 @@ This stargate in particular was made using easily available resources, but is qu
 		<defName>StargateMod_AdvancedStargate</defName>
 		<label>advanced stargate</label>
 		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
-This stargate is identical in nearly every way to a normal stargate. It has an integrated DHD.
+This stargate is identical in nearly every way to a normal stargate. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...
 \n"Way smarter than we are."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
@@ -124,12 +124,12 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>
-		  <Steel>800</Steel>
-		  <Plasteel>600</Plasteel>
-		  <ComponentIndustrial>60</ComponentIndustrial>
-		  <ComponentSpacer>25</ComponentSpacer>
-		  <Gold>300</Gold>
-		  <Uranium>400</Uranium>
+		  <Steel>300</Steel>
+		  <Plasteel>250</Plasteel>
+		  <ComponentIndustrial>30</ComponentIndustrial>
+		  <ComponentSpacer>10</ComponentSpacer>
+		  <Gold>150</Gold>
+		  <Uranium>200</Uranium>
 		</costList>
 		<statBases>
 			<WorkToBuild>10000</WorkToBuild>
