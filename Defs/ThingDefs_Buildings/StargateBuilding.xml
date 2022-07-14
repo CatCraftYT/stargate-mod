@@ -20,6 +20,9 @@
 		<drawerType>RealtimeOnly</drawerType>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,0)</interactionCellOffset>
+		<building>
+			<ai_neverTrashThis>true</ai_neverTrashThis>
+		</building>
 		<placeWorkers>
 		  <li>PlaceWorker_PreventInteractionSpotOverlap</li>
 		  <li>StargatesMod.PlaceWorker_Stargate</li>

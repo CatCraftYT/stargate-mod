@@ -20,5 +20,25 @@
 			</li>
 		</value>
 	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>/Defs/TraderKindDef[defName = "Base_Outlander_Standard"]/stockGenerators</xpath>
+		<value>
+			<li Class="StockGenerator_SingleDef">
+				<thingDef>StargateMod_GlyphScrap</thingDef>
+				<countRange>1~3</countRange>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>/Defs/TraderKindDef[defName = "Base_Neolithic_Standard"]/stockGenerators</xpath>
+		<value>
+			<li Class="StockGenerator_SingleDef">
+				<thingDef>StargateMod_GlyphScrap</thingDef>
+				<countRange>1~2</countRange>
+			</li>
+		</value>
+	</Operation>
 
 </Patch>
