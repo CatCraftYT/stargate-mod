@@ -15,7 +15,7 @@
 		<label>glyph deciphering</label>
 		<description>The glyphs both engraved on stargates and on mysterious scraps of paper have meaning. Deciphering them and locating where they go may unlock a new way of travel.</description>
 		<baseCost>2000</baseCost>
-		<techLevel>Industrial</techLevel>
+		<techLevel>Medieval</techLevel>
 		<researchViewX>0.00</researchViewX>
 		<researchViewY>0.00</researchViewY>
 	</ResearchProjectDef>
