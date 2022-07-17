@@ -442,7 +442,9 @@ namespace StargatesMod
             base.PostExposeData();
             Scribe_Values.Look<bool>(ref stargateIsActive, "stargateIsActive");
             Scribe_Values.Look<bool>(ref isRecievingGate, "isRecievingGate");
+            Scribe_Values.Look<bool>(ref hasIris, "hasIris");
             Scribe_Values.Look<bool>(ref irisIsActivated, "irisIsActivated");
+            Scribe_Values.Look<int>(ref ticksSinceOpened, "ticksSinceOpened");
             Scribe_Values.Look<int>(ref connectedAddress, "connectedAddress");
             Scribe_References.Look(ref connectedStargate, "connectedStargate");
             Scribe_Collections.Look(ref recvBuffer, "recvBuffer", LookMode.GlobalTargetInfo);
