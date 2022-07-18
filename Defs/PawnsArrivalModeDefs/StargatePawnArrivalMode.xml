@@ -7,7 +7,7 @@
     <selectionWeightCurve>
       <points>
         <li>(100, 0.0)</li>
-        <li>(20, 3.5)</li>
+        <li>(300, 2.5)</li>
       </points>
     </selectionWeightCurve>
     <pointsFactorCurve>
