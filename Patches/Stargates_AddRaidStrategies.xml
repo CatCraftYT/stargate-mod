@@ -7,5 +7,12 @@
 			<li>StargateMod_StargateEnterMode</li>
 		</value>
 	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/RaidStrategyDef[defName="ImmediateAttackSmart"]/arriveModes</xpath>
+		<value>
+			<li>StargateMod_StargateEnterMode</li>
+		</value>
+	</Operation>
 
 </Patch>

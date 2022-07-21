@@ -6,8 +6,8 @@
     <workerClass>StargatesMod.PawnsArrivalModeWorker_Stargate</workerClass>
     <selectionWeightCurve>
       <points>
-        <li>(100, 0.0)</li>
-        <li>(300, 2.5)</li>
+        <li>(200, 0.0)</li>
+        <li>(800, 3.0)</li>
       </points>
     </selectionWeightCurve>
     <pointsFactorCurve>

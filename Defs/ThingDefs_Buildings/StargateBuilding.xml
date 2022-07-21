@@ -82,10 +82,10 @@ This stargate in particular was made using easily available resources, but is qu
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>
-		  <Steel>200</Steel>
-		  <ComponentIndustrial>15</ComponentIndustrial>
-		  <ComponentSpacer>8</ComponentSpacer>
-		  <Gold>25</Gold>
+		  <Steel>50</Steel>
+		  <ComponentIndustrial>4</ComponentIndustrial>
+		  <ComponentSpacer>1</ComponentSpacer>
+		  <Gold>10</Gold>
 		</costList>
 		<statBases>
 			<WorkToBuild>6000</WorkToBuild>
@@ -127,12 +127,12 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>
-		  <Steel>300</Steel>
-		  <Plasteel>250</Plasteel>
-		  <ComponentIndustrial>30</ComponentIndustrial>
+		  <Steel>250</Steel>
+		  <Plasteel>200</Plasteel>
+		  <ComponentIndustrial>25</ComponentIndustrial>
 		  <ComponentSpacer>10</ComponentSpacer>
 		  <Gold>150</Gold>
-		  <Uranium>200</Uranium>
+		  <Uranium>80</Uranium>
 		</costList>
 		<statBases>
 			<WorkToBuild>10000</WorkToBuild>
