@@ -54,6 +54,11 @@ namespace StargatesMod
             {
                 WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
                 addressComp.CleanupAddresses();
+                if (addressComp.addressList.Count < 2)
+                {
+                    yield return new FloatMenuOption("No available destinations", null);
+                    yield break;
+                }
 
                 foreach (int i in addressComp.addressList)
                 {
