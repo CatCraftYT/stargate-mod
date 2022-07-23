@@ -330,7 +330,7 @@ namespace StargatesMod
             if (!stargateIsActive) { sb.AppendLine("Inactive"); }
             else
             {
-                sb.AppendLine($"Connected to stargate: {GetStargateDesignation(connectedAddress)}");
+                sb.AppendLine($"Connected to stargate: {GetStargateDesignation(connectedAddress)} ({(isRecievingGate ? "incoming" : "outgoing")})");
             }
             if (ticksUntilOpen > 0) { sb.AppendLine($"Time until lock: {ticksUntilOpen.ToStringTicksToPeriod()}"); }
             return sb.ToString().TrimEndNewlines();
