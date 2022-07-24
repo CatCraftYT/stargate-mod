@@ -195,6 +195,15 @@ namespace StargatesMod
 
         private void DoUnstableVortex()
         {
+            List<Thing> excludedThings = new List<Thing>() { this.parent };
+            foreach (IntVec3 pos in Props.vortexPattern)
+            {
+                foreach (Thing thing in this.parent.Map.thingGrid.ThingsAt(this.parent.Position + pos))
+                {
+                    if (Props.thingsExcludedFromVortex.Contains(thing.def)) { excludedThings.Add(thing); }
+                }
+            }
+
             foreach (IntVec3 pos in Props.vortexPattern)
             {
                 DamageDef damType = DefDatabase<DamageDef>.GetNamed("StargateMod_KawooshExplosion");
@@ -205,7 +214,7 @@ namespace StargatesMod
                 explosion.Position = this.parent.Position + pos;
                 explosion.radius = 0.5f;
                 explosion.damType = damType;
-                explosion.StartExplosion(null, new List<Thing>() { this.parent });
+                explosion.StartExplosion(null, excludedThings);
             }
         }
 
@@ -476,6 +485,7 @@ namespace StargatesMod
         public string puddleTexture;
         public string irisTexture;
         public Vector2 puddleDrawSize;
+        public List<ThingDef> thingsExcludedFromVortex = new List<ThingDef>();
         public List<IntVec3> vortexPattern = new List<IntVec3>
         {
             new IntVec3(0,0,1),
