@@ -270,20 +270,37 @@ namespace StargatesMod
                 }
                 CompStargate sgComp = connectedStargate.TryGetComp<CompStargate>();
 
-                if (!isRecievingGate && sendBuffer.Any())
+                CompTransporter transComp = this.parent.GetComp<CompTransporter>();
+                if (transComp != null)
                 {
-                    for (int i = 0; i <= sendBuffer.Count; i++)
+                    Thing thing = transComp.innerContainer.FirstOrFallback();
+                    if (thing != null)
                     {
-                        sgComp.AddToRecieveBuffer(sendBuffer[i]);
-                        this.sendBuffer.Remove(sendBuffer[i]);
+                        if (thing.Spawned) { thing.DeSpawn(); }
+                        this.AddToSendBuffer(thing);
+                        transComp.innerContainer.Remove(thing);
                     }
+                    else if (transComp.LoadingInProgressOrReadyToLaunch && !transComp.AnyInGroupHasAnythingLeftToLoad) { transComp.CancelLoad(); }
                 }
-                else if (isRecievingGate && sendBuffer.Any())
+
+                if (sendBuffer.Any())
                 {
-                    for (int i = 0; i <= sendBuffer.Count; i++)
+                    if (!isRecievingGate)
                     {
-                        sendBuffer[i].Kill();
-                        this.sendBuffer.Remove(sendBuffer[i]);
+                        for (int i = 0; i <= sendBuffer.Count; i++)
+                        {
+                            sgComp.AddToRecieveBuffer(sendBuffer[i]);
+                            this.sendBuffer.Remove(sendBuffer[i]);
+                        }
+
+                    }
+                    else if (isRecievingGate)
+                    {
+                        for (int i = 0; i <= sendBuffer.Count; i++)
+                        {
+                            sendBuffer[i].Kill();
+                            this.sendBuffer.Remove(sendBuffer[i]);
+                        }
                     }
                 }
 
@@ -292,7 +309,7 @@ namespace StargatesMod
                     ticksSinceBufferUnloaded = 0;
                     if (!irisIsActivated)
                     {
-                        GenPlace.TryPlaceThing(recvBuffer[0], this.parent.InteractionCell, parent.Map, ThingPlaceMode.Near).ToString();
+                        GenSpawn.Spawn(recvBuffer[0], this.parent.InteractionCell, this.parent.Map);
                         this.recvBuffer.Remove(recvBuffer[0]);
                         PlayTeleportSound();
                     }
@@ -306,7 +323,7 @@ namespace StargatesMod
                 if (connectedAddress == -1 && !recvBuffer.Any()) { CloseStargate(false); }
                 ticksSinceBufferUnloaded++;
                 ticksSinceOpened++;
-                if (ticksSinceBufferUnloaded > 2500) { CloseStargate(true); }
+                if (isRecievingGate && ticksSinceBufferUnloaded > 2500) { CloseStargate(true); }
             }
         }
 
@@ -323,7 +340,7 @@ namespace StargatesMod
             }
         }
 
-        public override string CompInspectStringExtra()
+        public string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Gate address: {GetStargateDesignation(gateAddress)}");
@@ -338,11 +355,6 @@ namespace StargatesMod
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            foreach (Gizmo gizmo in base.CompGetGizmosExtra())
-            {
-                yield return gizmo;
-            }
-
             if (Props.canHaveIris && hasIris)
             {
                 Command_Action command = new Command_Action

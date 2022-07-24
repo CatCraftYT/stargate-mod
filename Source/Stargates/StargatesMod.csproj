@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Building_Stargate.cs" />
     <Compile Include="CompGlyphScrap.cs" />
     <Compile Include="CompTargetable_Stargate.cs" />
     <Compile Include="HarmonyPatches.cs" />
