@@ -20,6 +20,7 @@ namespace StargatesMod
                     if (sgComp.stargateIsActive) { yield return gizmo; }
                     continue;
                 }
+                yield return gizmo;
             }
         }
 

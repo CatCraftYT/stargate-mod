@@ -104,14 +104,16 @@ namespace StargatesMod
 
         public void CloseStargate(bool closeOtherGate)
         {
+            CompTransporter transComp = this.parent.GetComp<CompTransporter>();
+            if (transComp != null) { transComp.CancelLoad(); }
             //clear buffers just in case
             foreach (Thing thing in sendBuffer)
             {
-                GenPlace.TryPlaceThing(thing, this.parent.InteractionCell, parent.Map, ThingPlaceMode.Near);
+                GenSpawn.Spawn(thing, this.parent.InteractionCell, this.parent.Map);
             }
             foreach (Thing thing in recvBuffer)
             {
-                GenPlace.TryPlaceThing(thing, this.parent.InteractionCell, parent.Map, ThingPlaceMode.Near);
+                GenSpawn.Spawn(thing, this.parent.InteractionCell, this.parent.Map);
             }
 
             CompStargate sgComp = connectedStargate.TryGetComp<CompStargate>();
@@ -347,6 +349,13 @@ namespace StargatesMod
                 if (connectedStargate == null && connectedAddress != -1) { connectedStargate = GetDialledStargate(connectedAddress); }
                 puddleSustainer = DefDatabase<SoundDef>.GetNamed("StargateMod_SGIdle").TrySpawnSustainer(SoundInfo.InMap(this.parent));
             }
+
+            //fix nullreferenceexception that happens when the innercontainer disappears for some reason, hopefully this doesn't end up causing a bug that will take hours to track down ;)
+            CompTransporter transComp = this.parent.GetComp<CompTransporter>();
+            if (transComp != null && transComp.innerContainer == null)
+            {
+                transComp.innerContainer = new ThingOwner<Thing>(transComp);
+            }
         }
 
         public string GetInspectString()
@@ -364,6 +373,11 @@ namespace StargatesMod
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
+            foreach (Gizmo gizmo in base.CompGetGizmosExtra())
+            {
+                yield return gizmo;
+            }
+
             if (Props.canHaveIris && hasIris)
             {
                 Command_Action command = new Command_Action
