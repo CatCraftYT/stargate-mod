@@ -3,8 +3,8 @@
 
 	<SitePartDef>
 		<defName>StargateMod_StargateSite</defName>
-		<label>stargate site</label>
-		<description>A remote site known to contain a stargate.</description>
+		<label>ancient stargate site</label>
+		<description>A long-abandoned remote site known to contain a stargate.</description>
 		<workerClass>StargatesMod.SitePartWorker_Stargate</workerClass>
 		<siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
 		<expandingIconTexture>World/WorldObjects/Expanding/Sites/Stargate/sgcomplex</expandingIconTexture>
