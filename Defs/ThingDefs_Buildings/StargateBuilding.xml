@@ -47,7 +47,8 @@
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_sg1</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(9,9)</drawSize>
+			<drawSize>(5.3,5.3)</drawSize>
+			<drawOffset>(0,0,1.2)</drawOffset>
 		</graphicData>
 		<costList>
 		  <Steel>600</Steel>
@@ -65,7 +66,7 @@
 			<li Class="StargatesMod.CompProperties_Stargate">
 				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
 				<irisTexture>Things/Building/Stargate/iris</irisTexture>
-				<puddleDrawSize>(9,9)</puddleDrawSize>
+				<puddleDrawSize>(8.7,8.7)</puddleDrawSize>
 			</li>
 			<li Class="CompProperties_AffectedByFacilities">
 				<linkableFacilities><li>StargateMod_DialHomeDevice</li></linkableFacilities>
@@ -82,7 +83,8 @@ This stargate in particular was made using easily available resources, but is qu
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(7,7)</drawSize>
+			<drawSize>(3.5,3.5)</drawSize>
+			<drawOffset>(0,0,0.8)</drawOffset>
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>
@@ -103,7 +105,12 @@ This stargate in particular was made using easily available resources, but is qu
 				<canHaveIris>False</canHaveIris>
 				<explodeOnUse>True</explodeOnUse>
 				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
-				<puddleDrawSize>(7,7)</puddleDrawSize>
+				<puddleDrawSize>(5.3,5.3)</puddleDrawSize>
+				<vortexPattern>
+					<li>(0,0,0)</li>
+					<li>(0,0,-1)</li>
+					<li>(0,0,-2)</li>
+				</vortexPattern>
 			</li>
 			<li Class="StargatesMod.CompProperties_DialHomeDevice">
 				<selfDialler>True</selfDialler>
@@ -127,7 +134,8 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(8,8)</drawSize>
+			<drawSize>(4.9,4.9)</drawSize>
+			<drawOffset>(0,0,1.1)</drawOffset>
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>
@@ -139,7 +147,7 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 		  <Uranium>80</Uranium>
 		</costList>
 		<statBases>
-			<WorkToBuild>10000</WorkToBuild>
+			<WorkToBuild>2000</WorkToBuild>
 			<MaxHitPoints>4000</MaxHitPoints>
 			<Flammability>0</Flammability>
 			<Mass>250</Mass>
@@ -149,7 +157,7 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 			<li Class="StargatesMod.CompProperties_Stargate">
 				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
 				<irisTexture>Things/Building/Stargate/iris</irisTexture>
-				<puddleDrawSize>(8.5,8.5)</puddleDrawSize>
+				<puddleDrawSize>(7.9,7.9)</puddleDrawSize>
 			</li>
 			<li Class="StargatesMod.CompProperties_DialHomeDevice">
 				<selfDialler>True</selfDialler>

@@ -27,7 +27,7 @@
 		<label>makeshift stargate creation</label>
 		<description>The materials used to build the ancient stargates aren't available on this planet, but we might be able to create a makeshift version.</description>
 		<baseCost>3500</baseCost>
-		<techLevel>Ultra</techLevel>
+		<techLevel>Industrial</techLevel>
 		<prerequisites>
 		  <li>AdvancedFabrication</li>
 		  <li>StargateMod_GlyphDeciphering</li>
@@ -64,7 +64,7 @@
 		<label>plasteel alloys</label>
 		<description>A material with incredible strength can made by combining Plasteel, Uranium and Steel. Even though it is too atomically unstable to use as a building material, its low-friction nature could be used to make an aperture to cover a stargate.</description>
 		<baseCost>8000</baseCost>
-		<techLevel>Ultra</techLevel>
+		<techLevel>Industrial</techLevel>
 		<prerequisites>
 		  <li>AdvancedFabrication</li>
 		  <li>StargateMod_GlyphDeciphering</li>
@@ -82,7 +82,7 @@
 		<label>irises</label>
 		<description>Experimentation reveals that a barrier placed microns from the event horizon of a stargate would stop almost anything from reintegrating. Using the low-friction alloy we discovered, we could make an aperture to cover the stargate and prevent people invading our base through it. Make the installation kit at a fabrication bench.</description>
 		<baseCost>4000</baseCost>
-		<techLevel>Ultra</techLevel>
+		<techLevel>Industrial</techLevel>
 		<prerequisites>
 		  <li>StargateMod_StargateIrisAlloyResearch</li>
 		</prerequisites>

@@ -12,6 +12,16 @@
 	</Operation>
 	
 	<Operation Class="PatchOperationAdd">
+		<xpath>/Defs/TraderKindDef[defName = "Caravan_Neolithic_ShamanMerchant"]/stockGenerators</xpath>
+		<value>
+			<li Class="StockGenerator_SingleDef">
+				<thingDef>StargateMod_GlyphScrap</thingDef>
+				<countRange>0~1</countRange>
+			</li>
+		</value>
+	</Operation>
+	
+	<Operation Class="PatchOperationAdd">
 		<xpath>/Defs/TraderKindDef[defName = "Orbital_Exotic"]/stockGenerators</xpath>
 		<value>
 			<li Class="StockGenerator_SingleDef">
