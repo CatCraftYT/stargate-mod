@@ -88,10 +88,10 @@ This stargate in particular was made using easily available resources, but is qu
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>
-		  <Steel>50</Steel>
-		  <ComponentIndustrial>4</ComponentIndustrial>
+		  <Steel>120</Steel>
+		  <ComponentIndustrial>8</ComponentIndustrial>
 		  <ComponentSpacer>1</ComponentSpacer>
-		  <Gold>10</Gold>
+		  <Gold>30</Gold>
 		</costList>
 		<statBases>
 			<WorkToBuild>6000</WorkToBuild>

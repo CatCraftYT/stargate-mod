@@ -24,8 +24,8 @@ namespace StargatesMod
         public bool stargateIsActive = false;
         public bool isRecievingGate;
         public bool hasIris = false;
+        public int ticksUntilOpen = -1;
         bool irisIsActivated = false;
-        int ticksUntilOpen;
         int queuedAddress;
         int connectedAddress = -1;
         Thing connectedStargate;
@@ -68,15 +68,16 @@ namespace StargatesMod
 
         public void OpenStargate(int address)
         {
-            if (connectedAddress > -1 && GetDialledStargate(address).TryGetComp<CompStargate>().stargateIsActive)
+            Thing gate = GetDialledStargate(address);
+            if (address > -1 && (gate == null || gate.TryGetComp<CompStargate>().stargateIsActive))
             {
-                DefDatabase<SoundDef>.GetNamed("StargateMod_SGFailDial").PlayOneShot(SoundInfo.InMap(this.parent));
+                Messages.Message("Could not dial stargate: Recieving gate was destroyed during dialling or is currently in use.", MessageTypeDefOf.NegativeEvent);
+                SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(this.parent));
+                return;
             }
             stargateIsActive = true;
             connectedAddress = address;
 
-            SoundDef puddleSustainerDef = DefDatabase<SoundDef>.GetNamed("StargateMod_SGIdle");
-            SoundDef puddleOpenDef = DefDatabase<SoundDef>.GetNamed("StargateMod_SGOpen");
             if (connectedAddress != -1)
             {
                 connectedStargate = GetDialledStargate(connectedAddress);
@@ -86,16 +87,16 @@ namespace StargatesMod
                 sgComp.connectedAddress = gateAddress;
                 sgComp.connectedStargate = this.parent;
 
-                sgComp.puddleSustainer = puddleSustainerDef.TrySpawnSustainer(SoundInfo.InMap(sgComp.parent));
-                puddleOpenDef.PlayOneShot(SoundInfo.InMap(sgComp.parent));
+                sgComp.puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(sgComp.parent));
+                SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(sgComp.parent));
 
                 CompGlower otherGlowComp = sgComp.parent.GetComp<CompGlower>();
                 otherGlowComp.Props.glowRadius = glowRadius;
                 otherGlowComp.PostSpawnSetup(false);
             }
 
-            puddleSustainer = puddleSustainerDef.TrySpawnSustainer(SoundInfo.InMap(this.parent));
-            puddleOpenDef.PlayOneShot(SoundInfo.InMap(this.parent));
+            puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(this.parent));
+            SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(this.parent));
 
             CompGlower glowComp = this.parent.GetComp<CompGlower>();
             glowComp.Props.glowRadius = glowRadius;
@@ -123,7 +124,7 @@ namespace StargatesMod
                 else { sgComp.CloseStargate(false); }
             }
 
-            SoundDef puddleCloseDef = DefDatabase<SoundDef>.GetNamed("StargateMod_SGClose");
+            SoundDef puddleCloseDef = SGSoundDefOf.StargateMod_SGClose;
             puddleCloseDef.PlayOneShot(SoundInfo.InMap(this.parent));
             if (sgComp != null) { puddleCloseDef.PlayOneShot(SoundInfo.InMap(sgComp.parent)); }
             if (puddleSustainer != null) { puddleSustainer.End(); }
@@ -173,6 +174,7 @@ namespace StargatesMod
 
         private Thing GetDialledStargate(int address)
         {
+            if (address < 0) { return null; }
             MapParent connectedMap = Find.WorldObjects.MapParentAt(address);
             if (connectedMap == null)
             {
@@ -186,7 +188,6 @@ namespace StargatesMod
             Map map = connectedMap.Map;
 
             Thing gate = GetStargateOnMap(map);
-            if (gate == null) { Log.Error($"Tried to get dialled stargate in map {connectedMap.Map.uniqueID}, but it did not exist!"); return null; }
             return gate;
         }
 
@@ -315,7 +316,7 @@ namespace StargatesMod
                     }
                 }
 
-                if (recvBuffer.Any() && ticksSinceBufferUnloaded > Rand.Range(20, 100))
+                if (recvBuffer.Any() && ticksSinceBufferUnloaded > Rand.Range(10, 80))
                 {
                     ticksSinceBufferUnloaded = 0;
                     if (!irisIsActivated)
@@ -328,7 +329,7 @@ namespace StargatesMod
                     {
                         recvBuffer[0].Kill();
                         this.recvBuffer.Remove(recvBuffer[0]);
-                        DefDatabase<SoundDef>.GetNamed("StargateMod_IrisHit").PlayOneShot(SoundInfo.InMap(this.parent));
+                        SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(this.parent));
                     }
                 }
                 if (connectedAddress == -1 && !recvBuffer.Any()) { CloseStargate(false); }
@@ -347,7 +348,7 @@ namespace StargatesMod
             if (stargateIsActive)
             {
                 if (connectedStargate == null && connectedAddress != -1) { connectedStargate = GetDialledStargate(connectedAddress); }
-                puddleSustainer = DefDatabase<SoundDef>.GetNamed("StargateMod_SGIdle").TrySpawnSustainer(SoundInfo.InMap(this.parent));
+                puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(this.parent));
             }
 
             //fix nullreferenceexception that happens when the innercontainer disappears for some reason, hopefully this doesn't end up causing a bug that will take hours to track down ;)
@@ -388,8 +389,8 @@ namespace StargatesMod
                     action = delegate ()
                     {
                         irisIsActivated = !irisIsActivated;
-                        if (irisIsActivated) { DefDatabase<SoundDef>.GetNamed("StargateMod_IrisOpen").PlayOneShot(SoundInfo.InMap(this.parent)); }
-                        else { DefDatabase<SoundDef>.GetNamed("StargateMod_IrisClose").PlayOneShot(SoundInfo.InMap(this.parent)); }
+                        if (irisIsActivated) { SGSoundDefOf.StargateMod_IrisOpen.PlayOneShot(SoundInfo.InMap(this.parent)); }
+                        else { SGSoundDefOf.StargateMod_IrisClose.PlayOneShot(SoundInfo.InMap(this.parent)); }
                     }
                 };
                 yield return command;
@@ -484,6 +485,11 @@ namespace StargatesMod
             Scribe_References.Look(ref connectedStargate, "connectedStargate");
             Scribe_Collections.Look(ref recvBuffer, "recvBuffer", LookMode.GlobalTargetInfo);
             Scribe_Collections.Look(ref sendBuffer, "sendBuffer", LookMode.GlobalTargetInfo);
+        }
+
+        public override string CompInspectStringExtra()
+        {
+            return base.CompInspectStringExtra() + "Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.";
         }
         #endregion
     }

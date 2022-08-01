@@ -50,13 +50,23 @@ namespace StargatesMod
             }
 
             CompStargate stargate = GetLinkedStargate();
-            if (!stargate.stargateIsActive)
+            if (stargate != null)
             {
+                if (stargate.stargateIsActive)
+                {
+                    yield return new FloatMenuOption("Cannot dial: stargate is already active", null);
+                    yield break;
+                }
                 WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
                 addressComp.CleanupAddresses();
                 if (addressComp.addressList.Count < 2)
                 {
-                    yield return new FloatMenuOption("No available destinations", null);
+                    yield return new FloatMenuOption("Cannot dial: no available destinations", null);
+                    yield break;
+                }
+                if (stargate.ticksUntilOpen > -1)
+                {
+                    yield return new FloatMenuOption("Cannot dial: incoming wormhole", null);
                     yield break;
                 }
 
@@ -65,16 +75,12 @@ namespace StargatesMod
                     if (i != stargate.gateAddress)
                     {
                         MapParent sgMap = Find.WorldObjects.MapParentAt(i);
-                        if (!(sgMap.HasMap && CompStargate.GetStargateOnMap(sgMap.Map).TryGetComp<CompStargate>().stargateIsActive))
+                        yield return new FloatMenuOption($"Dial {CompStargate.GetStargateDesignation(i)} ({sgMap.Label})", () =>
                         {
-
-                            yield return new FloatMenuOption($"Dial {CompStargate.GetStargateDesignation(i)} ({sgMap.Label})", () =>
-                            {
-                                lastDialledAddress = i;
-                                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
-                                selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                            });
-                        }
+                            lastDialledAddress = i;
+                            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
+                            selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                        });
                     }
                 }
             }
