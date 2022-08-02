@@ -57,6 +57,7 @@
 		  <Gold>300</Gold>
 		</costList>
 		<statBases>
+			<MarketValue>2000</MarketValue>
 			<MaxHitPoints>6000</MaxHitPoints>
 			<Flammability>0</Flammability>
 			<Mass>290</Mass>
@@ -94,6 +95,7 @@ This stargate in particular was made using easily available resources, but is qu
 		  <Gold>30</Gold>
 		</costList>
 		<statBases>
+			<MarketValue>1050</MarketValue>
 			<WorkToBuild>6000</WorkToBuild>
 			<MaxHitPoints>6000</MaxHitPoints>
 			<Flammability>0</Flammability>
@@ -147,6 +149,7 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 		  <Uranium>80</Uranium>
 		</costList>
 		<statBases>
+			<MarketValue>2500</MarketValue>
 			<WorkToBuild>2000</WorkToBuild>
 			<MaxHitPoints>4000</MaxHitPoints>
 			<Flammability>0</Flammability>
