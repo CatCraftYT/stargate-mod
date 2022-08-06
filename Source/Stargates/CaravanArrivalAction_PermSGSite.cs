@@ -29,11 +29,12 @@ namespace StargatesMod
 
         public override void Arrived(Caravan caravan)
 		{
+			Find.LetterStack.ReceiveLetter("LetterLabelCaravanEnteredMap".Translate(arrivalSite), "LetterCaravanEnteredMap".Translate(caravan.Label, arrivalSite).CapitalizeFirst(), LetterDefOf.NeutralEvent, caravan.PawnsListForReading);
 			LongEventHandler.QueueLongEvent(() =>
 			{
 				Map map = null;
 				map = GetOrGenerateMapUtility.GetOrGenerateMap(arrivalSite.Tile, new IntVec3(75, 1, 75), arrivalSite.def);
-				CaravanEnterMapUtility.Enter(caravan, arrivalSite.Map, CaravanEnterMode.Edge);
+				CaravanEnterMapUtility.Enter(caravan, arrivalSite.Map, CaravanEnterMode.Center);
 			}, "GeneratingMapForNewEncounter", false, null);
 		}
 

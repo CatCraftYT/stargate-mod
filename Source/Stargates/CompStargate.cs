@@ -183,7 +183,7 @@ namespace StargatesMod
             }
             if (!connectedMap.HasMap)
             {
-                GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, Find.World.info.initialMapSize, null);
+                GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap as WorldObject_PermSGSite != null ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, null);
             }
             Map map = connectedMap.Map;
 
