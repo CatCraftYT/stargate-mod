@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <WorldObjectDef>
+	<defName>StargateMod_SGSitePerm</defName>
+	<label>new stargate site</label>
+	<description>A stargate site, created recently and mostly unknown to everyone but us.</description>
+	<worldObjectClass>StargatesMod.WorldObject_PermSGSite</worldObjectClass>
+	<canHaveFaction>false</canHaveFaction>
+	<texture>World/WorldObjects/Sites/GenericSite</texture>
+	<expandingIcon>true</expandingIcon>
+	<expandingIconTexture>World/WorldObjects/Expanding/sgsite_perm</expandingIconTexture>
+	<expandingIconPriority>40</expandingIconPriority>
+	<expandMore>true</expandMore>
+	<modExtensions>
+	  <li Class="KCSG.CustomGenOption">
+		<chooseFromlayouts>
+		  <li>StargateMod_Structure_BarrenGate</li>
+		</chooseFromlayouts>
+		<fullClear>true</fullClear>
+		<tryFindFreeArea>true</tryFindFreeArea>
+		<preventBridgeable>true</preventBridgeable>
+	  </li>
+	</modExtensions>
+  </WorldObjectDef>
+
+</Defs>

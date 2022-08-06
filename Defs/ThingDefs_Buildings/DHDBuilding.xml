@@ -6,7 +6,7 @@
 	<label>dial home device</label>
 	<description>An ancient device used to control a stargate.\n\n"Kind of a ring thing, comes with a dialer, you hit the symbols, it spins around and lights come on, it kind of flushes sideways..."</description>
 	<thingClass>Building</thingClass>
-		<graphicData>
+	<graphicData>
 		<texPath>Things/Building/Stargate/dhd</texPath>
 		<graphicClass>Graphic_Single</graphicClass>
 		<drawSize>(2,2)</drawSize>
