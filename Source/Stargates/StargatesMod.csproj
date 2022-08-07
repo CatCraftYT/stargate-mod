@@ -54,8 +54,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building_Stargate.cs" />
+    <Compile Include="CaravanArrivalAction_PermSGSite.cs" />
     <Compile Include="CompGlyphScrap.cs" />
     <Compile Include="CompTargetable_Stargate.cs" />
+    <Compile Include="Dialog_RenameSGSite.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="JobDriver_DecodeGlyphs.cs" />
     <Compile Include="JobDriver_InstallIris.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="JobDriver_EnterStargate.cs" />
     <Compile Include="CompStargate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorldObject_PermSGSite.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

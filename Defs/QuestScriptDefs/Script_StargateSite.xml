@@ -86,7 +86,7 @@
 				<li Class="QuestNode_WorldObjectTimeout">
 					<worldObject>$site</worldObject>
 					<isQuestTimeout>true</isQuestTimeout>
-					<delayTicks>$(randInt(12,28)*60000)</delayTicks>
+					<delayTicks>1800000</delayTicks>
 					<inSignalDisable>site.MapGenerated</inSignalDisable>
 					<node Class="QuestNode_Sequence">
 						<nodes>

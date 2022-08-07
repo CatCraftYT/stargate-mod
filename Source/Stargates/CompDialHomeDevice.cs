@@ -23,6 +23,20 @@ namespace StargatesMod
             return compFacility.LinkedBuildings[0].TryGetComp<CompStargate>();
         }
 
+        public static Thing GetDHDOnMap(Map map)
+        {
+            Thing dhdOnMap = null;
+            foreach (Thing thing in map.listerThings.AllThings)
+            {
+                if (thing.TryGetComp<CompDialHomeDevice>() != null && thing.def.thingClass != typeof(Building_Stargate))
+                {
+                    dhdOnMap = thing;
+                    break;
+                }
+            }
+            return dhdOnMap;
+        }
+
         private bool isConnectedToStargate
         {
             get
@@ -54,19 +68,19 @@ namespace StargatesMod
             {
                 if (stargate.stargateIsActive)
                 {
-                    yield return new FloatMenuOption("Cannot dial: stargate is already active", null);
+                    yield return new FloatMenuOption("CannotDialGateIsActive".Translate(), null);
                     yield break;
                 }
                 WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
                 addressComp.CleanupAddresses();
                 if (addressComp.addressList.Count < 2)
                 {
-                    yield return new FloatMenuOption("Cannot dial: no available destinations", null);
+                    yield return new FloatMenuOption("CannotDialNoDestinations".Translate(), null);
                     yield break;
                 }
                 if (stargate.ticksUntilOpen > -1)
                 {
-                    yield return new FloatMenuOption("Cannot dial: incoming wormhole", null);
+                    yield return new FloatMenuOption("CannotDialIncoming".Translate(), null);
                     yield break;
                 }
 
@@ -75,7 +89,7 @@ namespace StargatesMod
                     if (i != stargate.gateAddress)
                     {
                         MapParent sgMap = Find.WorldObjects.MapParentAt(i);
-                        yield return new FloatMenuOption($"Dial {CompStargate.GetStargateDesignation(i)} ({sgMap.Label})", () =>
+                        yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(i), sgMap.Label), () =>
                         {
                             lastDialledAddress = i;
                             Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
@@ -99,16 +113,16 @@ namespace StargatesMod
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "Close stargate",
-                    defaultDesc = "Close the linked stargate.",
+                    defaultLabel = "CloseStargate".Translate(),
+                    defaultDesc = "CloseStargateDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel", true)
                 };
                 command.action = delegate ()
                 {
                     stargate.CloseStargate(true);
                 };
-                if (!stargate.stargateIsActive) { command.Disable("Stargate is not active."); }
-                else if (stargate.isRecievingGate) { command.Disable("Cannot disengage an incoming wormhole."); }
+                if (!stargate.stargateIsActive) { command.Disable("GateIsNotActive".Translate()); }
+                else if (stargate.isRecievingGate) { command.Disable("CannotCloseIncoming".Translate()); }
                 yield return command;
             }
         }
