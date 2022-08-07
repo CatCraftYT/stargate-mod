@@ -3,6 +3,8 @@
 
 	<Incoming>incoming</Incoming>
 	<Outgoing>outgoing</Outgoing>
+	<IrisClosed>CLOSED</IrisClosed>
+	<IrisOpen>OPEN</IrisOpen>
 	
 	<OnlyOneSGPerMap>Only one of this kind of building can be built per map.</OnlyOneSGPerMap>
 	<GateDialFailed>Could not dial stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
@@ -16,6 +18,7 @@
 	
 	<GateAddress>Stargate address: {0}</GateAddress>
 	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
+	<IrisStatus>Iris is [{0}]</IrisStatus>
 	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
 	
 	<OpenCloseIris>Open/close iris</OpenCloseIris>

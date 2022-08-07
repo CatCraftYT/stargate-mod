@@ -105,7 +105,10 @@ namespace StargatesMod
 
         public override void ExposeData()
         {
-            Scribe_Values.Look(ref siteName, "siteName");
+            base.ExposeData();
+            Scribe_Values.Look(ref this.siteName, "siteName");
+            Scribe_Defs.Look(ref this.dhdDef, "dhdDef");
+            Scribe_Defs.Look(ref this.gateDef, "gateDef");
         }
     }
 }

@@ -28,7 +28,7 @@ namespace StargatesMod
             Thing dhdOnMap = null;
             foreach (Thing thing in map.listerThings.AllThings)
             {
-                if (thing.TryGetComp<CompDialHomeDevice>() != null)
+                if (thing.TryGetComp<CompDialHomeDevice>() != null && thing.def.thingClass != typeof(Building_Stargate))
                 {
                     dhdOnMap = thing;
                     break;

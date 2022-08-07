@@ -359,6 +359,7 @@ namespace StargatesMod
             {
                 sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(connectedAddress), (isRecievingGate ? "Incoming" : "Outgoing").Translate()));
             }
+            if (this.hasIris) { sb.AppendLine("IrisStatus".Translate((irisIsActivated ? "IrisClosed" : "IrisOpen").Translate())); }
             if (ticksUntilOpen > 0) { sb.AppendLine("TimeUntilGateLock".Translate(ticksUntilOpen.ToStringTicksToPeriod())); }
             return sb.ToString().TrimEndNewlines();
         }
