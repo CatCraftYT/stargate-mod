@@ -15,7 +15,7 @@
 	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
 	
 	<GateAddress>Stargate address: {0}</GateAddress>
-	<ConnectedToGateIncoming>Connected to stargate: {0} ({1})</ConnectedToGateIncoming>
+	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
 	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
 	
 	<OpenCloseIris>Open/close iris</OpenCloseIris>
