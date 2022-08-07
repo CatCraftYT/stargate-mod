@@ -48,43 +48,45 @@ namespace StargatesMod
             }
 
             bool containsStargate = false;
-            bool containsDHD = false;
             foreach (Thing thing in __instance.AllThings)
             {
                 Thing inner = thing.GetInnerIfMinified();
                 if (inner != null)
                 {
-                    if (inner.TryGetComp<CompStargate>() != null) { containsStargate = true; }
-                    if (inner.TryGetComp<CompDialHomeDevice>() != null) { containsDHD = true; }
+                    if (inner.TryGetComp<CompStargate>() != null) { containsStargate = true; break; }
                 }
-                if (containsStargate && containsDHD) { break; }
             }
             Command_Action command = new Command_Action
             {
                 icon = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/sgsite_perm", true),
                 action = () =>
                 {
+                    ThingDef gateDef = null;
+                    ThingDef dhdDef = null;
+
                     List<Thing> things = __instance.AllThings.ToList();
                     for (int i = 0; i < things.Count(); i++)
                     {
                         Thing inner = things[i].GetInnerIfMinified();
-                        if (inner != null && inner.TryGetComp<CompStargate>() != null) { things[i].holdingOwner.Remove(things[i]); break; }
+                        if (inner != null && inner.TryGetComp<CompStargate>() != null) { gateDef = inner.def; things[i].holdingOwner.Remove(things[i]); break; }
                     }
+                    things = __instance.AllThings.ToList();
                     for (int i = 0; i < things.Count(); i++)
                     {
                         Thing inner = things[i].GetInnerIfMinified();
-                        if (inner != null && inner.TryGetComp<CompDialHomeDevice>() != null) { things[i].holdingOwner.Remove(things[i]); break; }
+                        if (inner != null && inner.TryGetComp<CompDialHomeDevice>() != null && inner.TryGetComp<CompStargate>() == null) { dhdDef = inner.def; things[i].holdingOwner.Remove(things[i]); break; }
                     }
-                    WorldObject wo = WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("StargateMod_SGSitePerm"));
+                    WorldObject_PermSGSite wo = (WorldObject_PermSGSite)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("StargateMod_SGSitePerm"));
                     wo.Tile = __instance.Tile;
-                    MapParent mapParent = (MapParent)wo;
-                    Find.WorldObjects.Add(mapParent);
+                    wo.gateDef = gateDef;
+                    wo.dhdDef = dhdDef;
+                    Find.WorldObjects.Add(wo);
                 },
-                defaultLabel = "Create stargate site",
-                defaultDesc = "Create a stargate site at this location."
+                defaultLabel = "CreateSGSite".Translate(),
+                defaultDesc = "CreateSGSiteDesc".Translate()
             };
             StringBuilder reason = new StringBuilder();
-            if (!(containsStargate && containsDHD)) { command.Disable("Dial home device and stargate required in caravan inventory."); }
+            if (!containsStargate) { command.Disable("NoGateInCaravan".Translate()); }
             else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) { command.Disable(reason.ToString()); }
             yield return command;
         }

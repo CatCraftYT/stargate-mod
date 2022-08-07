@@ -34,7 +34,7 @@ namespace StargatesMod
 		{
 			if (CompStargate.GetStargateOnMap(map) != null)
             {
-				return new AcceptanceReport("Only one of this kind of building can be built per map.");
+				return new AcceptanceReport("OnlyOneSGPerMap".Translate());
 			}
 			return true;
 		}

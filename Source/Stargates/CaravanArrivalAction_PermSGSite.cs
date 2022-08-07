@@ -13,8 +13,8 @@ namespace StargatesMod
     {
 		MapParent arrivalSite;
 
-        public override string Label => "Approach new stargate site";
-        public override string ReportString => "Approaching new stargate site";
+        public override string Label => "ApproachSite".Translate(arrivalSite.Label);
+        public override string ReportString => "ApproachingSite".Translate(arrivalSite.Label);
 
 		public CaravanArrivalAction_PermSGSite(MapParent site)
         {

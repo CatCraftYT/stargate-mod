@@ -71,7 +71,7 @@ namespace StargatesMod
             Thing gate = GetDialledStargate(address);
             if (address > -1 && (gate == null || gate.TryGetComp<CompStargate>().stargateIsActive))
             {
-                Messages.Message("Could not dial stargate: Recieving gate was destroyed during dialling or is currently in use.", MessageTypeDefOf.NegativeEvent);
+                Messages.Message("GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
                 SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(this.parent));
                 return;
             }
@@ -154,9 +154,10 @@ namespace StargatesMod
             Thing gateOnMap = null;
             foreach (Thing thing in map.listerThings.AllThings)
             {
-                if (thing.TryGetComp<CompStargate>() != null)
+                if (thing.def.thingClass == typeof(Building_Stargate))
                 {
                     gateOnMap = thing;
+                    break;
                 }
             }
             return gateOnMap;
@@ -164,7 +165,7 @@ namespace StargatesMod
 
         public static string GetStargateDesignation(int address)
         {
-            if (address < 0) { return "unknown"; }
+            if (address < 0) { return "UnknownLower".Translate(); }
             Rand.PushState(address);
             //pattern: P(num)(char)-(num)(num)(num)
             string designation = $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
@@ -231,16 +232,6 @@ namespace StargatesMod
         {
             recvBuffer.Add(thing);
         }
-
-        private void CleanupGate()
-        {
-            if (connectedStargate != null)
-            {
-                CloseStargate(true);
-            }
-            Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(gateAddress);
-        }
-
         #region Comp Overrides
 
         public override void PostDraw()
@@ -362,13 +353,13 @@ namespace StargatesMod
         public string GetInspectString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Gate address: {GetStargateDesignation(gateAddress)}");
-            if (!stargateIsActive) { sb.AppendLine("Inactive"); }
+            sb.AppendLine("GateAddress".Translate(GetStargateDesignation(gateAddress)));
+            if (!stargateIsActive) { sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst()); }
             else
             {
-                sb.AppendLine($"Connected to stargate: {GetStargateDesignation(connectedAddress)} ({(isRecievingGate ? "incoming" : "outgoing")})");
+                sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(connectedAddress), (isRecievingGate ? "Incoming" : "Outgoing").Translate()));
             }
-            if (ticksUntilOpen > 0) { sb.AppendLine($"Time until lock: {ticksUntilOpen.ToStringTicksToPeriod()}"); }
+            if (ticksUntilOpen > 0) { sb.AppendLine("TimeUntilGateLock".Translate(ticksUntilOpen.ToStringTicksToPeriod())); }
             return sb.ToString().TrimEndNewlines();
         }
 
@@ -383,8 +374,8 @@ namespace StargatesMod
             {
                 Command_Action command = new Command_Action
                 {
-                    defaultLabel = "Open/close iris",
-                    defaultDesc = "Open or close this stargate's iris.",
+                    defaultLabel = "OpenCloseIris".Translate(),
+                    defaultDesc = "OpenCloseIrisDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get(Props.irisTexture, true),
                     action = delegate ()
                     {
@@ -416,12 +407,12 @@ namespace StargatesMod
             {
                 yield break;
             }
-            yield return new FloatMenuOption("Enter stargate", () =>
+            yield return new FloatMenuOption("EnterStargateAction".Translate(), () =>
             {
                 Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), this.parent);
                 selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
             });
-            yield return new FloatMenuOption("Bring downed pawn to stargate", () =>
+            yield return new FloatMenuOption("BringPawnToGateAction".Translate(), () =>
             {
                 TargetingParameters targetingParameters = new TargetingParameters()
                 {
@@ -450,7 +441,7 @@ namespace StargatesMod
                     allowedPawns.Add(selPawn);
                 }
             }
-            yield return new FloatMenuOption("Enter stargate with selected", () =>
+            yield return new FloatMenuOption("EnterStargateWithSelectedAction".Translate(), () =>
             {
                 foreach (Pawn selPawn in allowedPawns)
                 {
@@ -460,6 +451,16 @@ namespace StargatesMod
             });
             yield break;
         }
+
+        private void CleanupGate()
+        {
+            if (connectedStargate != null)
+            {
+                CloseStargate(true);
+            }
+            Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(gateAddress);
+        }
+
 
         public override void PostDeSpawn(Map map)
         {
@@ -489,7 +490,7 @@ namespace StargatesMod
 
         public override string CompInspectStringExtra()
         {
-            return base.CompInspectStringExtra() + "Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.";
+            return base.CompInspectStringExtra() + "RespawnGateString".Translate();
         }
         #endregion
     }

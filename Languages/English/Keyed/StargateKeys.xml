@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<Incoming>incoming</Incoming>
+	<Outgoing>outgoing</Outgoing>
+	
+	<OnlyOneSGPerMap>Only one of this kind of building can be built per map.</OnlyOneSGPerMap>
+	<GateDialFailed>Could not dial stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
+	<GateIsNotActive>Stargate is not active.</GateIsNotActive>
+	<CannotCloseIncoming>Cannot disengage an incoming wormhole.</CannotCloseIncoming>
+	<CannotDialGateIsActive>Cannot dial: stargate is already active</CannotDialGateIsActive>
+	<CannotDialNoDestinations>Cannot dial: no available destinations</CannotDialNoDestinations>
+	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
+	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
+	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
+	
+	<GateAddress>Stargate address: {0}</GateAddress>
+	<ConnectedToGateIncoming>Connected to stargate: {0} ({1})</ConnectedToGateIncoming>
+	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
+	
+	<OpenCloseIris>Open/close iris</OpenCloseIris>
+	<OpenCloseIrisDesc>Open or close this stargate's iris.</OpenCloseIrisDesc>
+	<CloseStargate>Close stargate</CloseStargate>
+	<CloseStargateDesc>Close the linked stargate.</CloseStargateDesc>
+	<CreateSGSite>Create new stargate site</CreateSGSite>
+	<CreateSGSiteDesc>Create a new stargate site at this location.</CreateSGSiteDesc>
+	<RenameGateSite>Rename stargate site</RenameGateSite>
+	<RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</RenameGateSiteDesc>
+	
+	<EnterStargateAction>Enter stargate</EnterStargateAction>
+	<EnterStargateWithSelectedAction>Enter stargate with selected</EnterStargateWithSelectedAction>
+	<BringPawnToGateAction>Bring downed pawn to stargate</BringPawnToGateAction>
+	<DialGate>Dial {0} ({1})</DialGate>
+	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
+	<CannotDecodeSGSymbols>Decode symbols (glyph deciphering not researched)</CannotDecodeSGSymbols>
+	
+</LanguageData>
