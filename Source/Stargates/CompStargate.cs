@@ -297,7 +297,7 @@ namespace StargatesMod
                         }
 
                     }
-                    else if (isRecievingGate)
+                    else
                     {
                         for (int i = 0; i <= sendBuffer.Count; i++)
                         {

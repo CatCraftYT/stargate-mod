@@ -34,8 +34,7 @@ namespace StargatesMod
                 MapParent sgMap = Find.WorldObjects.MapParentAt(i);
                 Site site = sgMap as Site;
 
-                //if the mapparent is null entirely, or it doesn't have a map and isn't either a gate site or a perm gate site, delete the address
-                if (sgMap == null || (!sgMap.HasMap && ((site != null && !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) || sgMap as WorldObject_PermSGSite == null)))
+                if (sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && sgMap as WorldObject_PermSGSite == null))
                 {
                     this.RemoveAddress(i);
                 }

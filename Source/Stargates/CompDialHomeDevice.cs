@@ -63,6 +63,17 @@ namespace StargatesMod
                 yield break;
             }
 
+            
+            if (Props.requiresPower)
+            {
+                CompPowerTrader compPowerTrader = this.parent.TryGetComp<CompPowerTrader>();
+                if (compPowerTrader != null && !compPowerTrader.PowerOn)
+                {
+                    yield return new FloatMenuOption("CannotDialNoPower".Translate(), null);
+                    yield break;
+                }
+            }
+
             CompStargate stargate = GetLinkedStargate();
             if (stargate != null)
             {
@@ -134,5 +145,6 @@ namespace StargatesMod
             this.compClass = typeof(CompDialHomeDevice);
         }
         public bool selfDialler = false;
+        public bool requiresPower = false;
     }
 }

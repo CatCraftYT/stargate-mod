@@ -52,9 +52,9 @@
 		</graphicData>
 		<costList>
 		  <Steel>600</Steel>
-		  <ComponentIndustrial>100</ComponentIndustrial>
-		  <ComponentSpacer>50</ComponentSpacer>
-		  <Gold>300</Gold>
+		  <ComponentIndustrial>70</ComponentIndustrial>
+		  <ComponentSpacer>30</ComponentSpacer>
+		  <Gold>200</Gold>
 		</costList>
 		<statBases>
 			<MarketValue>2000</MarketValue>
@@ -96,9 +96,9 @@ This stargate in particular was made using easily available resources, but is qu
 		</costList>
 		<statBases>
 			<MarketValue>1050</MarketValue>
-			<WorkToBuild>6000</WorkToBuild>
-			<MaxHitPoints>6000</MaxHitPoints>
-			<Flammability>0</Flammability>
+			<WorkToBuild>1000</WorkToBuild>
+			<MaxHitPoints>1500</MaxHitPoints>
+			<Flammability>0.3</Flammability>
 			<Mass>100</Mass>
 		</statBases>
 		<size>(3,1)</size>
@@ -116,12 +116,17 @@ This stargate in particular was made using easily available resources, but is qu
 			</li>
 			<li Class="StargatesMod.CompProperties_DialHomeDevice">
 				<selfDialler>True</selfDialler>
+				<requiresPower>True</requiresPower>
 			</li>
 			<li Class="CompProperties_Explosive">
 				<explosiveRadius>3</explosiveRadius>
 				<explosiveDamageType>Bomb</explosiveDamageType>
 				<wickTicks>250</wickTicks>
 				<chanceNeverExplodeFromDamage>1</chanceNeverExplodeFromDamage>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>2000</basePowerConsumption>
 			</li>
 		</comps>
 		<researchPrerequisites><li>StargateMod_StargateMakingResearch</li></researchPrerequisites>
@@ -150,7 +155,7 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 		</costList>
 		<statBases>
 			<MarketValue>2500</MarketValue>
-			<WorkToBuild>2000</WorkToBuild>
+			<WorkToBuild>5000</WorkToBuild>
 			<MaxHitPoints>4000</MaxHitPoints>
 			<Flammability>0</Flammability>
 			<Mass>250</Mass>
