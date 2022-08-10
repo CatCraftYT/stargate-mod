@@ -149,12 +149,12 @@ namespace StargatesMod
         }
         #endregion
 
-        public static Thing GetStargateOnMap(Map map)
+        public static Thing GetStargateOnMap(Map map, Thing thingToIgnore = null)
         {
             Thing gateOnMap = null;
             foreach (Thing thing in map.listerThings.AllThings)
             {
-                if (thing.def.thingClass == typeof(Building_Stargate))
+                if (thing != thingToIgnore && thing.def.thingClass == typeof(Building_Stargate))
                 {
                     gateOnMap = thing;
                     break;

@@ -44,7 +44,7 @@
 		<defName>StargateMod_AdvancedStargateMakingResearch</defName>
 		<label>advanced stargate creation</label>
 		<description>By further studying the design of the original stargate, we could create a much better replica using the materials available on the planet.</description>
-		<baseCost>10000</baseCost>
+		<baseCost>4000</baseCost>
 		<techLevel>Ultra</techLevel>
 		<prerequisites>
 		  <li>StargateMod_StargateMakingResearch</li>
@@ -63,7 +63,7 @@
 		<defName>StargateMod_StargateIrisAlloyResearch</defName>
 		<label>plasteel alloys</label>
 		<description>A material with incredible strength can made by combining Plasteel, Uranium and Steel. Even though it is too atomically unstable to use as a building material, its low-friction nature could be used to make an aperture to cover a stargate.</description>
-		<baseCost>8000</baseCost>
+		<baseCost>4000</baseCost>
 		<techLevel>Industrial</techLevel>
 		<prerequisites>
 		  <li>AdvancedFabrication</li>
@@ -81,7 +81,7 @@
 		<defName>StargateMod_StargateIrisResearch</defName>
 		<label>irises</label>
 		<description>Experimentation reveals that a barrier placed microns from the event horizon of a stargate would stop almost anything from reintegrating. Using the low-friction alloy we discovered, we could make an aperture to cover the stargate and prevent people invading our base through it. Make the installation kit at a fabrication bench.</description>
-		<baseCost>4000</baseCost>
+		<baseCost>6000</baseCost>
 		<techLevel>Industrial</techLevel>
 		<prerequisites>
 		  <li>StargateMod_StargateIrisAlloyResearch</li>
