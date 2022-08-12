@@ -59,6 +59,17 @@ namespace StargatesMod
             }
         }
 
+        public IEnumerable<IntVec3> VortexCells
+        {
+            get
+            {
+                foreach (IntVec3 offset in Props.vortexPattern)
+                {
+                    yield return offset + this.parent.Position;
+                }
+            }
+        }
+
         #region DHD Controls
         public void OpenStargateDelayed(int address, int delay)
         {

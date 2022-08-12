@@ -47,8 +47,10 @@ namespace StargatesMod
             base.PostMapGenerate();
             //from https://github.com/AndroidQuazar/VanillaExpandedFramework/blob/4331195034c15a18930b85c5f5671ff890e6776a/Source/Outposts/Outpost/Outpost_Attacks.cs. I like your bodgy style, VE devs
             foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction)).ToList()) { pawn.Destroy(); }
+
             Thing gateOnMap = CompStargate.GetStargateOnMap(this.Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(this.Map);
+
             if (gateOnMap != null)
             {
                 IntVec3 gatePos = gateOnMap.Position;
