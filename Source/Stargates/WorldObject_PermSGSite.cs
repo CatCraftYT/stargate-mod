@@ -50,11 +50,7 @@ namespace StargatesMod
 
             Thing gateOnMap = CompStargate.GetStargateOnMap(this.Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(this.Map);
-<<<<<<< HEAD
             if (Prefs.LogVerbose) { Log.Message($"StargateMod: perm sg site post map gen: dhddef={dhdDef} gatedef={gateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}"); }
-=======
-
->>>>>>> 5ef2d96ef3c44d47532632f922ccac3b65c7fb59
             if (gateOnMap != null)
             {
                 IntVec3 gatePos = gateOnMap.Position;
