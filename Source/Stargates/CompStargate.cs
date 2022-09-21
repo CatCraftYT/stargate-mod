@@ -59,6 +59,15 @@ namespace StargatesMod
             }
         }
 
+        bool GateIsLoadingTransporter
+        {
+            get
+            {
+                CompTransporter transComp = this.parent.GetComp<CompTransporter>();
+                return transComp != null && (transComp.LoadingInProgressOrReadyToLaunch && transComp.AnyInGroupHasAnythingLeftToLoad);
+            }
+        }
+
         #region DHD Controls
         public void OpenStargateDelayed(int address, int delay)
         {
@@ -101,6 +110,7 @@ namespace StargatesMod
             CompGlower glowComp = this.parent.GetComp<CompGlower>();
             glowComp.Props.glowRadius = glowRadius;
             glowComp.PostSpawnSetup(false);
+            if (Prefs.LogVerbose) { Log.Message($"StargateMod: finished opening gate {this.parent}"); }
         }
 
         public void CloseStargate(bool closeOtherGate)
@@ -184,11 +194,13 @@ namespace StargatesMod
             }
             if (!connectedMap.HasMap)
             {
+                if (Prefs.LogVerbose) { Log.Message($"StargateMod: generating map for {connectedMap}"); }
                 GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap as WorldObject_PermSGSite != null ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, null);
+                if (Prefs.LogVerbose) { Log.Message($"StargateMod: finished generating map"); }
             }
             Map map = connectedMap.Map;
-
             Thing gate = GetStargateOnMap(map);
+            
             return gate;
         }
 
@@ -282,6 +294,7 @@ namespace StargatesMod
                         if (thing.Spawned) { thing.DeSpawn(); }
                         this.AddToSendBuffer(thing);
                         transComp.innerContainer.Remove(thing);
+                        transComp.SubtractFromToLoadList(thing, int.MaxValue, false);
                     }
                     else if (transComp.LoadingInProgressOrReadyToLaunch && !transComp.AnyInGroupHasAnythingLeftToLoad) { transComp.CancelLoad(); }
                 }
@@ -326,7 +339,7 @@ namespace StargatesMod
                 if (connectedAddress == -1 && !recvBuffer.Any()) { CloseStargate(false); }
                 ticksSinceBufferUnloaded++;
                 ticksSinceOpened++;
-                if (isRecievingGate && ticksSinceBufferUnloaded > 2500) { CloseStargate(true); }
+                if (isRecievingGate && ticksSinceBufferUnloaded > 2500 && !connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter) { CloseStargate(true); }
             }
         }
 
@@ -348,6 +361,7 @@ namespace StargatesMod
             {
                 transComp.innerContainer = new ThingOwner<Thing>(transComp);
             }
+            if (Prefs.LogVerbose) { Log.Message($"StargateMod: compsg postspawnssetup: sgactive={stargateIsActive} connectgate={connectedStargate} connectaddress={connectedAddress}, mapparent={this.parent.Map.Parent}"); }
         }
 
         public string GetInspectString()

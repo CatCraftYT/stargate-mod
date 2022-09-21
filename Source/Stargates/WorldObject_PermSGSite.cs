@@ -49,6 +49,7 @@ namespace StargatesMod
             foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction)).ToList()) { pawn.Destroy(); }
             Thing gateOnMap = CompStargate.GetStargateOnMap(this.Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(this.Map);
+            if (Prefs.LogVerbose) { Log.Message($"StargateMod: perm sg site post map gen: dhddef={dhdDef} gatedef={gateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}"); }
             if (gateOnMap != null)
             {
                 IntVec3 gatePos = gateOnMap.Position;
@@ -69,6 +70,7 @@ namespace StargatesMod
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(this.Map);
             dhdDef = dhdOnMap == null ? null : dhdOnMap.def;
             gateDef = gateOnMap == null ? null : gateOnMap.def;
+            if (Prefs.LogVerbose) { Log.Message($"StargateMod: perm map about to be removed: dhddef={dhdDef} gatedef={gateDef}"); }
         }
 
         public override void Notify_MyMapRemoved(Map map)
