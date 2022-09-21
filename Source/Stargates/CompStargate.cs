@@ -59,12 +59,23 @@ namespace StargatesMod
             }
         }
 
+<<<<<<< HEAD
         bool GateIsLoadingTransporter
         {
             get
             {
                 CompTransporter transComp = this.parent.GetComp<CompTransporter>();
                 return transComp != null && (transComp.LoadingInProgressOrReadyToLaunch && transComp.AnyInGroupHasAnythingLeftToLoad);
+=======
+        public IEnumerable<IntVec3> VortexCells
+        {
+            get
+            {
+                foreach (IntVec3 offset in Props.vortexPattern)
+                {
+                    yield return offset + this.parent.Position;
+                }
+>>>>>>> 5ef2d96ef3c44d47532632f922ccac3b65c7fb59
             }
         }
 
