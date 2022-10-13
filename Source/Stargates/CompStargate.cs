@@ -137,9 +137,10 @@ namespace StargatesMod
                 GenSpawn.Spawn(thing, this.parent.InteractionCell, this.parent.Map);
             }
 
-            CompStargate sgComp = connectedStargate.TryGetComp<CompStargate>();
+            CompStargate sgComp = null;
             if (closeOtherGate)
             {
+                sgComp = connectedStargate.TryGetComp<CompStargate>();
                 if (connectedStargate == null || sgComp == null) { Log.Warning($"Recieving stargate connected to stargate {this.parent.ThingID} didn't have CompStargate, but this stargate wanted it closed."); }
                 else { sgComp.CloseStargate(false); }
             }
@@ -420,6 +421,17 @@ namespace StargatesMod
                     action = delegate ()
                     {
                         this.hasIris = !this.hasIris;
+                    }
+                };
+                yield return command;
+                command = new Command_Action
+                {
+                    defaultLabel = "Force close",
+                    defaultDesc = "Force close this gate to hopefully remove strange behaviours (this will not close gate at the other end).",
+                    action = delegate ()
+                    {
+                        CloseStargate(false);
+                        Log.Message($"Stargate {this.parent.ThingID} was force-closed.");
                     }
                 };
                 yield return command;
