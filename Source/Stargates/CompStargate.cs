@@ -304,7 +304,7 @@ namespace StargatesMod
                         if (thing.Spawned) { thing.DeSpawn(); }
                         this.AddToSendBuffer(thing);
                         transComp.innerContainer.Remove(thing);
-                        transComp.SubtractFromToLoadList(thing, int.MaxValue, false);
+                        //transComp.SubtractFromToLoadList(thing, thing.stackCount, false);
                     }
                     else if (transComp.LoadingInProgressOrReadyToLaunch && !transComp.AnyInGroupHasAnythingLeftToLoad) { transComp.CancelLoad(); }
                 }

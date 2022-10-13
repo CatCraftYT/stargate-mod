@@ -26,8 +26,15 @@ namespace StargatesMod
 
         public override string GetInspectString()
         {
+            StringBuilder sb = new StringBuilder();
+
             CompStargate sgComp = this.GetComp<CompStargate>();
-            return sgComp.GetInspectString();
+            sb.AppendLine(sgComp.GetInspectString());
+
+            CompPowerTrader power = this.TryGetComp<CompPowerTrader>();
+            if (power != null) { sb.AppendLine(power.CompInspectStringExtra()); }
+            
+            return sb.ToString().TrimEndNewlines();
         }
     }
 }

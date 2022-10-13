@@ -79,7 +79,7 @@
 		<defName>StargateMod_OrlinStargate</defName>
 		<label>makeshift stargate</label>
 		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
-This stargate in particular was made using easily available resources, but is quite unstable and unreliable. It is both too weak and too small to have an iris. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...
+This stargate in particular was made using easily available resources, but is quite unstable and unreliable, and also requires an external power source. It is both too weak and too small to have an iris. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...
 \n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
