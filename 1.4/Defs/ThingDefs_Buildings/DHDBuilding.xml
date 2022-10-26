@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+	<ThingDef Name="StargateMod_DHDBase" ParentName="BuildingBase" Abstract="True">
+		<thingClass>Building</thingClass>
+		<rotatable>false</rotatable>
+		<minifiedDef>MinifiedThing</minifiedDef>
+		<stealable>false</stealable>
+		<passability>Impassable</passability>
+		<constructEffect>ConstructMetal</constructEffect>
+		<uiIconScale>0.65</uiIconScale>
+		<fillPercent>0.40</fillPercent>
+		<canOverlapZones>true</canOverlapZones>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<thingCategories>
+			<li>BuildingsSpecial</li>
+		</thingCategories>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<tickerType>Never</tickerType>
+		<hasInteractionCell>True</hasInteractionCell>
+		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
+		<building>
+			<ai_neverTrashThis>true</ai_neverTrashThis>
+		</building>
+		<placeWorkers>
+			<li>PlaceWorker_ShowFacilitiesConnections</li>
+			<li>PlaceWorker_PreventInteractionSpotOverlap</li>
+		</placeWorkers>
+		<comps>
+			<li Class="CompProperties_Facility" />
+			<li Class="StargatesMod.CompProperties_DialHomeDevice" />
+		</comps>
+	</ThingDef>
+
+	<ThingDef ParentName="StargateMod_DHDBase">
+		<defName>StargateMod_DialHomeDevice</defName>
+		<label>dial home device</label>
+		<description>An ancient device used to control a stargate.\n\n"Kind of a ring thing, comes with a dialer, you hit the symbols, it spins around and lights come on, it kind of flushes sideways..."</description>
+		<graphicData>
+			<texPath>Things/Building/Stargate/dhd</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(2,2)</drawSize>
+		</graphicData>
+		<costList>
+			<Steel>300</Steel>
+			<ComponentIndustrial>60</ComponentIndustrial>
+			<ComponentSpacer>25</ComponentSpacer>
+			<Gold>100</Gold>
+		</costList>
+		<statBases>
+			<MaxHitPoints>6000</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Mass>60</Mass>
+		</statBases>
+		<size>(1,1)</size>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+	</ThingDef>
+
+</Defs>

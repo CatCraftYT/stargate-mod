@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <PawnsArrivalModeDef>
+    <defName>StargateMod_StargateEnterMode</defName>
+    <workerClass>StargatesMod.PawnsArrivalModeWorker_Stargate</workerClass>
+    <selectionWeightCurve>
+      <points>
+        <li>(200, 0.0)</li>
+        <li>(800, 3.0)</li>
+      </points>
+    </selectionWeightCurve>
+    <pointsFactorCurve>
+      <points>
+        <li>0, 0.5</li>
+        <li>5000, 0.3</li>
+      </points>
+    </pointsFactorCurve>
+    <textEnemy>A group of {0} from {1} are coming through your stargate!</textEnemy>
+    <textFriendly>A group of friendly {0} from {1} are coming through your stargate!</textFriendly>
+    <textWillArrive>{0_pawnsPluralDef} will come through your stargate.</textWillArrive>
+  </PawnsArrivalModeDef>
+  
+</Defs>
