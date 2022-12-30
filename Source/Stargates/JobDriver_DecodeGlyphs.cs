@@ -38,7 +38,15 @@ namespace StargatesMod
             yield return new Toil { initAction = () =>
             {
                 GenerateStargateQuest();
-                this.job.GetTarget(glyphScrapItem).Thing.Destroy();
+                
+                Thing glyphThing = this.job.GetTarget(glyphScrapItem).Thing;
+                if ( glyphThing.stackCount > 1)
+                {
+                    glyphThing.stackCount -= 1;
+                } else
+                {
+                    glyphThing.Destroy();
+                }
             } };
         }
     }
