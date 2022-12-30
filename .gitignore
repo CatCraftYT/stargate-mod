@@ -1,1 +1,7 @@
 .vs
+.sln
+.csproj
+.user
+Source/Stargates/bin
+Source/Stargates/obj
+Source/Stargates/Properties
