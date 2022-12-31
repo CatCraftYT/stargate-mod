@@ -34,113 +34,36 @@
 	
 	<!--==================== Iris Stuff ====================-->
 	<ThingDef ParentName="ResourceBase">
-	<defName>StargateMod_IrisInstallKit</defName>
-	<label>iris installation kit</label>
-	<description>A kit containing all of the pre-assembled materials needed to install an iris on a stargate.\n\n"We have in place an impenetrable shield called an iris."</description>
-	<thingClass>ThingWithComps</thingClass>
-	<graphicData>
-		<texPath>Things/Items/Stargate/iris_upgrade_kit</texPath>
-		<graphicClass>Graphic_Single</graphicClass>
-	</graphicData>
-	<stackLimit>1</stackLimit>
-	<useHitPoints>true</useHitPoints>
-	<statBases>
-		<MaxHitPoints>100</MaxHitPoints>
-		<Mass>80</Mass>
-		<Flammability>0</Flammability>
-	</statBases>
-	<techLevel>Ultra</techLevel>
-	<thingCategories>
-		<li>Items</li>
-	</thingCategories>
-	<tradeability>None</tradeability>
-	<comps>
-		<li Class="CompProperties_Usable">
-			<useJob>StargateMod_InstallIris</useJob>
-			<useLabel>Install iris</useLabel>
-			<useDuration>5000</useDuration>
-		</li>
-		
-		<li Class="CompProperties_Targetable">
-			<compClass>StargatesMod.CompTargetable_Stargate</compClass>
-		</li>
-	</comps>
-	</ThingDef>
-	
-	<RecipeDef>
-		<defName>StargateMod_MakeIrisInstallKit</defName>
-		<label>make iris installation kit</label>
-		<description>Make an iris installation kit.</description>
-		<jobString>Making iris installation kit.</jobString>
-		<workSpeedStat>GeneralLaborSpeed</workSpeedStat>
-		<effectWorking>Smelt</effectWorking>
-		<soundWorking>Recipe_Machining</soundWorking>
-		<workAmount>10000</workAmount>
-		<unfinishedThingDef>StargateMod_UnfinishedIrisInstallKit</unfinishedThingDef>
-		<ingredients>
-			<li>
-				<filter>
-					<thingDefs>
-						<li>ComponentIndustrial</li>
-					</thingDefs>
-				</filter>
-				<count>10</count>
-			</li>
-			<li>
-				<filter>
-					<thingDefs>
-						<li>Steel</li>
-					</thingDefs>
-				</filter>
-				<count>500</count>
-			</li>
-			<li>
-				<filter>
-					<thingDefs>
-						<li>Uranium</li>
-					</thingDefs>
-				</filter>
-				<count>350</count>
-			</li>
-			<li>
-				<filter>
-					<thingDefs>
-						<li>Plasteel</li>
-					</thingDefs>
-				</filter>
-				<count>200</count>
-			</li>
-		</ingredients>
-		<fixedIngredientFilter>
-			<thingDefs>
-				<li>ComponentIndustrial</li>
-				<li>Steel</li>
-				<li>Uranium</li>
-				<li>Plasteel</li>
-			</thingDefs>
-		</fixedIngredientFilter>
-		<products>
-			<StargateMod_IrisInstallKit>1</StargateMod_IrisInstallKit>
-		</products>
-		<researchPrerequisite>StargateMod_StargateIrisResearch</researchPrerequisite>
-		<skillRequirements>
-			<Crafting>10</Crafting>
-		</skillRequirements>
-		<workSkill>Crafting</workSkill>
-	</RecipeDef>
-	
-	<ThingDef ParentName="UnfinishedBase">
-		<defName>StargateMod_UnfinishedIrisInstallKit</defName>
-		<label>unfinished iris installation kit</label>
-		<description>An unfinished iris installation kit.</description>
-		<statBases>
-			<Flammability>0</Flammability>
-		</statBases>
+		<defName>StargateMod_IrisInstallKit</defName>
+		<label>iris installation kit</label>
+		<description>A kit containing all of the pre-assembled materials needed to install an iris on a stargate.\n\n"We have in place an impenetrable shield called an iris."</description>
+		<thingClass>ThingWithComps</thingClass>
 		<graphicData>
-			<texPath>Things/Item/Unfinished/UnfinishedComponent</texPath>
+			<texPath>Things/Items/Stargate/iris_upgrade_kit</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
-		<stuffCategories Inherit="false" />
+		<stackLimit>1</stackLimit>
+		<useHitPoints>true</useHitPoints>
+		<statBases>
+			<MaxHitPoints>100</MaxHitPoints>
+			<Mass>80</Mass>
+			<Flammability>0</Flammability>
+		</statBases>
+		<techLevel>Ultra</techLevel>
+		<thingCategories>
+			<li>Items</li>
+		</thingCategories>
+		<tradeability>None</tradeability>
+		<comps>
+			<li Class="CompProperties_Usable">
+				<useJob>StargateMod_InstallIris</useJob>
+				<useLabel>Install iris</useLabel>
+				<useDuration>5000</useDuration>
+			</li>
+		
+			<li Class="CompProperties_Targetable">
+				<compClass>StargatesMod.CompTargetable_Stargate</compClass>
+			</li>
+		</comps>
 	</ThingDef>
-
 </Defs>
