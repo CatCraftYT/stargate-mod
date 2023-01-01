@@ -9,7 +9,7 @@
 		<effectWorking>Smelt</effectWorking>
 		<soundWorking>Recipe_Machining</soundWorking>
 		<workAmount>15000</workAmount>
-		<unfinishedThingDef>StargateMod_UnfinishedIrisInstallKit</unfinishedThingDef>
+		<unfinishedThingDef>StargateMod_UnfinishedAdvancedStargate</unfinishedThingDef>
 		<ingredients>
 			<li>
 				<filter>

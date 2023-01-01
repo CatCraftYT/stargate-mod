@@ -142,6 +142,7 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(4.9,4.9)</drawSize>
+			<drawOffset>(0,0,1.1)</drawOffset>
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>
