@@ -96,7 +96,7 @@ This stargate in particular was made using easily available resources, but is qu
 		</costList>
 		<statBases>
 			<MarketValue>1050</MarketValue>
-			<WorkToBuild>1000</WorkToBuild>
+			<WorkToBuild>10000</WorkToBuild>
 			<MaxHitPoints>1500</MaxHitPoints>
 			<Flammability>0.3</Flammability>
 			<Mass>100</Mass>
@@ -155,7 +155,7 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 		</costList>
 		<statBases>
 			<MarketValue>2500</MarketValue>
-			<WorkToBuild>5000</WorkToBuild>
+			<WorkToBuild>15000</WorkToBuild>
 			<MaxHitPoints>4000</MaxHitPoints>
 			<Flammability>0</Flammability>
 			<Mass>250</Mass>
@@ -171,7 +171,8 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 				<selfDialler>True</selfDialler>
 			</li>
 		</comps>
-		<researchPrerequisites><li>StargateMod_AdvancedStargateMakingResearch</li></researchPrerequisites>
+		<researchPrerequisites>
+			<li>StargateMod_AdvancedStargateMakingResearch</li>
+		</researchPrerequisites>
 	</ThingDef>
-
 </Defs>

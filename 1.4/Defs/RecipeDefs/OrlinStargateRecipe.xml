@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<RecipeDef>
+		<defName>StargateMod_MakeOrlinStargate</defName>
+		<label>make a makeshift stargate</label>
+		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet. This stargate in particular was made using easily available resources, but is quite unstable and unreliable, and also requires an external power source. It is both too weak and too small to have an iris. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...\n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
+		<jobString>Making makeshift stargate.</jobString>
+		<workAmount>10000</workAmount>
+		<unfinishedThingDef>StargateMod_UnfinishedOrlinStargate</unfinishedThingDef>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>120</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>ComponentIndustrial</li>
+					</thingDefs>
+				</filter>
+				<count>8</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>ComponentSpacer</li>
+					</thingDefs>
+				</filter>
+				<count>1</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Gold</li>
+					</thingDefs>
+				</filter>
+				<count>3</count>
+			</li>
+		</ingredients>
+		<products>
+			<StargateMod_OrlinStargate>1</StargateMod_OrlinStargate>
+		</products>
+		<researchPrerequisite>StargateMod_StargateMakingResearch</researchPrerequisite>
+	</RecipeDef>
+
+	<ThingDef ParentName="UnfinishedBase">
+		<defName>StargateMod_UnfinishedOrlinStargate</defName>
+		<label>unfinished makeshiftstargate</label>
+		<description>An unfinished makeshift stargate.</description>
+		<statBases>
+			<Flammability>0</Flammability>
+		</statBases>
+		<graphicData>
+			<texPath>Things/Item/Unfinished/UnfinishedComponent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<stuffCategories Inherit="false" />
+	</ThingDef>
+</Defs>

@@ -4,6 +4,8 @@
 	<Operation Class="PatchOperationAdd">
 		<xpath>Defs/ThingDef[defName="FabricationBench"]/recipes</xpath>
 		<value>
+			<li>StargateMod_MakeOrlinStargate</li>
+			<li>StargateMod_MakeAdvancedStargate</li>
 			<li>StargateMod_MakeIrisInstallKit</li>
 		</value>
 	</Operation>
