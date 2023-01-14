@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<RecipeDef ParentName="StargateMod_RecipeBase">
+		<defName>StargateMod_MakeAdvancedDHD</defName>
+		<label>make an advanced dhd</label>
+		<description>A device used to control any stargate.</description>
+		<jobString>Making advanced stargate.</jobString>
+		<workAmount>15000</workAmount>
+		<unfinishedThingDef>StargateMod_UnfinishedAdvancedDHD</unfinishedThingDef>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>300</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>ComponentIndustrial</li>
+					</thingDefs>
+				</filter>
+				<count>60</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>ComponentSpacer</li>
+					</thingDefs>
+				</filter>
+				<count>25</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Gold</li>
+					</thingDefs>
+				</filter>
+				<count>100</count>
+			</li>
+		</ingredients>
+		<products>
+			<StargateMod_AdvancedDialHomeDevice>1</StargateMod_AdvancedDialHomeDevice>
+		</products>
+		<researchPrerequisite>StargateMod_AdvancedStargateMakingResearch</researchPrerequisite>
+	</RecipeDef>
+
+	<ThingDef ParentName="UnfinishedBase">
+		<defName>StargateMod_UnfinishedAdvancedDHD</defName>
+		<label>unfinished advanced dhd</label>
+		<description>An unfinished advanced dhd.</description>
+		<statBases>
+			<Flammability>0</Flammability>
+		</statBases>
+		<graphicData>
+			<texPath>Things/Item/Unfinished/UnfinishedComponent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<stuffCategories Inherit="false" />
+	</ThingDef>
+</Defs>
