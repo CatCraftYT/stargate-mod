@@ -23,20 +23,6 @@ namespace StargatesMod
             return compFacility.LinkedBuildings[0].TryGetComp<CompStargate>();
         }
 
-        public static Thing GetDHDOnMap(Map map)
-        {
-            Thing dhdOnMap = null;
-            foreach (Thing thing in map.listerThings.AllThings)
-            {
-                if (thing.TryGetComp<CompDialHomeDevice>() != null && thing.def.thingClass != typeof(Building_Stargate))
-                {
-                    dhdOnMap = thing;
-                    break;
-                }
-            }
-            return dhdOnMap;
-        }
-
         private bool isConnectedToStargate
         {
             get
@@ -77,7 +63,7 @@ namespace StargatesMod
             CompStargate stargate = GetLinkedStargate();
             if (stargate != null)
             {
-                if (stargate.stargateIsActive)
+                if (stargate.IsActive)
                 {
                     yield return new FloatMenuOption("CannotDialGateIsActive".Translate(), null);
                     yield break;
@@ -100,7 +86,7 @@ namespace StargatesMod
                     if (i != stargate.gateAddress)
                     {
                         MapParent sgMap = Find.WorldObjects.MapParentAt(i);
-                        yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(i), sgMap.Label), () =>
+                        yield return new FloatMenuOption("DialGate".Translate(SGUtils.GetStargateDesignation(i), sgMap.Label), () =>
                         {
                             lastDialledAddress = i;
                             Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
@@ -130,9 +116,9 @@ namespace StargatesMod
                 };
                 command.action = delegate ()
                 {
-                    stargate.CloseStargate(true);
+                    if (!stargate.TryCloseConnection()) { Messages.Message("GateCloseFail".Translate().Resolve(), MessageTypeDefOf.RejectInput); };
                 };
-                if (!stargate.stargateIsActive) { command.Disable("GateIsNotActive".Translate()); }
+                if (!stargate.IsActive) { command.Disable("GateIsNotActive".Translate()); }
                 else if (stargate.isRecievingGate) { command.Disable("CannotCloseIncoming".Translate()); }
                 yield return command;
             }

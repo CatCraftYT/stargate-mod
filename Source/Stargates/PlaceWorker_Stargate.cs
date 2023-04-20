@@ -32,7 +32,7 @@ namespace StargatesMod
 
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
 		{
-			if (CompStargate.GetStargateOnMap(map, thing) != null)
+			if (SGUtils.GetStargateOnMap(map, thing) != null)
             {
 				return new AcceptanceReport("OnlyOneSGPerMap".Translate());
 			}

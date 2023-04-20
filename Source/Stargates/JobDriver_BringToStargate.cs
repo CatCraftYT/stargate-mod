@@ -27,7 +27,7 @@ namespace StargatesMod
 
             this.FailOnDestroyedOrNull(targetStargate);
             this.FailOnDestroyedNullOrForbidden(thingToHaul);
-            this.FailOn(() => !this.job.GetTarget(targetStargate).Thing.TryGetComp<CompStargate>().stargateIsActive);
+            this.FailOn(() => !this.job.GetTarget(targetStargate).Thing.TryGetComp<CompStargate>().IsActive);
             if (thing as Pawn != null) { this.FailOnMobile(thingToHaul); }
 
             yield return Toils_Goto.GotoCell(thingToHaul, PathEndMode.Touch);

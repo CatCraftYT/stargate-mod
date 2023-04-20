@@ -68,6 +68,7 @@
     <Compile Include="QuestNode_RemoveFromStargateAddresses.cs" />
     <Compile Include="SGSoundDefOf.cs" />
     <Compile Include="SitePartWorker_Stargate.cs" />
+    <Compile Include="StargateUtilities.cs" />
     <Compile Include="WorldComp_StargateAddresses.cs" />
     <Compile Include="CompDialHomeDevice.cs" />
     <Compile Include="JobDriver_EnterStargate.cs" />

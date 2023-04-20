@@ -10,7 +10,7 @@ using RimWorld.Planet;
 
 namespace StargatesMod
 {
-    public class WorldObject_PermSGSite : MapParent
+    public class WorldObject_PermSGSite : MapParent, IStargate
     {
         public string siteName;
         public ThingDef gateDef;
@@ -27,7 +27,7 @@ namespace StargatesMod
 
         public override string GetInspectString()
         {
-            return "GateAddress".Translate(CompStargate.GetStargateDesignation(this.Tile));
+            return "GateAddress".Translate(SGUtils.GetStargateDesignation(this.Tile));
         }
 
         public override void SpawnSetup()
@@ -48,8 +48,8 @@ namespace StargatesMod
             //from https://github.com/AndroidQuazar/VanillaExpandedFramework/blob/4331195034c15a18930b85c5f5671ff890e6776a/Source/Outposts/Outpost/Outpost_Attacks.cs. I like your bodgy style, VE devs
             foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction)).ToList()) { pawn.Destroy(); }
 
-            Thing gateOnMap = CompStargate.GetStargateOnMap(this.Map);
-            Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(this.Map);
+            Thing gateOnMap = SGUtils.GetStargateOnMap(this.Map);
+            Thing dhdOnMap = SGUtils.GetDHDOnMap(this.Map);
             if (Prefs.LogVerbose) { Log.Message($"StargateMod: perm sg site post map gen: dhddef={dhdDef} gatedef={gateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}"); }
             if (gateOnMap != null)
             {
@@ -67,8 +67,8 @@ namespace StargatesMod
 
         public override void Notify_MyMapAboutToBeRemoved()
         {
-            Thing gateOnMap = CompStargate.GetStargateOnMap(this.Map);
-            Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(this.Map);
+            Thing gateOnMap = SGUtils.GetStargateOnMap(this.Map);
+            Thing dhdOnMap = SGUtils.GetDHDOnMap(this.Map);
             dhdDef = dhdOnMap == null ? null : dhdOnMap.def;
             gateDef = gateOnMap == null ? null : gateOnMap.def;
             if (Prefs.LogVerbose) { Log.Message($"StargateMod: perm map about to be removed: dhddef={dhdDef} gatedef={gateDef}"); }

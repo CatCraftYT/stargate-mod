@@ -21,7 +21,7 @@ namespace StargatesMod
         {
             CompDialHomeDevice dhdComp = this.job.GetTarget(targetDHD).Thing.TryGetComp<CompDialHomeDevice>();
             this.FailOnDestroyedOrNull(targetDHD);
-            this.FailOn(() => dhdComp.GetLinkedStargate().stargateIsActive);
+            this.FailOn(() => dhdComp.GetLinkedStargate().IsActive);
 
             yield return Toils_Goto.GotoCell(job.GetTarget(targetDHD).Thing.InteractionCell, PathEndMode.OnCell);
             yield return new Toil

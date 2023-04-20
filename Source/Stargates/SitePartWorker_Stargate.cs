@@ -14,7 +14,7 @@ namespace StargatesMod
 		public override string GetPostProcessedThreatLabel(Site site, SitePart sitePart)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.Append("GateAddress".Translate(CompStargate.GetStargateDesignation(site.Tile)));
+			sb.Append("GateAddress".Translate(SGUtils.GetStargateDesignation(site.Tile)));
 			return sb.ToString();
 		}
 
@@ -22,7 +22,7 @@ namespace StargatesMod
         {
             base.PostMapGenerate(map);
             if (map == null) { Log.Error("SitePartWorker map was null on PostMapGenerate. That makes no sense."); return; }
-            Thing gateOnMap = CompStargate.GetStargateOnMap(map);
+            Thing gateOnMap = SGUtils.GetStargateOnMap(map);
             var VortexCells = gateOnMap.TryGetComp<CompStargate>().VortexCells;
 
             //move pawns away from vortex

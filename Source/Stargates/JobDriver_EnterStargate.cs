@@ -20,7 +20,7 @@ namespace StargatesMod
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOnDestroyedOrNull(stargateToEnter);
-            this.FailOn(() => !this.job.GetTarget(stargateToEnter).Thing.TryGetComp<CompStargate>().stargateIsActive);
+            this.FailOn(() => !this.job.GetTarget(stargateToEnter).Thing.TryGetComp<CompStargate>().IsActive);
 
             yield return Toils_Goto.GotoCell(this.job.GetTarget(stargateToEnter).Thing.InteractionCell, PathEndMode.OnCell);
             yield return new Toil

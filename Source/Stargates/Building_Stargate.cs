@@ -17,7 +17,7 @@ namespace StargatesMod
             {
                 if (gizmo is Command_LoadToTransporter)
                 {
-                    if (sgComp.stargateIsActive) { yield return gizmo; }
+                    if (sgComp.IsActive) { yield return gizmo; }
                     continue;
                 }
                 yield return gizmo;
