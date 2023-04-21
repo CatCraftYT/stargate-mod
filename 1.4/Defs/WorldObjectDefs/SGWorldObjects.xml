@@ -12,19 +12,6 @@
 	<expandingIconTexture>World/WorldObjects/Expanding/sgsite_perm</expandingIconTexture>
 	<expandingIconPriority>30</expandingIconPriority>
 	<expandMore>true</expandMore>
-	<comps>
-      <li Class="WorldObjectCompProperties_FormCaravan" />
-    </comps>
-	<modExtensions>
-	  <li Class="KCSG.CustomGenOption">
-		<chooseFromlayouts>
-		  <li>StargateMod_Structure_BarrenGate</li>
-		</chooseFromlayouts>
-		<fullClear>true</fullClear>
-		<tryFindFreeArea>true</tryFindFreeArea>
-		<preventBridgeable>true</preventBridgeable>
-	  </li>
-	</modExtensions>
   </WorldObjectDef>
 
 </Defs>

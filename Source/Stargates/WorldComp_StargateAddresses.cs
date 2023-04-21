@@ -31,11 +31,13 @@ namespace StargatesMod
         {
             foreach (int i in new List<int>(this.addressList))
             {
-                MapParent sgMap = Find.WorldObjects.MapParentAt(i);
-                Site site = sgMap as Site;
+                WorldObject sgObject = Find.WorldObjects.WorldObjectAt<WorldObject>(i);
+                Site site = sgObject as Site;
 
-                if (sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && sgMap as WorldObject_PermSGSite == null))
+                // if the object doesn't exist entirely, or it's not a gate site and there's no other gate there
+                if (sgObject == null || SGUtils.AddressHasGate(i))
                 {
+                    if (Prefs.LogVerbose) { Log.Message($"StargateMod: cleaned up gate address {i}"); }
                     this.RemoveAddress(i);
                 }
             }

@@ -11,14 +11,16 @@ namespace StargatesMod
 {
     public class CaravanArrivalAction_PermSGSite : CaravanArrivalAction
     {
-		MapParent arrivalSite;
+		WorldObject arrivalSite;
+		int plannedAddress;
 
-        public override string Label => "ApproachSite".Translate(arrivalSite.Label);
+        public override string Label => "EnterStargateAction".Translate();
         public override string ReportString => "ApproachingSite".Translate(arrivalSite.Label);
 
-		public CaravanArrivalAction_PermSGSite(MapParent site)
+		public CaravanArrivalAction_PermSGSite(WorldObject site, int plannedAddress)
         {
 			arrivalSite = site;
+			this.plannedAddress = plannedAddress;
         }
 
 		public override FloatMenuAcceptanceReport StillValid(Caravan caravan, int destinationTile)
@@ -30,12 +32,12 @@ namespace StargatesMod
         public override void Arrived(Caravan caravan)
 		{
 			Find.LetterStack.ReceiveLetter("LetterLabelCaravanEnteredMap".Translate(arrivalSite), "LetterCaravanEnteredMap".Translate(caravan.Label, arrivalSite).CapitalizeFirst(), LetterDefOf.NeutralEvent, caravan.PawnsListForReading);
-			LongEventHandler.QueueLongEvent(() =>
-			{
-				Map map = null;
-				map = GetOrGenerateMapUtility.GetOrGenerateMap(arrivalSite.Tile, new IntVec3(75, 1, 75), arrivalSite.def);
-				CaravanEnterMapUtility.Enter(caravan, arrivalSite.Map, CaravanEnterMode.Center);
-			}, "GeneratingMapForNewEncounter", false, null);
+			IStargate gate = arrivalSite as WorldObject_PermSGSite;
+			gate.OpenStargate(plannedAddress, false);
+			foreach (Thing thing in caravan.pawns) {
+				gate.AddToSendBuffer(thing);
+			}
+			if (!caravan.Destroyed) { caravan.Destroy(); }
 		}
 
         public override void ExposeData()

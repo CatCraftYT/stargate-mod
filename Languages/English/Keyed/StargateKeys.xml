@@ -5,10 +5,11 @@
 	<Outgoing>outgoing</Outgoing>
 	<IrisClosed>CLOSED</IrisClosed>
 	<IrisOpen>OPEN</IrisOpen>
+    <GoToGate>Go to {0} ({1})</GoToGate>
 	
 	<OnlyOneSGPerMap>Only one of this kind of building can be built per map.</OnlyOneSGPerMap>
 	<GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
-    <GateCloseFail>Failed to close stargate.</GateCloseFail>
+	<GateCloseFail>Failed to close stargate.</GateCloseFail>
 	<GateIsNotActive>Stargate is not active.</GateIsNotActive>
 	<CannotCloseIncoming>Cannot disengage an incoming wormhole.</CannotCloseIncoming>
 	<CannotDialGateIsActive>Cannot dial: stargate is already active</CannotDialGateIsActive>
@@ -38,5 +39,5 @@
 	<DialGate>Dial {0} ({1})</DialGate>
 	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
 	<CannotDecodeSGSymbols>Decode symbols (glyph deciphering not researched)</CannotDecodeSGSymbols>
-	
+
 </LanguageData>

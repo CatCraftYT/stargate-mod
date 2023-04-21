@@ -10,11 +10,89 @@ using RimWorld.Planet;
 
 namespace StargatesMod
 {
-    public class WorldObject_PermSGSite : MapParent, IStargate
+    public class WorldObject_PermSGSite : WorldObject, IStargate
     {
         public string siteName;
         public ThingDef gateDef;
         public ThingDef dhdDef;
+        bool stargateIsActive;
+        int dialledAddress;
+
+        List<Thing> sendBuffer = new List<Thing>();
+        List<Thing> recvBuffer = new List<Thing>();
+
+        #region IStargate implementations
+        public bool IsActive
+        {
+            get => this.stargateIsActive;
+            set => this.stargateIsActive = value;
+        }
+
+        public void AddToRecieveBuffer(Thing thing)
+        {
+            sendBuffer.Add(thing);
+        }
+
+        public void AddToSendBuffer(Thing thing)
+        {
+            recvBuffer.Add(thing);
+        }
+
+        public void OpenStargate(int address, bool isRecieving)
+        {
+            if (sendBuffer.Any() || recvBuffer.Any()) {
+                Log.Warning($"A world stargate ({this.Tile}) was opened, but there are still pawns inside the buffers. This shouldn't have happened. Clearing buffers.");
+                sendBuffer.Clear();
+                recvBuffer.Clear();
+            }
+
+            dialledAddress = address;
+            stargateIsActive = true;
+
+            // if we're recieving, then just wait for the gate to be closed
+            if (isRecieving) { return; }
+
+            if (SGUtils.GetStargate(address).TryRecieveConnection(this.Tile))
+            {
+                Log.Error($"Stargate at {address} refused to recieve connection from world stargate {this.Tile}.");
+            };
+        }
+
+        public void CloseStargate()
+        {
+            this.stargateIsActive = false;
+            List<Thing> things = recvBuffer.Concat(sendBuffer).ToList();
+            IEnumerable<Pawn> pawns = things.Where((Thing thing) => thing as Pawn != null).Select((Thing thing) => thing as Pawn);
+
+            // things would be destroyed since there are no pawns to carry them, so destroy them now
+            if (pawns.Count() == 0)
+            {
+                foreach (Thing thing in things) { thing.Destroy(); }
+            }
+            else
+            {
+                Caravan caravan = CaravanMaker.MakeCaravan(pawns, Faction.OfPlayer, this.Tile, true);
+                foreach (Thing thing in things.Where((Thing thing) => thing as Pawn == null))
+                {
+                    CaravanInventoryUtility.GiveThing(caravan, thing);
+                }
+            }
+        }
+
+        public bool TryCloseConnection()
+        {
+            if (!stargateIsActive) { return false; }
+            CloseStargate();
+            return true;
+        }
+
+        public bool TryRecieveConnection(int address)
+        {
+            if (stargateIsActive) { return false; }
+            OpenStargate(address, true);
+            return true;
+        }
+        #endregion
 
         public override string Label
         {
@@ -34,50 +112,6 @@ namespace StargatesMod
         {
             base.SpawnSetup();
             Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(this.Tile);
-        }
-
-        public override bool ShouldRemoveMapNow(out bool alsoRemoveWorldObject)
-        {
-            alsoRemoveWorldObject = false;
-            return !Map.mapPawns.AnyPawnBlockingMapRemoval;
-        }
-
-        public override void PostMapGenerate()
-        {
-            base.PostMapGenerate();
-            //from https://github.com/AndroidQuazar/VanillaExpandedFramework/blob/4331195034c15a18930b85c5f5671ff890e6776a/Source/Outposts/Outpost/Outpost_Attacks.cs. I like your bodgy style, VE devs
-            foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction)).ToList()) { pawn.Destroy(); }
-
-            Thing gateOnMap = SGUtils.GetStargateOnMap(this.Map);
-            Thing dhdOnMap = SGUtils.GetDHDOnMap(this.Map);
-            if (Prefs.LogVerbose) { Log.Message($"StargateMod: perm sg site post map gen: dhddef={dhdDef} gatedef={gateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}"); }
-            if (gateOnMap != null)
-            {
-                IntVec3 gatePos = gateOnMap.Position;
-                gateOnMap.Destroy();
-                if (gateDef != null) { GenSpawn.Spawn(gateDef, gatePos, this.Map); }
-            }
-            if (dhdOnMap != null)
-            {
-                IntVec3 dhdPos = dhdOnMap.Position;
-                dhdOnMap.Destroy();
-                if (dhdDef != null) { GenSpawn.Spawn(dhdDef, dhdPos, this.Map); }
-            }
-        }
-
-        public override void Notify_MyMapAboutToBeRemoved()
-        {
-            Thing gateOnMap = SGUtils.GetStargateOnMap(this.Map);
-            Thing dhdOnMap = SGUtils.GetDHDOnMap(this.Map);
-            dhdDef = dhdOnMap == null ? null : dhdOnMap.def;
-            gateDef = gateOnMap == null ? null : gateOnMap.def;
-            if (Prefs.LogVerbose) { Log.Message($"StargateMod: perm map about to be removed: dhddef={dhdDef} gatedef={gateDef}"); }
-        }
-
-        public override void Notify_MyMapRemoved(Map map)
-        {
-            base.Notify_MyMapRemoved(map);
-            if (gateDef == null && dhdDef == null) { this.Destroy(); }
         }
 
         public override void Destroy()
@@ -103,7 +137,27 @@ namespace StargatesMod
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
         {
-            return CaravanArrivalActionUtility.GetFloatMenuOptions(() => { return true; }, () => { return new CaravanArrivalAction_PermSGSite(this); }, $"Approach {this.Label}", caravan, this.Tile, this);
+            if (this.IsActive)
+            {
+                yield return new FloatMenuOption("CannotDialGateIsActive".Translate(), null);
+                yield break;
+            }
+            WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
+            addressComp.CleanupAddresses();
+            if (addressComp.addressList.Count < 2)
+            {
+                yield return new FloatMenuOption("CannotDialNoDestinations".Translate(), null);
+                yield break;
+            }
+
+            foreach (int i in addressComp.addressList)
+            {
+                if (i != this.Tile)
+                {
+                    WorldObject sgObject = Find.WorldObjects.MapParentAt(i);
+                    yield return CaravanArrivalActionUtility.GetFloatMenuOptions(() => { return true; }, () => { return new CaravanArrivalAction_PermSGSite(this, i); }, "GoToGate".Translate(SGUtils.GetStargateDesignation(i), sgObject.Label), caravan, this.Tile, this).First();
+                }
+            }
         }
 
         public override void ExposeData()

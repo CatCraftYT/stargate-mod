@@ -94,10 +94,10 @@ namespace StargatesMod
             if (stargateIsActive || ticksUntilOpen != -1) { return false; }
             OpenStargate(address, true);
 
-            connectedStargate = GetDialledStargate(connectedAddress);
+            connectedStargate = SGUtils.GetStargate(connectedAddress);
             isRecievingGate = true;
             connectedAddress = address;
-            connectedStargate = GetDialledStargate(address);
+            connectedStargate = SGUtils.GetStargate(address);
             puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(this.parent));
             SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(this.parent));
 
@@ -113,7 +113,7 @@ namespace StargatesMod
             if (!stargateIsActive || ticksUntilOpen != -1) { Log.Warning($"Stargate {this.parent.ThingID} tried to close connection, but it had none.");  return false; }
 
             if (connectedStargate == null) { Log.Warning($"Recieving stargate connected to stargate {this.parent.ThingID} didn't have something with IStargate, but this stargate wanted it closed."); return false; }
-            else if (connectedStargate.IsActive) { Log.Warning($"Stargate {this.parent.ThingID} tried to close connection, but the other stargate wasn't active."); return false; }
+            if (connectedStargate.IsActive) { Log.Warning($"Stargate {this.parent.ThingID} tried to close connection, but the other stargate wasn't active."); return false; }
 
             connectedStargate.CloseStargate();
             CloseStargate();
@@ -122,20 +122,25 @@ namespace StargatesMod
 
         public void OpenStargate(int address, bool isRecieving)
         {
-            IStargate gate = GetDialledStargate(address);
+            IStargate gate = SGUtils.GetStargate(address);
             if (address > -1 && (gate == null || gate.IsActive))
             {
                 Messages.Message("GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
                 SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(this.parent));
                 return;
             }
+
+            if (!isRecieving && connectedAddress != -1 && !connectedStargate.TryRecieveConnection(gateAddress)) {
+                Messages.Message("GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
+                SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(this.parent));
+                Log.Error($"Stargate at {address} refused to recieve connection from stargate {this.parent.ThingID}.");
+                return;
+            }
+
             stargateIsActive = true;
             connectedAddress = address;
-
-            if (connectedAddress != -1)
-            {
-                connectedStargate.TryRecieveConnection(gateAddress);
-            }
+            isRecievingGate = isRecieving;
+            connectedStargate = gate;
 
             puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(this.parent));
             SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(this.parent));
@@ -184,28 +189,6 @@ namespace StargatesMod
         }
         #endregion
 
-        // TODO: Make this function work with permanent sites now that they don't use maps.
-        private IStargate GetDialledStargate(int address)
-        {
-            if (address < 0) { return null; }
-            MapParent connectedMap = Find.WorldObjects.MapParentAt(address);
-            if (connectedMap == null)
-            {
-                Log.Error($"Tried to get a paired stargate at address {address} but the map parent does not exist!");
-                return null;
-            }
-            if (!connectedMap.HasMap)
-            {
-                if (Prefs.LogVerbose) { Log.Message($"StargateMod: generating map for {connectedMap}"); }
-                GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap as WorldObject_PermSGSite != null ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, null);
-                if (Prefs.LogVerbose) { Log.Message($"StargateMod: finished generating map"); }
-            }
-            Map map = connectedMap.Map;
-            Thing gate = SGUtils.GetStargateOnMap(map);
-            
-            return gate.TryGetComp<CompStargate>() as IStargate;
-        }
-
         private void PlayTeleportSound()
         {
             DefDatabase<SoundDef>.GetNamed($"StargateMod_teleport_{Rand.RangeInclusive(1, 4)}").PlayOneShot(SoundInfo.InMap(this.parent));
@@ -246,8 +229,8 @@ namespace StargatesMod
         {
             recvBuffer.Add(thing);
         }
-        #region Comp Overrides
 
+        #region Comp Overrides
         public override void PostDraw()
         {
             base.PostDraw();
@@ -350,11 +333,11 @@ namespace StargatesMod
             gateAddress = this.parent.Map.Tile;
             Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(gateAddress);
 
-            this.connectedStargate = GetDialledStargate(connectedAddress);
+            this.connectedStargate = SGUtils.GetStargate(connectedAddress);
 
             if (stargateIsActive)
             {
-                if (connectedStargate == null && connectedAddress != -1) { connectedStargate = GetDialledStargate(connectedAddress); }
+                if (connectedStargate == null && connectedAddress != -1) { connectedStargate = SGUtils.GetStargate(connectedAddress); }
                 puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(this.parent));
             }
 
