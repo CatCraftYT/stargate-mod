@@ -4,7 +4,6 @@
 	<ThingDef Name="StargateMod_StargateBase" ParentName="BuildingBase" Abstract="True">
 		<thingClass>StargatesMod.Building_Stargate</thingClass>
 		<rotatable>false</rotatable>
-		<minifiedDef>MinifiedThing</minifiedDef>
 		<stealable>false</stealable>
 		<pathCost>3</pathCost>
 		<constructEffect>ConstructMetal</constructEffect>
@@ -12,9 +11,6 @@
 		<fillPercent>0.20</fillPercent>
 		<canOverlapZones>true</canOverlapZones>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-		<thingCategories>
-		  <li>BuildingsSpecial</li>
-		</thingCategories>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<tickerType>Normal</tickerType>
 		<drawerType>RealtimeOnly</drawerType>
@@ -37,7 +33,28 @@
 				<max1PerGroup>true</max1PerGroup>
 				<massCapacity>999999</massCapacity>
 			</li>
+			<li Class="CompProperties_AffectedByFacilities">
+				<linkableFacilities>
+					<li>StargateMod_DialHomeDevice</li>
+					<li>StargateMod_AdvancedDialHomeDevice</li>
+				</linkableFacilities>
+			</li>
 		</comps>
+	</ThingDef>
+
+	<ThingDef Name="StargateMod_CraftableStargateBase" ParentName="StargateMod_StargateBase" Abstract="True">
+		<designationCategory>Misc</designationCategory>
+		<minifiedDef>MinifiedThing</minifiedDef>
+		
+		<thingCategories>
+			<li>BuildingsSpecial</li>
+		</thingCategories>
+
+		<building>
+			<claimable>true</claimable>
+			<alwaysDeconstructible>true</alwaysDeconstructible>
+		</building>
+		
 	</ThingDef>
 
 	<ThingDef ParentName="StargateMod_StargateBase">
@@ -69,13 +86,15 @@
 				<irisTexture>Things/Building/Stargate/iris</irisTexture>
 				<puddleDrawSize>(8.7,8.7)</puddleDrawSize>
 			</li>
-			<li Class="CompProperties_AffectedByFacilities">
-				<linkableFacilities><li>StargateMod_DialHomeDevice</li></linkableFacilities>
-			</li>
 		</comps>
+
+		<building>
+			<claimable>false</claimable>
+			<alwaysDeconstructible>false</alwaysDeconstructible>
+		</building>
 	</ThingDef>
 
-	<ThingDef ParentName="StargateMod_StargateBase">
+	<ThingDef ParentName="StargateMod_CraftableStargateBase">
 		<defName>StargateMod_OrlinStargate</defName>
 		<label>makeshift stargate</label>
 		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
@@ -87,7 +106,6 @@ This stargate in particular was made using easily available resources, but is qu
 			<drawSize>(3.5,3.5)</drawSize>
 			<drawOffset>(0,0,0.8)</drawOffset>
 		</graphicData>
-		<designationCategory>Misc</designationCategory>
 		<costList>
 		  <Steel>120</Steel>
 		  <ComponentIndustrial>8</ComponentIndustrial>
@@ -132,7 +150,7 @@ This stargate in particular was made using easily available resources, but is qu
 		<researchPrerequisites><li>StargateMod_StargateMakingResearch</li></researchPrerequisites>
 	</ThingDef>
 	
-	<ThingDef ParentName="StargateMod_StargateBase">
+	<ThingDef ParentName="StargateMod_CraftableStargateBase">
 		<defName>StargateMod_AdvancedStargate</defName>
 		<label>advanced stargate</label>
 		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
@@ -144,7 +162,6 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 			<drawSize>(4.9,4.9)</drawSize>
 			<drawOffset>(0,0,1.1)</drawOffset>
 		</graphicData>
-		<designationCategory>Misc</designationCategory>
 		<costList>
 		  <Steel>250</Steel>
 		  <Plasteel>200</Plasteel>
@@ -171,6 +188,7 @@ This stargate is identical in nearly every way to a normal stargate. It has an i
 				<selfDialler>True</selfDialler>
 			</li>
 		</comps>
+
 		<researchPrerequisites>
 			<li>StargateMod_AdvancedStargateMakingResearch</li>
 		</researchPrerequisites>

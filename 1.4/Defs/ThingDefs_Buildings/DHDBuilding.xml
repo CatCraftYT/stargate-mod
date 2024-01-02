@@ -4,7 +4,6 @@
 	<ThingDef Name="StargateMod_DHDBase" ParentName="BuildingBase" Abstract="True">
 		<thingClass>Building</thingClass>
 		<rotatable>false</rotatable>
-		<minifiedDef>MinifiedThing</minifiedDef>
 		<stealable>false</stealable>
 		<passability>Impassable</passability>
 		<constructEffect>ConstructMetal</constructEffect>
@@ -12,9 +11,6 @@
 		<fillPercent>0.40</fillPercent>
 		<canOverlapZones>true</canOverlapZones>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
-		<thingCategories>
-			<li>BuildingsSpecial</li>
-		</thingCategories>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<tickerType>Never</tickerType>
 		<hasInteractionCell>True</hasInteractionCell>
@@ -30,6 +26,20 @@
 			<li Class="CompProperties_Facility" />
 			<li Class="StargatesMod.CompProperties_DialHomeDevice" />
 		</comps>
+	</ThingDef>
+
+	<ThingDef Name="StargateMod_CraftableDHDBase" ParentName="StargateMod_DHDBase" Abstract="True">
+		<designationCategory>Misc</designationCategory>
+		<minifiedDef>MinifiedThing</minifiedDef>
+
+		<thingCategories>
+			<li>BuildingsSpecial</li>
+		</thingCategories>
+
+		<building>
+			<claimable>true</claimable>
+			<alwaysDeconstructible>true</alwaysDeconstructible>
+		</building>
 	</ThingDef>
 
 	<ThingDef ParentName="StargateMod_DHDBase">
@@ -54,6 +64,39 @@
 		</statBases>
 		<size>(1,1)</size>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<building>
+			<claimable>false</claimable>
+			<alwaysDeconstructible>false</alwaysDeconstructible>
+		</building>
+	</ThingDef>
+
+	<ThingDef ParentName="StargateMod_CraftableDHDBase">
+		<defName>StargateMod_AdvancedDialHomeDevice</defName>
+		<label>advanced dial home device</label>
+		<description>A device used to control any stargate.</description>
+		<graphicData>
+			<texPath>Things/Building/Stargate/dhd_universe</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(2,2)</drawSize>
+		</graphicData>
+		<costList>
+			<Steel>300</Steel>
+			<ComponentIndustrial>60</ComponentIndustrial>
+			<ComponentSpacer>25</ComponentSpacer>
+			<Gold>100</Gold>
+		</costList>
+		<statBases>
+			<MarketValue>2500</MarketValue>
+			<WorkToBuild>15000</WorkToBuild>
+			<MaxHitPoints>6000</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Mass>60</Mass>
+		</statBases>
+		<size>(1,1)</size>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<researchPrerequisites>
+			<li>StargateMod_AdvancedStargateMakingResearch</li>
+		</researchPrerequisites>
 	</ThingDef>
 
 </Defs>
