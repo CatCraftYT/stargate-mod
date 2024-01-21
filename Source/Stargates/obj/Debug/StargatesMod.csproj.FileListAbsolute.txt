@@ -7,3 +7,8 @@ E:\SteamLibrary\steamapps\common\RimWorld\Mods\stargate-mod\1.4\Assemblies\Starg
 E:\SteamLibrary\steamapps\common\RimWorld\Mods\stargate-mod\Source\Stargates\obj\Debug\StargatesMod.csproj.AssemblyReference.cache
 E:\SteamLibrary\steamapps\common\RimWorld\Mods\stargate-mod\Source\Stargates\obj\Debug\StargatesMod.csproj.CoreCompileInputs.cache
 E:\SteamLibrary\steamapps\common\RimWorld\Mods\stargate-mod\Source\Stargates\obj\Debug\Stargates.dll
+C:\Rimworld Biotech v1.4.3704\Mods\2831698056\1.4\Assemblies\Stargates.dll
+C:\Rimworld Biotech v1.4.3704\Mods\2831698056\Source\Stargates\obj\Debug\StargatesMod.csproj.AssemblyReference.cache
+C:\Rimworld Biotech v1.4.3704\Mods\2831698056\Source\Stargates\obj\Debug\StargatesMod.csproj.CoreCompileInputs.cache
+C:\Rimworld Biotech v1.4.3704\Mods\2831698056\Source\Stargates\obj\Debug\StargatesMod.csproj.CopyComplete
+C:\Rimworld Biotech v1.4.3704\Mods\2831698056\Source\Stargates\obj\Debug\Stargates.dll

@@ -11,6 +11,10 @@ namespace StargatesMod
             DefOfHelper.EnsureInitializedInCtor(typeof(SoundDefOf));
         }
 
+        //re-add the dialling sound effect. 
+        //please not CatCraftYT that you will obviously need to amplify the dialling sound because its much quieter than the KAWOOSH.
+        
+        public static SoundDef StargateMod_SGDial;
         public static SoundDef StargateMod_SGOpen;
         public static SoundDef StargateMod_SGFailDial;
         public static SoundDef StargateMod_SGKawooshExplosion;
