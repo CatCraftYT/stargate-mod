@@ -1,4 +1,4 @@
-A mod for RimWorld
+A multiplayer-compatable fork of the Stargates! mod for RimWorld
 
 
 **More info at:**
