@@ -7,30 +7,27 @@ using Verse.AI;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using Verse.Sound;
 
 namespace StargatesMod
 {
 
 
     [StaticConstructorOnStartup]
-    public static class MyExampleModCompat
+    public static class MultiplayerCompat
     {
-        static MyExampleModCompat()
+        static MultiplayerCompat()
         {
-            if (!MP.enabled) return;
+            if (!MP.enabled) { return; }
             MP.RegisterAll();
         }
     }
-
-
 
     public class CompDialHomeDevice : ThingComp
     {
         CompFacility compFacility;
 
         [SyncField]
-        public int lastDialledAddress = 100;
+        public int lastDialledAddress;
 
 
         public CompProperties_DialHomeDevice Props => (CompProperties_DialHomeDevice)this.props;
@@ -70,24 +67,17 @@ namespace StargatesMod
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
-
-
-            Console.WriteLine($"postspawnsetup last dialled address:{lastDialledAddress} ");
-
-
-
+            if (Prefs.LogVerbose) { Log.Message($"StargatesMod: DHDComp postspawnsetup last dialled address: {lastDialledAddress} "); }
             base.PostSpawnSetup(respawningAfterLoad);
             this.compFacility = this.parent.GetComp<CompFacility>();
         }
 
-
-        //Call the lastDialledAddress outside of the loop for later
+        // set lastDialledAddress to SetLastDialledAddress value because we can't do this inside CompFloatMenuOptions and sync it successfully
         [SyncMethod]
-        public int GetLastDialledAddress()
+        public void SetLastDialledAddress(int newAddress)
         {
-            return lastDialledAddress;
+            lastDialledAddress = newAddress;
         }
-
 
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
@@ -131,8 +121,6 @@ namespace StargatesMod
 
                 foreach (int i in addressComp.addressList)
                 {
-                    
-                   
                     if (i != stargate.gateAddress)
                     {
                         MapParent sgMap = Find.WorldObjects.MapParentAt(i);
@@ -141,7 +129,7 @@ namespace StargatesMod
                         {
                            
                             SetLastDialledAddress(i);
-                            Log.Message($"Last Dialled Address inside the set i method: {lastDialledAddress}");
+                            if (Prefs.LogVerbose) { Log.Message($"StargateMod: Last Dialled Address after calling set last dialled address method: {lastDialledAddress}"); }
                             Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
                             selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
 
@@ -154,15 +142,6 @@ namespace StargatesMod
             yield break;
 
         }
-        //set lastDialledAddress to SetLastDialledAddress value because we can't do this inside the loop and sync it successfully
-        [SyncMethod]
-        public void SetLastDialledAddress(int newAddress)
-        {
-            lastDialledAddress = newAddress;
-            
-
-        }
-
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
