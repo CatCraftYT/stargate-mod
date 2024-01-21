@@ -123,6 +123,7 @@ namespace StargatesMod
             if (Prefs.LogVerbose) { Log.Message($"StargateMod: finished opening gate {this.parent}"); }
         }
 
+
         public void CloseStargate(bool closeOtherGate)
         {
             CompTransporter transComp = this.parent.GetComp<CompTransporter>();

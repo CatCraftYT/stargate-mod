@@ -1,4 +1,4 @@
-A mod for RimWorld
+The Stargates! mod for RimWorld
 
 
 **More info at:**

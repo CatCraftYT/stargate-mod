@@ -1,6 +1,7 @@
 ﻿using System;
 using RimWorld;
 using RimWorld.Planet;
+using Multiplayer.API;
 using Verse;
 using Verse.AI;
 using UnityEngine;
@@ -9,10 +10,25 @@ using System.Linq;
 
 namespace StargatesMod
 {
+
+
+    [StaticConstructorOnStartup]
+    public static class MultiplayerCompat
+    {
+        static MultiplayerCompat()
+        {
+            if (!MP.enabled) { return; }
+            MP.RegisterAll();
+        }
+    }
+
     public class CompDialHomeDevice : ThingComp
     {
         CompFacility compFacility;
+
+        [SyncField]
         public int lastDialledAddress;
+
 
         public CompProperties_DialHomeDevice Props => (CompProperties_DialHomeDevice)this.props;
 
@@ -36,7 +52,6 @@ namespace StargatesMod
             }
             return dhdOnMap;
         }
-
         private bool isConnectedToStargate
         {
             get
@@ -52,18 +67,27 @@ namespace StargatesMod
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
+            if (Prefs.LogVerbose) { Log.Message($"StargatesMod: DHDComp postspawnsetup last dialled address: {lastDialledAddress} "); }
             base.PostSpawnSetup(respawningAfterLoad);
             this.compFacility = this.parent.GetComp<CompFacility>();
         }
 
+        // set lastDialledAddress to SetLastDialledAddress value because we can't do this inside CompFloatMenuOptions and sync it successfully
+        [SyncMethod]
+        public void SetLastDialledAddress(int newAddress)
+        {
+            lastDialledAddress = newAddress;
+        }
+
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
+
             if (!isConnectedToStargate || !selPawn.CanReach(this.parent.InteractionCell, PathEndMode.Touch, Danger.Deadly, false, false, TraverseMode.ByPawn))
             {
                 yield break;
             }
 
-            
+
             if (Props.requiresPower)
             {
                 CompPowerTrader compPowerTrader = this.parent.TryGetComp<CompPowerTrader>();
@@ -100,16 +124,23 @@ namespace StargatesMod
                     if (i != stargate.gateAddress)
                     {
                         MapParent sgMap = Find.WorldObjects.MapParentAt(i);
+
                         yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(i), sgMap.Label), () =>
                         {
-                            lastDialledAddress = i;
+                           
+                            SetLastDialledAddress(i);
+                            if (Prefs.LogVerbose) { Log.Message($"StargateMod: Last Dialled Address after calling set last dialled address method: {lastDialledAddress}"); }
                             Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
                             selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+
+
                         });
                     }
                 }
             }
+          
             yield break;
+
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -138,6 +169,7 @@ namespace StargatesMod
             }
         }
     }
+
     public class CompProperties_DialHomeDevice : CompProperties
     {
         public CompProperties_DialHomeDevice()
