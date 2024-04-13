@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<ThingDef Name="StargateMod_StargateBase" ParentName="BuildingBase" Abstract="True">
+		<thingClass>StargatesMod.Building_Stargate</thingClass>
+		<rotatable>false</rotatable>
+		<minifiedDef>MinifiedThing</minifiedDef>
+		<stealable>false</stealable>
+		<pathCost>3</pathCost>
+		<constructEffect>ConstructMetal</constructEffect>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
+		<fillPercent>0.20</fillPercent>
+		<canOverlapZones>true</canOverlapZones>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<thingCategories>
+		  <li>BuildingsSpecial</li>
+		</thingCategories>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<tickerType>Normal</tickerType>
+		<drawerType>RealtimeOnly</drawerType>
+		<hasInteractionCell>True</hasInteractionCell>
+		<interactionCellOffset>(0,0,0)</interactionCellOffset>
+		<building>
+			<ai_neverTrashThis>true</ai_neverTrashThis>
+		</building>
+		<placeWorkers>
+		  <li>PlaceWorker_PreventInteractionSpotOverlap</li>
+		  <li>StargatesMod.PlaceWorker_Stargate</li>
+		</placeWorkers>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+		<comps>
+			<li Class="CompProperties_Glower">
+				<glowRadius>0</glowRadius> <!-- This is changed in C# -->
+				<glowColor>(115,171,224,0)</glowColor>
+			</li>
+			<li Class="CompProperties_Transporter">
+				<max1PerGroup>true</max1PerGroup>
+				<massCapacity>999999</massCapacity>
+			</li>
+		</comps>
+	</ThingDef>
+
+	<ThingDef ParentName="StargateMod_StargateBase">
+		<defName>StargateMod_Stargate</defName>
+		<label>stargate</label>
+		<description>An ancient device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.\n\n"By the time you get to the other side, you're frozen stiff. Like you'd just been through a blizzard... naked."</description>
+		<graphicData>
+			<texPath>Things/Building/Stargate/stargate_sg1</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(5.3,5.3)</drawSize>
+			<drawOffset>(0,0,1.2)</drawOffset>
+		</graphicData>
+		<costList>
+		  <Steel>600</Steel>
+		  <ComponentIndustrial>70</ComponentIndustrial>
+		  <ComponentSpacer>30</ComponentSpacer>
+		  <Gold>200</Gold>
+		</costList>
+		<statBases>
+			<MarketValue>2000</MarketValue>
+			<MaxHitPoints>6000</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Mass>290</Mass>
+		</statBases>
+		<size>(5,1)</size>
+		<comps>
+			<li Class="StargatesMod.CompProperties_Stargate">
+				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
+				<irisTexture>Things/Building/Stargate/iris</irisTexture>
+				<puddleDrawSize>(8.7,8.7)</puddleDrawSize>
+			</li>
+			<li Class="CompProperties_AffectedByFacilities">
+				<linkableFacilities><li>StargateMod_DialHomeDevice</li></linkableFacilities>
+			</li>
+		</comps>
+	</ThingDef>
+
+	<ThingDef ParentName="StargateMod_StargateBase">
+		<defName>StargateMod_OrlinStargate</defName>
+		<label>makeshift stargate</label>
+		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
+This stargate in particular was made using easily available resources, but is quite unstable and unreliable, and also requires an external power source. It is both too weak and too small to have an iris. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...
+\n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
+		<graphicData>
+			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3.5,3.5)</drawSize>
+			<drawOffset>(0,0,0.8)</drawOffset>
+		</graphicData>
+		<designationCategory>Misc</designationCategory>
+		<costList>
+		  <Steel>120</Steel>
+		  <ComponentIndustrial>8</ComponentIndustrial>
+		  <ComponentSpacer>1</ComponentSpacer>
+		  <Gold>30</Gold>
+		</costList>
+		<statBases>
+			<MarketValue>1050</MarketValue>
+			<WorkToBuild>10000</WorkToBuild>
+			<MaxHitPoints>1500</MaxHitPoints>
+			<Flammability>0.3</Flammability>
+			<Mass>100</Mass>
+		</statBases>
+		<size>(3,1)</size>
+		<comps>
+			<li Class="StargatesMod.CompProperties_Stargate">
+				<canHaveIris>False</canHaveIris>
+				<explodeOnUse>True</explodeOnUse>
+				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
+				<puddleDrawSize>(5.3,5.3)</puddleDrawSize>
+				<vortexPattern>
+					<li>(0,0,0)</li>
+					<li>(0,0,-1)</li>
+					<li>(0,0,-2)</li>
+				</vortexPattern>
+			</li>
+			<li Class="StargatesMod.CompProperties_DialHomeDevice">
+				<selfDialler>True</selfDialler>
+				<requiresPower>True</requiresPower>
+			</li>
+			<li Class="CompProperties_Explosive">
+				<explosiveRadius>3</explosiveRadius>
+				<explosiveDamageType>Bomb</explosiveDamageType>
+				<wickTicks>250</wickTicks>
+				<chanceNeverExplodeFromDamage>1</chanceNeverExplodeFromDamage>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>2000</basePowerConsumption>
+			</li>
+		</comps>
+		<researchPrerequisites><li>StargateMod_StargateMakingResearch</li></researchPrerequisites>
+	</ThingDef>
+	
+	<ThingDef ParentName="StargateMod_StargateBase">
+		<defName>StargateMod_AdvancedStargate</defName>
+		<label>advanced stargate</label>
+		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.
+This stargate is identical in nearly every way to a normal stargate. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...
+\n"Way smarter than we are."</description>
+		<graphicData>
+			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(4.9,4.9)</drawSize>
+			<drawOffset>(0,0,1.1)</drawOffset>
+		</graphicData>
+		<designationCategory>Misc</designationCategory>
+		<costList>
+		  <Steel>250</Steel>
+		  <Plasteel>200</Plasteel>
+		  <ComponentIndustrial>25</ComponentIndustrial>
+		  <ComponentSpacer>10</ComponentSpacer>
+		  <Gold>150</Gold>
+		  <Uranium>80</Uranium>
+		</costList>
+		<statBases>
+			<MarketValue>2500</MarketValue>
+			<WorkToBuild>15000</WorkToBuild>
+			<MaxHitPoints>4000</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Mass>250</Mass>
+		</statBases>
+		<size>(5,1)</size>
+		<comps>
+			<li Class="StargatesMod.CompProperties_Stargate">
+				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
+				<irisTexture>Things/Building/Stargate/iris</irisTexture>
+				<puddleDrawSize>(7.9,7.9)</puddleDrawSize>
+			</li>
+			<li Class="StargatesMod.CompProperties_DialHomeDevice">
+				<selfDialler>True</selfDialler>
+			</li>
+		</comps>
+		<researchPrerequisites>
+			<li>StargateMod_AdvancedStargateMakingResearch</li>
+		</researchPrerequisites>
+	</ThingDef>
+</Defs>

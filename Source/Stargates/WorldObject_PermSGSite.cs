@@ -10,7 +10,7 @@ using RimWorld.Planet;
 
 namespace StargatesMod
 {
-    public class WorldObject_PermSGSite : MapParent
+    public class WorldObject_PermSGSite : MapParent, IRenameable
     {
         public string siteName;
         public ThingDef gateDef;
@@ -24,6 +24,17 @@ namespace StargatesMod
                 else { return siteName; }
             }
         }
+
+        public string RenamableLabel {
+            get {
+                return Label;
+            }
+            set {
+                siteName = value;
+            }
+        }
+        public string BaseLabel { get => Label; }
+        public string InspectLabel { get => Label; }
 
         public override string GetInspectString()
         {
