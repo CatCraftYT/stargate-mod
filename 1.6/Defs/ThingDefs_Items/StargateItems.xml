@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+	<ThingDef ParentName="ResourceBase">
+		<defName>StargateMod_GlyphScrap</defName>
+		<label>stargate glyph slab</label>
+		<description>A mysterious cracked stone with stargate symbols engraved on it.\n\n"Dial it up!"</description>
+		<thingClass>ThingWithComps</thingClass>
+		<graphicData>
+			<texPath>Things/Items/Stargate/glyph_scrap</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<stackLimit>1</stackLimit>
+		<tradeNeverStack>true</tradeNeverStack>
+		<useHitPoints>true</useHitPoints>
+		<statBases>
+			<MarketValue>900</MarketValue>
+			<MaxHitPoints>100</MaxHitPoints>
+			<Mass>80</Mass>
+			<Flammability>0</Flammability>
+		</statBases>
+		<techLevel>Medieval</techLevel>
+		<thingCategories>
+			<li>Artifacts</li>
+		</thingCategories>
+		<tradeTags>
+			<li>ExoticMisc</li>
+		</tradeTags>
+		<thingSetMakerTags><li>RewardStandardHighFreq</li></thingSetMakerTags>
+		<comps>
+			<li Class="StargatesMod.CompProperties_GlyphScrap" />
+		</comps>
+	</ThingDef>
+	
+	<!--==================== Iris Stuff ====================-->
+	<ThingDef ParentName="ResourceBase">
+		<defName>StargateMod_IrisInstallKit</defName>
+		<label>iris installation kit</label>
+		<description>A kit containing all of the pre-assembled materials needed to install an iris on a stargate.\n\n"We have in place an impenetrable shield called an iris."</description>
+		<thingClass>ThingWithComps</thingClass>
+		<graphicData>
+			<texPath>Things/Items/Stargate/iris_upgrade_kit</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<stackLimit>1</stackLimit>
+		<useHitPoints>true</useHitPoints>
+		<statBases>
+			<MaxHitPoints>100</MaxHitPoints>
+			<Mass>80</Mass>
+			<Flammability>0</Flammability>
+		</statBases>
+		<techLevel>Ultra</techLevel>
+		<thingCategories>
+			<li>Items</li>
+		</thingCategories>
+		<tradeability>None</tradeability>
+		<comps>
+			<li Class="CompProperties_Usable">
+				<useJob>StargateMod_InstallIris</useJob>
+				<useLabel>Install iris</useLabel>
+				<useDuration>5000</useDuration>
+			</li>
+		
+			<li Class="CompProperties_Targetable">
+				<compClass>StargatesMod.CompTargetable_Stargate</compClass>
+			</li>
+		</comps>
+	</ThingDef>
+</Defs>

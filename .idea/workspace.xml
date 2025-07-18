@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="196077cf-18d0-4736-b2e5-cc428da42f98" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/1.6/Patches/Compat.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/1.6/Patches/XmlSettingsPatches.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Stargates/.idea/.idea.Stargates/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Stargates/.idea/.idea.Stargates/.idea/indexLayout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/Stargates/.idea/.idea.Stargates/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/Building_Stargate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/Building_Stargate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/CaravanArrivalAction_PermSGSite.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/CaravanArrivalAction_PermSGSite.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/CompDialHomeDevice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/CompDialHomeDevice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/CompGlyphScrap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/CompGlyphScrap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/CompStargate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/CompStargate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/CompTargetable_Stargate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/CompTargetable_Stargate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/Dialog_RenameSGSite.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/Dialog_RenameSGSite.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/HarmonyPatches.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/JobDriver_BringToStargate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/JobDriver_BringToStargate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/JobDriver_DecodeGlyphs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/JobDriver_DecodeGlyphs.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/JobDriver_DialStargate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/JobDriver_DialStargate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/JobDriver_EnterStargate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/JobDriver_EnterStargate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/JobDriver_InstallIris.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/JobDriver_InstallIris.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/PawnsArrivalModeWorker_Stargate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/PawnsArrivalModeWorker_Stargate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/PlaceWorker_Stargate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/PlaceWorker_Stargate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/QuestNode_RemoveFromStargateAddresses.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/QuestNode_RemoveFromStargateAddresses.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/SGSoundDefOf.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/SGSoundDefOf.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/SitePartWorker_Stargate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/SitePartWorker_Stargate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/StargatesMod.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/StargatesMod.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/WorldComp_StargateAddresses.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/WorldComp_StargateAddresses.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/WorldObject_PermSGSite.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/WorldObject_PermSGSite.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/obj/Debug/StargatesMod.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/obj/Debug/StargatesMod.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/obj/Debug/StargatesMod.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/obj/Debug/StargatesMod.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Stargates/obj/Debug/StargatesMod.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Stargates/obj/Debug/StargatesMod.csproj.FileListAbsolute.txt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="3036HjIIMdQlu64tU18h08nmQI5" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="196077cf-18d0-4736-b2e5-cc428da42f98" name="Changes" comment="" />
+      <created>1752843824876</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1752843824876</updated>
+      <workItem from="1752843831285" duration="5000" />
+    </task>
+    <servers />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
