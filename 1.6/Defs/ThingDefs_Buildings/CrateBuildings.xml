@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef Abstract="True" ParentName="CrateBase" Name="StargateMod_CrateBase">
+    <stealable>false</stealable>
+    <statBases>
+      <MaxHitPoints>250</MaxHitPoints>
+      <WorkToBuild>1000</WorkToBuild>
+    </statBases>
+    <hasInteractionCell>false</hasInteractionCell>
+    <building>
+      <openingEffect>HermeticCrateOpened</openingEffect>
+      <claimable>false</claimable>
+    </building>
+    <tickerType>Normal</tickerType>
+  </ThingDef>
+  
+  <!-- Stargate site loot crates -->
+
+<!-- Glyph Loot Crate -->
+  <ThingDef ParentName="StargateMod_CrateBase">
+    <defName>StargateMod_CrateGlyph</defName>
+    <label>ornate container</label>
+    <description>A small ornate container. Looks like it was designed specifically to contain something special.</description>
+    <size>(1, 1)</size>
+    <fillPercent>0.40</fillPercent>
+    <graphicData>
+      <texPath>Things/Building/Stargate/Crates/CrateGlyph</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(1, 1)</drawSize>
+    </graphicData>
+    <comps>
+      <li Class="CompProperties_EmptyStateGraphic">
+        <graphicData>
+          <texPath>Things/Building/Stargate/Crates/CrateGlyphOpen</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>(1, 1)</drawSize>
+        </graphicData>
+      </li>
+      <li Class="CompProperties_LootSpawn">
+        <contents>StargateMod_Reward_CrateGlyph</contents>
+      </li>
+    </comps>
+  </ThingDef>
+  
+  <!-- Gun Loot Crate -->
+  <ThingDef ParentName="StargateMod_CrateBase">
+    <defName>StargateMod_CrateGun</defName>
+    <label>weapons crate - ranged</label>
+    <description>A sealed crate. Looks like it could still contain something of value.</description>
+    <size>(2, 1)</size>
+    <fillPercent>0.40</fillPercent>
+    <graphicData>
+      <texPath>Things/Building/Stargate/Crates/CrateLongA</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(2, 1)</drawSize>
+    </graphicData>
+    <comps>
+      <li Class="CompProperties_EmptyStateGraphic">
+        <graphicData>
+          <texPath>Things/Building/Stargate/Crates/CrateLongAOpen</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>(2, 1)</drawSize>
+        </graphicData>
+      </li>
+      <li Class="CompProperties_LootSpawn">
+        <contents>StargateMod_Reward_CrateGun</contents>
+      </li>
+    </comps>
+  </ThingDef>
+
+<!-- Melee Loot Crate -->
+  <ThingDef ParentName="StargateMod_CrateBase">
+    <defName>StargateMod_CrateMelee</defName>
+    <label>weapons crate - melee</label>
+    <description>A sealed crate. Looks like it could still contain something of value.</description>
+    <size>(2, 1)</size>
+    <fillPercent>0.40</fillPercent>
+    <graphicData>
+      <texPath>Things/Building/Stargate/Crates/CrateLongA</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(2, 1)</drawSize>
+    </graphicData>
+    <comps>
+      <li Class="CompProperties_EmptyStateGraphic">
+        <graphicData>
+          <texPath>Things/Building/Stargate/Crates/CrateLongAOpen</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>(2, 1)</drawSize>
+        </graphicData>
+      </li>
+      <li Class="CompProperties_LootSpawn">
+        <contents>StargateMod_Reward_CrateMelee</contents>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- Personnel Supplies crate -->
+  <ThingDef ParentName="StargateMod_CrateBase">
+    <defName>StargateMod_CratePersonnelSupplies</defName>
+    <label>personnel supplies crate</label>
+    <description>A sealed crate. Looks like it could still contain something of value.</description>
+    <size>(1, 1)</size>
+    <fillPercent>0.40</fillPercent>
+    <graphicData>
+      <texPath>Things/Building/Stargate/Crates/CrateA</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(1, 1)</drawSize>
+    </graphicData>
+    <comps>
+      <li Class="CompProperties_EmptyStateGraphic">
+        <graphicData>
+          <texPath>Things/Building/Stargate/Crates/CrateAOpen</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>(1, 1)</drawSize>
+        </graphicData>
+      </li>
+      <li Class="CompProperties_LootSpawn">
+        <contents>StargateMod_Reward_CratePersonnel</contents>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- Resources crate -->
+  <ThingDef ParentName="StargateMod_CrateBase">
+    <defName>StargateMod_CrateResources</defName>
+    <label>resource crate</label>
+    <description>A sealed crate. Looks like it could still contain something of value.</description>
+    <size>(1, 1)</size>
+    <fillPercent>0.40</fillPercent>
+    <graphicData>
+      <texPath>Things/Building/Stargate/Crates/CrateA</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(1, 1)</drawSize>
+    </graphicData>
+    <comps>
+      <li Class="CompProperties_EmptyStateGraphic">
+        <graphicData>
+          <texPath>Things/Building/Stargate/Crates/CrateAOpen</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>(1, 1)</drawSize>
+        </graphicData>
+      </li>
+      <li Class="CompProperties_LootSpawn">
+        <contents>StargateMod_Reward_CrateResources</contents>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- High Value Crate -->
+  <ThingDef ParentName="StargateMod_CrateBase">
+    <defName>StargateMod_CrateHighValue</defName>
+    <label>high value crate</label>
+    <description>A sealed crate. Looks like it could still contain something of value.</description>
+    <size>(1, 1)</size>
+    <fillPercent>0.40</fillPercent>
+    <graphicData>
+      <texPath>Things/Building/Stargate/Crates/CrateA</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(1, 1)</drawSize>
+    </graphicData>
+    <comps>
+      <li Class="CompProperties_EmptyStateGraphic">
+        <graphicData>
+          <texPath>Things/Building/Stargate/Crates/CrateAOpen</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>(1, 1)</drawSize>
+        </graphicData>
+      </li>
+      <li Class="CompProperties_LootSpawn">
+        <contents>StargateMod_Reward_CrateHighValue</contents>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!-- Military Supplies crate -->
+  <ThingDef ParentName="StargateMod_CrateBase">
+    <defName>StargateMod_CrateMilitarySupplies</defName>
+    <label>military supplies crate</label>
+    <description>A sealed crate. Looks like it could still contain something of value.</description>
+    <size>(1, 1)</size>
+    <fillPercent>0.40</fillPercent>
+    <graphicData>
+      <texPath>Things/Building/Stargate/Crates/CrateA</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(1, 1)</drawSize>
+    </graphicData>
+    <comps>
+      <li Class="CompProperties_EmptyStateGraphic">
+        <graphicData>
+          <texPath>Things/Building/Stargate/Crates/CrateAOpen</texPath>
+          <graphicClass>Graphic_Multi</graphicClass>
+          <drawSize>(1, 1)</drawSize>
+        </graphicData>
+      </li>
+      <li Class="CompProperties_LootSpawn">
+        <contents>StargateMod_Reward_CrateMilitarySupplies</contents>
+      </li>
+    </comps>
+  </ThingDef>
+</Defs>
