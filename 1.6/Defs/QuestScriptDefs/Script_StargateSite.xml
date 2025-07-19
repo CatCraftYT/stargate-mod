@@ -2,7 +2,7 @@
 <Defs>
 
 	<QuestScriptDef>
-		<defName>StargatesMod_StargateSiteScript</defName>
+		<defName>StargateMod_StargateSiteScript</defName>
 		<rootSelectionWeight>0.6</rootSelectionWeight>
 		<rootMinPoints>0</rootMinPoints>
 		<autoAccept>true</autoAccept>
@@ -79,7 +79,7 @@
 				</li>
 				
 				<li Class="StargatesMod.QuestNode_AddStargateAddresses">
-					<address>$siteTile</address>
+					<address>$site</address>
 					<remove>false</remove>
 				</li>
 				

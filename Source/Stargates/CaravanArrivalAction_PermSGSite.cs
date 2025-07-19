@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RimWorld;
+﻿using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
@@ -21,9 +16,9 @@ namespace StargatesMod
 			arrivalSite = site;
         }
 
-		public override FloatMenuAcceptanceReport StillValid(Caravan caravan, int destinationTile)
+		public override FloatMenuAcceptanceReport StillValid(Caravan caravan, PlanetTile destinationTile)
 		{
-			if (this.arrivalSite != null && this.arrivalSite.Tile != destinationTile) { return false; }
+			if (arrivalSite != null && arrivalSite.Tile != destinationTile) return false; 
 			return true;
 		}
 
@@ -32,8 +27,7 @@ namespace StargatesMod
 			Find.LetterStack.ReceiveLetter("LetterLabelCaravanEnteredMap".Translate(arrivalSite), "LetterCaravanEnteredMap".Translate(caravan.Label, arrivalSite).CapitalizeFirst(), LetterDefOf.NeutralEvent, caravan.PawnsListForReading);
 			LongEventHandler.QueueLongEvent(() =>
 			{
-				Map map = null;
-				map = GetOrGenerateMapUtility.GetOrGenerateMap(arrivalSite.Tile, new IntVec3(75, 1, 75), arrivalSite.def);
+				GetOrGenerateMapUtility.GetOrGenerateMap(arrivalSite.Tile, new IntVec3(75, 1, 75), arrivalSite.def);
 				CaravanEnterMapUtility.Enter(caravan, arrivalSite.Map, CaravanEnterMode.Center);
 			}, "GeneratingMapForNewEncounter", false, null);
 		}

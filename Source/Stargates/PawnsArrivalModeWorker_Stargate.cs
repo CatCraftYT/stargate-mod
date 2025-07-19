@@ -29,8 +29,8 @@ namespace StargatesMod
             Map map = (Map)parms.target;
             parms.spawnRotation = Rot4.South;
             Thing stargateOnMap = CompStargate.GetStargateOnMap(map);
-            CompStargate sgComp = stargateOnMap == null ? null : stargateOnMap.TryGetComp<CompStargate>();
-            if (stargateOnMap == null || sgComp == null || sgComp.stargateIsActive)
+            CompStargate sgComp = stargateOnMap?.TryGetComp<CompStargate>();
+            if (stargateOnMap == null || sgComp == null || sgComp.StargateIsActive)
             {
                 parms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn;
                 return parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);

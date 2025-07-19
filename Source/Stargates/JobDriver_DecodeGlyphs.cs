@@ -18,14 +18,14 @@ namespace StargatesMod
         {
             //i was setting individual values like the points in the slate which was causing NullReferenceExceptions, it took me so long to debug and i just got lucky ;(
             Slate slate = new Slate();
-            QuestScriptDef questDef = DefDatabase<QuestScriptDef>.GetNamed("StargatesMod_StargateSiteScript");
+            QuestScriptDef questDef = DefDatabase<QuestScriptDef>.GetNamed("StargateMod_StargateSiteScript");
             Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
             QuestUtility.SendLetterQuestAvailable(quest);
         }
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return this.pawn.Reserve(this.job.GetTarget(glyphScrapItem), this.job);
+            return pawn.Reserve(job.GetTarget(glyphScrapItem), job);
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
@@ -39,14 +39,13 @@ namespace StargatesMod
             {
                 GenerateStargateQuest();
                 
-                Thing glyphThing = this.job.GetTarget(glyphScrapItem).Thing;
+                Thing glyphThing = job.GetTarget(glyphScrapItem).Thing;
                 if ( glyphThing.stackCount > 1)
                 {
-                    glyphThing.stackCount -= 1;
-                } else
-                {
-                    glyphThing.Destroy();
-                }
+                    /*Decreasing stackCount seems to not update graphic of item(stack), with this method it will*/
+                    Thing usedGlyphThing = glyphThing.SplitOff(1);
+                    if (!usedGlyphThing.DestroyedOrNull()) usedGlyphThing.Destroy();
+                } else glyphThing.Destroy();
             } };
         }
     }
