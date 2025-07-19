@@ -20,19 +20,18 @@ namespace StargatesMod
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOnDestroyedOrNull(stargateToEnter);
-            this.FailOn(() => !this.job.GetTarget(stargateToEnter).Thing.TryGetComp<CompStargate>().stargateIsActive);
+            this.FailOn(() => !job.GetTarget(stargateToEnter).Thing.TryGetComp<CompStargate>().StargateIsActive);
 
-            yield return Toils_Goto.GotoCell(this.job.GetTarget(stargateToEnter).Thing.InteractionCell, PathEndMode.OnCell);
+            yield return Toils_Goto.GotoCell(job.GetTarget(stargateToEnter).Thing.InteractionCell, PathEndMode.OnCell);
             yield return new Toil
             {
                 initAction = () =>
                 {
-                    CompStargate gateComp = this.job.GetTarget(stargateToEnter).Thing.TryGetComp<CompStargate>();
-                    this.pawn.DeSpawn(DestroyMode.Vanish);
-                    gateComp.AddToSendBuffer(this.pawn);
+                    CompStargate gateComp = job.GetTarget(stargateToEnter).Thing.TryGetComp<CompStargate>();
+                    pawn.DeSpawn();
+                    gateComp.AddToSendBuffer(pawn);
                 }
             };
-            yield break;
         }
     }
 }

@@ -22,7 +22,6 @@
 		</chooseFromlayouts>
 		<fullClear>true</fullClear>
 		<tryFindFreeArea>true</tryFindFreeArea>
-		<preventBridgeable>true</preventBridgeable>
 	  </li>
 	</modExtensions>
   </WorldObjectDef>

@@ -5,6 +5,8 @@ using Verse.AI;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using Verse.Sound;
+using XmlExtensions;
 
 namespace StargatesMod
 {
@@ -14,14 +16,14 @@ namespace StargatesMod
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return this.pawn.Reserve(this.job.GetTarget(targetDHD), this.job);
+            return pawn.Reserve(job.GetTarget(targetDHD), job);
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            CompDialHomeDevice dhdComp = this.job.GetTarget(targetDHD).Thing.TryGetComp<CompDialHomeDevice>();
+            CompDialHomeDevice dhdComp = job.GetTarget(targetDHD).Thing.TryGetComp<CompDialHomeDevice>();
             this.FailOnDestroyedOrNull(targetDHD);
-            this.FailOn(() => dhdComp.GetLinkedStargate().stargateIsActive);
+            this.FailOn(() => dhdComp.GetLinkedStargate().StargateIsActive);
 
             yield return Toils_Goto.GotoCell(job.GetTarget(targetDHD).Thing.InteractionCell, PathEndMode.OnCell);
             yield return new Toil
@@ -32,7 +34,6 @@ namespace StargatesMod
                     linkedStargate.OpenStargateDelayed(dhdComp.lastDialledAddress, 200);
                 }
             };
-            yield break;
         }
     }
 }

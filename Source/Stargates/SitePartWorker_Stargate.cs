@@ -7,16 +7,14 @@ using System.Text;
 
 namespace StargatesMod
 {
-	public class SitePartWorker_Stargate : SitePartWorker
-	{
-        const int maxMarketValue = 2000;
-
-		public override string GetPostProcessedThreatLabel(Site site, SitePart sitePart)
-		{
-			StringBuilder sb = new StringBuilder();
-			sb.Append("GateAddress".Translate(CompStargate.GetStargateDesignation(site.Tile)));
-			return sb.ToString();
-		}
+    public class SitePartWorker_Stargate : SitePartWorker
+    {
+        public override string GetPostProcessedThreatLabel(Site site, SitePart sitePart)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("GateAddress".Translate(CompStargate.GetStargateDesignation(site.Tile)));
+            return sb.ToString();
+        }
 
         public override void PostMapGenerate(Map map)
         {
@@ -28,21 +26,13 @@ namespace StargatesMod
             //move pawns away from vortex
             foreach (Pawn pawn in map.mapPawns.AllPawns)
             {
-                Room pawnRoom = GridsUtility.GetRoom(pawn.Position, pawn.Map);
-                var cells = GenRadial.RadialCellsAround(pawn.Position, 9, true).Where(c => c.InBounds(map) && c.Walkable(map) && GridsUtility.GetRoom(c, map) == pawnRoom && !VortexCells.Contains(c));
-                if (!cells.Any()) { continue; }
-                pawn.Position = cells.RandomElement();
+                Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
+                var cells = GenRadial.RadialCellsAround(pawn.Position, 9, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !VortexCells.Contains(c));
+                var cellsList = cells.ToList();
+                if (!cellsList.Any()) continue;
+                pawn.Position = cellsList.RandomElement();
                 pawn.pather.StopDead();
                 pawn.jobs.StopAll();
-            }
-
-            //rebalance items (this may cause performance issues)
-            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.HasThingCategory(ThingCategoryDefOf.Items)))
-            {
-                if (thing.MarketValue * thing.stackCount > maxMarketValue)
-                {
-                    int stackCount = Rand.Range(0, (int)Math.Ceiling(maxMarketValue / thing.MarketValue));
-                }
             }
         }
     }
