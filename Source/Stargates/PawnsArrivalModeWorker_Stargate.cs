@@ -19,9 +19,11 @@ namespace StargatesMod
             sgComp.OpenStargateDelayed(-1, 450);
             sgComp.ticksSinceBufferUnloaded = -150;
             sgComp.isRecievingGate = true;
+            sgComp.TicksSinceBufferUnloaded = -150;
+            sgComp.IsReceivingGate = true;
             foreach (Pawn pawn in pawns)
             {
-                sgComp.AddToRecieveBuffer(pawn);
+                sgComp.AddToReceiveBuffer(pawn);
             }
         }
         public override bool TryResolveRaidSpawnCenter(IncidentParms parms)

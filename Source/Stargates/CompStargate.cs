@@ -1,7 +1,9 @@
 ﻿using RimWorld;
 using RimWorld.Planet;
+using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
 using Verse;
-using Verse.AI;
 using Verse.Sound;
 using UnityEngine;
 using System.Collections.Generic;
@@ -13,27 +15,13 @@ namespace StargatesMod
     {
         const int glowRadius = 10;
         const string alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        List<Thing> sendBuffer = new List<Thing>();
-        List<Thing> recvBuffer = new List<Thing>();
-        public int ticksSinceBufferUnloaded;
-        public int ticksSinceOpened;
-        public int gateAddress;
-        public bool stargateIsActive = false;
-        public bool isRecievingGate;
-        public bool hasIris = false;
-        public int ticksUntilOpen = -1;
-        bool irisIsActivated = false;
-        int queuedAddress;
-        int connectedAddress = -1;
-        Thing connectedStargate;
-        Sustainer puddleSustainer;
+        
         private List<Thing> _sendBuffer = new List<Thing>();
         private List<Thing> _recvBuffer = new List<Thing>();
         public int TicksSinceBufferUnloaded;
         public int TicksSinceOpened;
         public PlanetTile GateAddress;
-        public bool StargateIsActive = false;
+        public bool StargateIsActive;
         public bool IsReceivingGate;
         public bool HasIris = false;
         public int TicksUntilOpen = -1;
@@ -181,12 +169,10 @@ namespace StargatesMod
 
         public static string GetStargateDesignation(PlanetTile address)
         {
-            if (address < 0) { return "UnknownLower".Translate(); }
-            Rand.PushState(address);
-            //pattern: P(num)(char)-(num)(num)(num)
-            string designation = $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
             if (address.tileId < 0) return "UnknownLower".Translate();
             Rand.PushState(address.tileId);
+            //pattern: P(num)(char)-(num)(num)(num)-(num)       Where last num = PlanetLayer ID
+            string designation = $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}-{address.Layer.LayerID}"; 
             Rand.PopState();
             return designation;
         }
@@ -271,22 +257,26 @@ namespace StargatesMod
             {
                 ticksUntilOpen--;
                 if (ticksUntilOpen == 0)
+
+                TicksUntilOpen--;
+                if (TicksUntilOpen == 0)
                 {
-                    ticksUntilOpen = -1;
-                    OpenStargate(queuedAddress);
-                    queuedAddress = -1;
+                    TicksUntilOpen = -1;
+                    OpenStargate(_queuedAddress);
+                    _queuedAddress = -1;
+
+                    _prevRingSoundStartTick = 0;
+                    _chevronSoundCounter = 0;
                 }
             }
-            if (stargateIsActive)
-            {
-                if (!irisIsActivated && ticksSinceOpened < 150 && ticksSinceOpened % 10 == 0)
-                {
-                    DoUnstableVortex();
-                }
+
+            if (!StargateIsActive) return;
+            if (!IrisIsActivated && TicksSinceOpened < 150 && TicksSinceOpened % 10 == 0)
+                DoUnstableVortex();
 
             if (parent.Fogged())
                 FloodFillerFog.FloodUnfog(parent.Position, parent.Map);
-            
+
             CompStargate sgComp = _connectedStargate.TryGetComp<CompStargate>();
 
             CompTransporter transComp = parent.GetComp<CompTransporter>();
@@ -298,25 +288,11 @@ namespace StargatesMod
                     if (thing.Spawned) thing.DeSpawn();
                     AddToSendBuffer(thing);
                     transComp.innerContainer.Remove(thing);
-                    //transComp.SubtractFromToLoadList(thing, thing.stackCount, false);
                 }
-                else if (transComp.LoadingInProgressOrReadyToLaunch && !transComp.AnyInGroupHasAnythingLeftToLoad) transComp.CancelLoad();
+                else if (transComp.LoadingInProgressOrReadyToLaunch && !transComp.AnyInGroupHasAnythingLeftToLoad)
+                    transComp.CancelLoad();
             }
 
-                if (sendBuffer.Any())
-                {
-                    if (!isRecievingGate)
-                    {
-                        for (int i = 0; i <= sendBuffer.Count; i++)
-                        {
-                            sgComp.AddToRecieveBuffer(sendBuffer[i]);
-                            this.sendBuffer.Remove(sendBuffer[i]);
-                        }
-
-                    }
-                    else
-                    {
-                        for (int i = 0; i <= sendBuffer.Count; i++)
             if (_sendBuffer.Any())
             {
                 if (!IsReceivingGate)
@@ -335,24 +311,12 @@ namespace StargatesMod
                             sendBuffer[i].Kill();
                             this.sendBuffer.Remove(sendBuffer[i]);
                         }
+
+                        _sendBuffer.Remove(_sendBuffer[i]);
                     }
                 }
-                        _sendBuffer.Remove(_sendBuffer[i]);
+            }
 
-                if (recvBuffer.Any() && ticksSinceBufferUnloaded > Rand.Range(10, 80))
-                {
-                    ticksSinceBufferUnloaded = 0;
-                    if (!irisIsActivated)
-                    {
-                        GenSpawn.Spawn(recvBuffer[0], this.parent.InteractionCell, this.parent.Map);
-                        this.recvBuffer.Remove(recvBuffer[0]);
-                        PlayTeleportSound();
-                    }
-                    else
-                    {
-                        recvBuffer[0].Kill();
-                        this.recvBuffer.Remove(recvBuffer[0]);
-                        SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(this.parent));
             if (_recvBuffer.Any() && TicksSinceBufferUnloaded > Rand.Range(10, 80))
             {
                 TicksSinceBufferUnloaded = 0;
@@ -371,7 +335,8 @@ namespace StargatesMod
             if (_connectedAddress == -1 && !_recvBuffer.Any()) CloseStargate(false);
             TicksSinceBufferUnloaded++;
             TicksSinceOpened++;
-            if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter) CloseStargate(true);
+            if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
+                CloseStargate(true);
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -397,7 +362,7 @@ namespace StargatesMod
             {
                 transComp.innerContainer = new ThingOwner<Thing>(transComp);
             }
-            if (Prefs.LogVerbose) { Log.Message($"StargateMod: compsg postspawnssetup: sgactive={stargateIsActive} connectgate={connectedStargate} connectaddress={connectedAddress}, mapparent={this.parent.Map.Parent}"); }
+            if (Prefs.LogVerbose) Log.Message($"StargateMod: compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
         }
 
         public string GetInspectString()
@@ -410,7 +375,7 @@ namespace StargatesMod
                 if (TicksUntilOpen <= -1)
                     sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
             }
-            else sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress), 
+            else sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress),
                 (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
             
             if (HasIris) sb.AppendLine("IrisStatus".Translate((IrisIsActivated ? "IrisClosed" : "IrisOpen").Translate()));
@@ -520,10 +485,8 @@ namespace StargatesMod
 
         private void CleanupGate()
         {
-            if (_connectedStargate != null)
-            {
-                CloseStargate(true);
-            }
+            if (_connectedStargate != null) CloseStargate(true);
+
             Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(GateAddress);
         }
 
