@@ -467,7 +467,7 @@ namespace StargatesMod
             yield break;
         }
 
-        public override IEnumerable<FloatMenuOption> CompMultiSelectFloatMenuOptions(List<Pawn> selPawns)
+        public override IEnumerable<FloatMenuOption> CompMultiSelectFloatMenuOptions(IEnumerable<Pawn> selPawns)
         {
             if (!stargateIsActive) { yield break; }
             List<Pawn> allowedPawns = new List<Pawn>();
@@ -499,7 +499,7 @@ namespace StargatesMod
         }
 
 
-        public override void PostDeSpawn(Map map)
+        public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
             base.PostDeSpawn(map);
             CleanupGate();

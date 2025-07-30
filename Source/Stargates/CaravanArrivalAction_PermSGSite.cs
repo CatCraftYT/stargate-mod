@@ -21,7 +21,7 @@ namespace StargatesMod
 			arrivalSite = site;
         }
 
-		public override FloatMenuAcceptanceReport StillValid(Caravan caravan, int destinationTile)
+		public override FloatMenuAcceptanceReport StillValid(Caravan caravan,  PlanetTile destinationTile)
 		{
 			if (this.arrivalSite != null && this.arrivalSite.Tile != destinationTile) { return false; }
 			return true;
