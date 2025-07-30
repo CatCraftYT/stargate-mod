@@ -1,11 +1,12 @@
-﻿using RimWorld.QuestGen;
+﻿using RimWorld.Planet;
+using RimWorld.QuestGen;
 using Verse;
 
 namespace StargatesMod
 {
     public class QuestNode_AddStargateAddresses : QuestNode
     {
-        public SlateRef<int> address;
+        public SlateRef<PlanetTile> address;
         public SlateRef<bool> remove;
 
         protected override bool TestRunInt(Slate slate)
