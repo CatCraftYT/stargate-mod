@@ -16,7 +16,7 @@ namespace StargatesMod
             base.DrawGhost(def, center, rot, ghostCol, thing);
             foreach (CompProperties props in def.comps)
             {
-                if (!(props is CompStargate.CompProperties_Stargate sgProps)) continue;
+                if (!(props is CompProperties_Stargate sgProps)) continue;
                 List<IntVec3> pattern = new List<IntVec3>();
                 foreach (IntVec3 vec in sgProps.vortexPattern)
                 {

@@ -126,7 +126,8 @@ namespace StargatesMod
             {
                 sgComp = _connectedStargate.TryGetComp<CompStargate>();
                 if (_connectedStargate == null || sgComp == null)
-                    Log.Warning($"Recieving stargate connected to stargate {parent.ThingID} didn't have CompStargate, but this stargate wanted it closed.");
+                    Log.Warning(
+                        $"Recieving stargate connected to stargate {parent.ThingID} didn't have CompStargate, but this stargate wanted it closed.");
                 else
                     sgComp.CloseStargate(false);
             }
@@ -145,7 +146,8 @@ namespace StargatesMod
             {
                 CompExplosive explosive = parent.TryGetComp<CompExplosive>();
                 if (explosive == null)
-                    Log.Warning($"Stargate {parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive.");
+                    Log.Warning(
+                        $"Stargate {parent.ThingID} has the explodeOnUse tag set to true but doesn't have CompExplosive.");
                 else explosive.StartWick();
             }
 
@@ -179,7 +181,8 @@ namespace StargatesMod
             if (address.tileId < 0) return "UnknownLower".Translate();
             Rand.PushState(address.tileId);
             //pattern: P(num)(char)-(num)(num)(num)
-            string designation = $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
+            string designation =
+                $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
             Rand.PopState();
             return designation;
         }
@@ -212,7 +215,8 @@ namespace StargatesMod
 
         private void PlayTeleportSound()
         {
-            DefDatabase<SoundDef>.GetNamed($"StargateMod_teleport_{Rand.RangeInclusive(1, 4)}").PlayOneShot(SoundInfo.InMap(parent));
+            DefDatabase<SoundDef>.GetNamed($"StargateMod_teleport_{Rand.RangeInclusive(1, 4)}")
+                .PlayOneShot(SoundInfo.InMap(parent));
         }
 
         private void DoUnstableVortex()
@@ -290,8 +294,8 @@ namespace StargatesMod
                 FloodFillerFog.FloodUnfog(parent.Position, parent.Map);
 
             CompStargate sgComp = _connectedStargate.TryGetComp<CompStargate>();
-
             CompTransporter transComp = parent.GetComp<CompTransporter>();
+            
             if (transComp != null)
             {
                 Thing thing = transComp.innerContainer.FirstOrFallback();
@@ -330,6 +334,7 @@ namespace StargatesMod
                 TicksSinceBufferUnloaded = 0;
                 if (!IrisIsActivated)
                 {
+                    GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
@@ -339,7 +344,8 @@ namespace StargatesMod
 
                 TicksSinceBufferUnloaded++;
                 TicksSinceOpened++;
-                if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
+                if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 &&
+                    !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
                     CloseStargate(true);
             }
 
@@ -349,7 +355,8 @@ namespace StargatesMod
             TicksSinceBufferUnloaded++;
             TicksSinceOpened++;
 
-            if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
+            if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 &&
+                !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
                 CloseStargate(true);
         }
 
@@ -372,7 +379,8 @@ namespace StargatesMod
             if (transComp != null && transComp.innerContainer == null)
                 transComp.innerContainer = new ThingOwner<Thing>(transComp);
             if (Prefs.LogVerbose)
-                Log.Message($"StargateMod: compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
+                Log.Message(
+                    $"StargateMod: compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
         }
 
         public string GetInspectString()
@@ -528,37 +536,37 @@ namespace StargatesMod
         }
 
         #endregion
+    }
 
-        public class CompProperties_Stargate : CompProperties
+    public class CompProperties_Stargate : CompProperties
+    {
+        public CompProperties_Stargate()
         {
-            public CompProperties_Stargate()
-            {
-                compClass = typeof(CompStargate);
-            }
-
-            public bool canHaveIris = true;
-            public bool explodeOnUse = false;
-            public string puddleTexture;
-            public string irisTexture;
-            public Vector2 puddleDrawSize;
-
-            public List<IntVec3> vortexPattern = new List<IntVec3>
-            {
-                new IntVec3(0, 0, 1),
-                new IntVec3(1, 0, 1),
-                new IntVec3(-1, 0, 1),
-                new IntVec3(0, 0, 0),
-                new IntVec3(1, 0, 0),
-                new IntVec3(-1, 0, 0),
-                new IntVec3(0, 0, -1),
-                new IntVec3(1, 0, -1),
-                new IntVec3(-1, 0, -1),
-                new IntVec3(0, 0, -2),
-                new IntVec3(1, 0, -2),
-                new IntVec3(-1, 0, -2),
-                new IntVec3(0, 0, -3)
-            };
+            compClass = typeof(CompStargate);
         }
+
+        public bool canHaveIris = true;
+        public bool explodeOnUse = false;
+        public string puddleTexture;
+        public string irisTexture;
+        public Vector2 puddleDrawSize;
+
+        public List<IntVec3> vortexPattern = new List<IntVec3>
+        {
+            new IntVec3(0, 0, 1),
+            new IntVec3(1, 0, 1),
+            new IntVec3(-1, 0, 1),
+            new IntVec3(0, 0, 0),
+            new IntVec3(1, 0, 0),
+            new IntVec3(-1, 0, 0),
+            new IntVec3(0, 0, -1),
+            new IntVec3(1, 0, -1),
+            new IntVec3(-1, 0, -1),
+            new IntVec3(0, 0, -2),
+            new IntVec3(1, 0, -2),
+            new IntVec3(-1, 0, -2),
+            new IntVec3(0, 0, -3)
+        };
     }
 }
 
