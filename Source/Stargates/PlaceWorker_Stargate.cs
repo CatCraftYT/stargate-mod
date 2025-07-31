@@ -16,17 +16,14 @@ namespace StargatesMod
             base.DrawGhost(def, center, rot, ghostCol, thing);
             foreach (CompProperties props in def.comps)
             {
-                CompProperties_Stargate sgProps = props as CompProperties_Stargate;
-                if (sgProps != null)
+                if (!(props is CompStargate.CompProperties_Stargate sgProps)) continue;
+                List<IntVec3> pattern = new List<IntVec3>();
+                foreach (IntVec3 vec in sgProps.vortexPattern)
                 {
-                    List<IntVec3> pattern = new List<IntVec3>();
-                    foreach (IntVec3 vec in sgProps.vortexPattern)
-                    {
-                        pattern.Add(center + vec);
-                    }
-                    GenDraw.DrawFieldEdges(pattern, Color.red);
-                    return;
+                    pattern.Add(center + vec);
                 }
+                GenDraw.DrawFieldEdges(pattern, Color.red);
+                return;
             }
         }
 

@@ -6,7 +6,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Verse.Sound;
-using XmlExtensions;
 
 namespace StargatesMod
 {

@@ -13,3 +13,7 @@ E:/SteamLibrary/steamapps/common/RimWorld/Mods/stargate-mod/Source/Stargates/obj
 /home/steamuser/.local/share/Steam/steamapps/common/RimWorld/Mods/stargate-mod/Source/Stargates/obj/Debug/StargatesMod.csproj.CoreCompileInputs.cache
 /home/steamuser/.local/share/Steam/steamapps/common/RimWorld/Mods/stargate-mod/Source/Stargates/obj/Debug/StargatesMod.csproj.CopyComplete
 /home/steamuser/.local/share/Steam/steamapps/common/RimWorld/Mods/stargate-mod/1.5/Assemblies/Stargates.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\stargate-mod\Source\Stargates\obj\Debug\StargatesMod.csproj.AssemblyReference.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\stargate-mod\Source\Stargates\obj\Debug\StargatesMod.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\stargate-mod\Source\Stargates\obj\Debug\Stargates.dll
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\stargate-mod\1.6\Assemblies\Stargates.dll

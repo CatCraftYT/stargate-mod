@@ -10,7 +10,7 @@
 	</supportedVersions>
 	<packageId>ccyt.stargatesmod</packageId>
 
-	<description>Adds Stargates! With custom sites that can be discovered and looted, also including the ability to travel there through stargates.</description>
+	<description>Adds Stargates! With custom sites that can be discovered and looted, as well as travelled to through them.</description>
 
 	<modDependencies>
 		<li>
@@ -25,15 +25,8 @@
 			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077</steamWorkshopUrl>
 			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
 		</li>
-		<li>
-			<packageId>imranfish.xmlextensions</packageId>
-			<displayName>XML Extensions</displayName>
-			<downloadUrl>https://github.com/15adhami/XmlExtensions/releases</downloadUrl>
-			<steamWorkshopUrl>steam://url/CommunityFilePage/2574315206</steamWorkshopUrl>
-		</li>
 	</modDependencies>
 	<loadAfter>
 		<li>oskarpotocki.vanillafactionsexpanded.core</li>
-		<li>imranfish.xmlextensions</li>
 	</loadAfter>
 </ModMetaData>

@@ -28,10 +28,7 @@ namespace StargatesMod
                 MapParent sgMap = Find.WorldObjects.MapParentAt(pT);
                 Site site = sgMap as Site;
 
-                if (sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && sgMap as WorldObject_PermSGSite == null))
-                {
-                    this.RemoveAddress(i);
-                }
+                if (sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && !(sgMap is WorldObject_PermSGSite)))
                     RemoveAddress(pT);
             }
         }

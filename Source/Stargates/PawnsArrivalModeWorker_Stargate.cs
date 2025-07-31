@@ -17,8 +17,8 @@ namespace StargatesMod
 
             CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
             sgComp.OpenStargateDelayed(-1, 450);
-            sgComp.ticksSinceBufferUnloaded = -150;
-            sgComp.isRecievingGate = true;
+            sgComp.TicksSinceBufferUnloaded = -150;
+            sgComp.IsReceivingGate = true;
             sgComp.TicksSinceBufferUnloaded = -150;
             sgComp.IsReceivingGate = true;
             foreach (Pawn pawn in pawns)
