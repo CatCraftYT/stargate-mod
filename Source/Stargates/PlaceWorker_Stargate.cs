@@ -29,6 +29,11 @@ namespace StargatesMod
 
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
 		{
+            if (CompStargate.GetStargateOnMap(map, thing) != null)
+            {
+                return new AcceptanceReport("OnlyOneSGPerMap".Translate());
+            }
+            
             /*Pocket Maps do not have an associated PlanetTile, so no gate address, so stargates cannot work on them*/
             if(map.IsPocketMap) return new AcceptanceReport("PocketMapNo".Translate());
 
