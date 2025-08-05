@@ -338,6 +338,12 @@ namespace StargatesMod
                     _recvBuffer.Remove(_recvBuffer[0]);
                     PlayTeleportSound();
                 }
+                else
+                {
+                    _recvBuffer[0].Kill();
+                    _recvBuffer.Remove(_recvBuffer[0]);
+                    SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
+                }
 
                 if (_connectedAddress == -1 && !_recvBuffer.Any())
                     CloseStargate(false);
