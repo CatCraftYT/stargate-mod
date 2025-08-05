@@ -19,8 +19,6 @@ namespace StargatesMod
             sgComp.OpenStargateDelayed(-1, 450);
             sgComp.TicksSinceBufferUnloaded = -150;
             sgComp.IsReceivingGate = true;
-            sgComp.TicksSinceBufferUnloaded = -150;
-            sgComp.IsReceivingGate = true;
             foreach (Pawn pawn in pawns)
             {
                 sgComp.AddToReceiveBuffer(pawn);

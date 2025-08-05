@@ -393,9 +393,9 @@ namespace StargatesMod
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("GateAddress".Translate(GetStargateDesignation(GateAddress)));
-            if (TicksUntilOpen <= -1)
+            if (!StargateIsActive && TicksUntilOpen <= -1)
                 sb.AppendLine("InactiveFacility".Translate().CapitalizeFirst());
-            else if (StargateIsActive)
+            if (StargateIsActive)
                 sb.AppendLine("ConnectedToGate".Translate(GetStargateDesignation(_connectedAddress),
                     (IsReceivingGate ? "Incoming" : "Outgoing").Translate()));
 
