@@ -34,6 +34,34 @@ namespace StargatesMod
                 pawn.pather.StopDead();
                 pawn.jobs.StopAll();
             }
+            
+            //Fix stackCounts of certain items (especially things certain cases with stack increasing mods)
+            // also things like res mech serums even without that
+            //TODO (Alyssa) remove when switching structures to crate system
+            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.HasThingCategory(ThingCategoryDefOf.BodyParts)))
+            {
+                if (thing.stackCount > 1)
+                {
+                    Thing removedThing = thing.SplitOff(thing.stackCount - 1);
+                    if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
+                }
+            }
+            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.def.defName == "MechSerumResurrector" || t.def.defName == "MechSerumHealer"))
+            {
+                if (thing.stackCount > 1)
+                {
+                    Thing removedThing = thing.SplitOff(thing.stackCount - 1);
+                    if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
+                }
+            }
+            foreach (Thing thing in map.listerThings.AllThings.Where(t => t.HasThingCategory(ThingCategoryDef.Named("Artifacts"))))
+            {
+                if (thing.stackCount > 1)
+                {
+                    Thing removedThing = thing.SplitOff(thing.stackCount - 1);
+                    if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
+                }
+            }
         }
     }
 }

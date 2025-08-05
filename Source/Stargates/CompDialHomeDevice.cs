@@ -55,7 +55,7 @@ namespace StargatesMod
 
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
-            if (!IsConnectedToStargate || !selPawn.CanReach(this.parent.InteractionCell, PathEndMode.Touch, Danger.Deadly, false, false, TraverseMode.ByPawn))
+            if (!IsConnectedToStargate || !selPawn.CanReach(parent.InteractionCell, PathEndMode.Touch, Danger.Deadly))
             {
                 yield break;
             }
@@ -107,7 +107,7 @@ namespace StargatesMod
                         yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(i), sgMap.Label), () =>
                         {
                             lastDialledAddress = i;
-                            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), this.parent);
+                            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), parent);
                             selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                         });
                     }
@@ -127,7 +127,7 @@ namespace StargatesMod
                 {
                     defaultLabel = "CloseStargate".Translate(),
                     defaultDesc = "CloseStargateDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel", true),
+                    icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
                     action = delegate
                     {
                         stargate.CloseStargate(true);
