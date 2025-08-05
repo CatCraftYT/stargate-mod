@@ -13,8 +13,8 @@ namespace StargatesMod
     public class WorldObject_PermSGSite : MapParent, IRenameable
     {
         public string SiteName;
-        public ThingDef GateDef;
-        public ThingDef DhdDef;
+        public ThingDef GateDef = ThingDef.Named("StargateMod_Stargate");
+        public ThingDef DhdDef = ThingDef.Named("StargateMod_DialHomeDevice");
 
         public override string Label => SiteName ?? base.Label;
 
@@ -52,17 +52,27 @@ namespace StargatesMod
             Thing gateOnMap = CompStargate.GetStargateOnMap(Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(Map);
             if (Prefs.LogVerbose) Log.Message($"StargatesMod: perm sg site post map gen: dhddef={DhdDef} gatedef={GateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}");
+            
             if (gateOnMap != null)
             {
                 IntVec3 gatePos = gateOnMap.Position;
                 gateOnMap.Destroy();
-                if (GateDef != null) GenSpawn.Spawn(GateDef, gatePos, Map);
+                if (GateDef != null)
+                {
+                    Thing spGate = GenSpawn.Spawn(GateDef, gatePos, Map);
+                    spGate.SetFaction(Faction.OfPlayer);
+                }
+                
             }
             if (dhdOnMap != null)
             {
                 IntVec3 dhdPos = dhdOnMap.Position;
                 dhdOnMap.Destroy();
-                if (DhdDef != null) GenSpawn.Spawn(DhdDef, dhdPos, Map);
+                if (DhdDef != null)
+                {
+                    Thing spDhd = GenSpawn.Spawn(DhdDef, dhdPos, Map);
+                    spDhd.SetFaction(Faction.OfPlayer);
+                }
             }
         }
 
