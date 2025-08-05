@@ -50,7 +50,8 @@ namespace StargatesMod
                 Thing inner = thing.GetInnerIfMinified();
                 if (inner != null)
                 {
-                    if (inner.TryGetComp<CompStargate>() != null) containsStargate = true; break;
+                    if (inner.TryGetComp<CompStargate>() != null) { containsStargate = true; break; }
+                    
                 }
             }
             Command_Action command = new Command_Action
@@ -71,7 +72,13 @@ namespace StargatesMod
                     for (int i = 0; i < things.Count; i++)
                     {
                         Thing inner = things[i].GetInnerIfMinified();
-                        if (inner?.TryGetComp<CompDialHomeDevice>() != null && inner.def.thingClass != typeof(Building_Stargate)) { dhdDef = inner.def; things[i].holdingOwner.Remove(things[i]); break; }
+                        if (gateDef != null && inner?.TryGetComp<CompDialHomeDevice>() != null && inner.def.thingClass != typeof(Building_Stargate))
+                        {
+                            if (gateDef.HasComp<CompDialHomeDevice>()) break;
+                            dhdDef = inner.def; 
+                            things[i].holdingOwner.Remove(things[i]); 
+                            break;
+                        }
                     }
                     WorldObject_PermSGSite wo = (WorldObject_PermSGSite)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("StargateMod_SGSitePerm"));
                     wo.Tile = __instance.Tile;
