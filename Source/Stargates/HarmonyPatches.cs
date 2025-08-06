@@ -99,6 +99,7 @@ namespace StargatesMod
             };
             StringBuilder reason = new StringBuilder();
             if (!containsStargate) command.Disable("NoGateInCaravan".Translate());
+            else if (__instance.Tile.Tile.Landmark != null) command.Disable("BlockedByLandmark".Translate());
             else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) command.Disable(reason.ToString());
             yield return command;
         }
