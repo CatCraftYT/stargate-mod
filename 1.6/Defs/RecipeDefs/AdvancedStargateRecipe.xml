@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<RecipeDef ParentName="StargateMod_RecipeBase">
+		<defName>StargateMod_MakeAdvancedStargate</defName>
+		<label>make an advanced stargate</label>
+		<description>A device used to transport people or resources between planets. This specific type of Stargate seems to be adapted to work on only one planet.This stargate is identical in nearly every way to a normal stargate. It has an integrated DHD. Make sure to get out of the way before it finishes dialling...\n"Way smarter than we are.".</description>
+		<jobString>Making advanced stargate.</jobString>
+		<workAmount>15000</workAmount>
+		<unfinishedThingDef>StargateMod_UnfinishedAdvancedStargate</unfinishedThingDef>
+		<ingredients>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Steel</li>
+					</thingDefs>
+				</filter>
+				<count>250</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Plasteel</li>
+					</thingDefs>
+				</filter>
+				<count>200</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>ComponentIndustrial</li>
+					</thingDefs>
+				</filter>
+				<count>25</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>ComponentSpacer</li>
+					</thingDefs>
+				</filter>
+				<count>10</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Gold</li>
+					</thingDefs>
+				</filter>
+				<count>15</count>
+			</li>
+			<li>
+				<filter>
+					<thingDefs>
+						<li>Uranium</li>
+					</thingDefs>
+				</filter>
+				<count>80</count>
+			</li>
+		</ingredients>
+		<products>
+			<StargateMod_AdvancedStargate>1</StargateMod_AdvancedStargate>
+		</products>
+		<researchPrerequisite>StargateMod_AdvancedStargateMakingResearch</researchPrerequisite>
+	</RecipeDef>
+
+	<ThingDef ParentName="UnfinishedBase">
+		<defName>StargateMod_UnfinishedAdvancedStargate</defName>
+		<label>unfinished advanced stargate</label>
+		<description>An unfinished advanced stargate.</description>
+		<statBases>
+			<Flammability>0</Flammability>
+		</statBases>
+		<graphicData>
+			<texPath>Things/Item/Unfinished/UnfinishedComponent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<stuffCategories Inherit="false" />
+	</ThingDef>
+</Defs>

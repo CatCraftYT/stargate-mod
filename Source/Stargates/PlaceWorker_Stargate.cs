@@ -16,26 +16,27 @@ namespace StargatesMod
             base.DrawGhost(def, center, rot, ghostCol, thing);
             foreach (CompProperties props in def.comps)
             {
-                CompProperties_Stargate sgProps = props as CompProperties_Stargate;
-                if (sgProps != null)
+                if (!(props is CompProperties_Stargate sgProps)) continue;
+                List<IntVec3> pattern = new List<IntVec3>();
+                foreach (IntVec3 vec in sgProps.vortexPattern)
                 {
-                    List<IntVec3> pattern = new List<IntVec3>();
-                    foreach (IntVec3 vec in sgProps.vortexPattern)
-                    {
-                        pattern.Add(center + vec);
-                    }
-                    GenDraw.DrawFieldEdges(pattern, Color.red);
-                    return;
+                    pattern.Add(center + vec);
                 }
+                GenDraw.DrawFieldEdges(pattern, Color.red);
+                return;
             }
         }
 
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
 		{
-			if (CompStargate.GetStargateOnMap(map, thing) != null)
+            if (CompStargate.GetStargateOnMap(map, thing) != null)
             {
-				return new AcceptanceReport("OnlyOneSGPerMap".Translate());
-			}
+                return new AcceptanceReport("OnlyOneSGPerMap".Translate());
+            }
+            
+            /*Pocket Maps do not have an associated PlanetTile, so no gate address, so stargates cannot work on them*/
+            if(map.IsPocketMap) return new AcceptanceReport("PocketMapNo".Translate());
+
 			return true;
 		}
 	}

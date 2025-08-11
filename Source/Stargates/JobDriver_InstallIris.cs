@@ -15,17 +15,17 @@ namespace StargatesMod
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            this.job.count = 1;
-            Thing stargate = (Thing)this.job.GetTarget(targetStargate);
-            Thing iris = (Thing)this.job.GetTarget(irisItem);
-            return this.pawn.Reserve(stargate, this.job) &&
-                this.pawn.Reserve(iris, this.job);
+            job.count = 1;
+            Thing stargate = (Thing)job.GetTarget(targetStargate);
+            Thing iris = (Thing)job.GetTarget(irisItem);
+            return pawn.Reserve(stargate, job) &&
+                pawn.Reserve(iris, job);
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            int useDuration = this.job.GetTarget(TargetIndex.A).Thing.TryGetComp<CompUsable>().Props.useDuration;
-            Thing iris = (Thing)this.job.GetTarget(irisItem);
+            int useDuration = job.GetTarget(TargetIndex.A).Thing.TryGetComp<CompUsable>().Props.useDuration;
+            Thing iris = (Thing)job.GetTarget(irisItem);
 
             this.FailOnDestroyedOrNull(targetStargate);
             this.FailOnDestroyedNullOrForbidden(irisItem);
@@ -41,13 +41,12 @@ namespace StargatesMod
             {
                 initAction = () =>
                 {
-                    CompStargate gateComp = this.job.GetTarget(targetStargate).Thing.TryGetComp<CompStargate>();
-                    this.pawn.carryTracker.innerContainer.Remove(iris);
+                    CompStargate gateComp = job.GetTarget(targetStargate).Thing.TryGetComp<CompStargate>();
+                    pawn.carryTracker.innerContainer.Remove(iris);
                     iris.Destroy();
-                    gateComp.hasIris = true;
+                    gateComp.HasIris = true;
                 }
             };
-            yield break;
         }
     }
 }

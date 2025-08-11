@@ -15,6 +15,7 @@
 	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
 	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>
 	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
+	<BlockedByLandmark>Not allowed on landmarks.</BlockedByLandmark>
 	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
 	
 	<GateAddress>Stargate address: {0}</GateAddress>

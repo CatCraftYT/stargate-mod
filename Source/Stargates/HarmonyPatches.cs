@@ -28,11 +28,11 @@ namespace StargatesMod
         static void Postfix(Map ___map, ref bool __result)
         {
             Thing sgThing = CompStargate.GetStargateOnMap(___map);
-            if (sgThing == null) { return; }
+            if (sgThing == null) return;
             CompStargate sgComp = sgThing.TryGetComp<CompStargate>();
-            if (sgComp == null) { return; }
+            if (sgComp == null) return;
 
-            if (sgComp.stargateIsActive) { __result = true; return; }
+            if (sgComp.StargateIsActive) __result = true;
         }
     }
 
@@ -42,10 +42,7 @@ namespace StargatesMod
     {
         static IEnumerable<Gizmo> Postfix(IEnumerable<Gizmo> gizmos, Caravan __instance)
         {
-            foreach (Gizmo gizmo in gizmos)
-            {
-                yield return gizmo;
-            }
+            foreach (Gizmo gizmo in gizmos) yield return gizmo;
 
             bool containsStargate = false;
             foreach (Thing thing in __instance.AllThings)
@@ -54,40 +51,56 @@ namespace StargatesMod
                 if (inner != null)
                 {
                     if (inner.TryGetComp<CompStargate>() != null) { containsStargate = true; break; }
+                    
                 }
             }
             Command_Action command = new Command_Action
             {
-                icon = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/sgsite_perm", true),
+                icon = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/sgsite_perm"),
                 action = () =>
                 {
                     ThingDef gateDef = null;
                     ThingDef dhdDef = null;
 
                     List<Thing> things = __instance.AllThings.ToList();
-                    for (int i = 0; i < things.Count(); i++)
+                    foreach (var thing in things)
                     {
-                        Thing inner = things[i].GetInnerIfMinified();
-                        if (inner != null && inner.def.thingClass == typeof(Building_Stargate)) { gateDef = inner.def; things[i].holdingOwner.Remove(things[i]); break; }
+                        Thing inner = thing.GetInnerIfMinified();
+                        if (inner != null && inner.def.thingClass == typeof(Building_Stargate))
+                        {
+                            gateDef = inner.def; 
+                            thing.holdingOwner.Remove(thing); 
+                            break; 
+                            
+                        }
                     }
-                    things = __instance.AllThings.ToList();
-                    for (int i = 0; i < things.Count(); i++)
+                    if (gateDef != null && !gateDef.HasComp<CompDialHomeDevice>())
                     {
-                        Thing inner = things[i].GetInnerIfMinified();
-                        if (inner != null && inner.TryGetComp<CompDialHomeDevice>() != null && inner.def.thingClass != typeof(Building_Stargate)) { dhdDef = inner.def; things[i].holdingOwner.Remove(things[i]); break; }
+                        things = __instance.AllThings.ToList();
+                        foreach (var thing in things)
+                        {
+                            Thing inner = thing.GetInnerIfMinified();
+                            if (inner?.TryGetComp<CompDialHomeDevice>() != null && inner.def.thingClass != typeof(Building_Stargate))
+                            {
+                                dhdDef = inner.def; 
+                                thing.holdingOwner.Remove(thing); 
+                                break;
+                            }
+                        }
                     }
                     WorldObject_PermSGSite wo = (WorldObject_PermSGSite)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("StargateMod_SGSitePerm"));
                     wo.Tile = __instance.Tile;
-                    wo.gateDef = gateDef;
-                    wo.dhdDef = dhdDef;
+                    wo.GateDef = gateDef;
+                    wo.DhdDef = dhdDef;
                     Find.WorldObjects.Add(wo);
                 },
                 defaultLabel = "CreateSGSite".Translate(),
                 defaultDesc = "CreateSGSiteDesc".Translate()
             };
             StringBuilder reason = new StringBuilder();
-            if (!containsStargate) { command.Disable("NoGateInCaravan".Translate()); }
-            else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) { command.Disable(reason.ToString()); }
+            if (!containsStargate) command.Disable("NoGateInCaravan".Translate());
+            else if (__instance.Tile.Tile.Landmark != null) command.Disable("BlockedByLandmark".Translate());
+            else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) command.Disable(reason.ToString());
             yield return command;
         }
     }

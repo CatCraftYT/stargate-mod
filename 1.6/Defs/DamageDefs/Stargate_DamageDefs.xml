@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<DamageDef>
+		<defName>StargateMod_KawooshExplosion</defName>
+		<label>unstable vortex</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has been vaporized in an unstable vortex.</deathMessage>
+		<hediff>Burn</hediff>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Sharp</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>99999</defaultDamage>
+		<defaultStoppingPower>1</defaultStoppingPower>
+		<defaultArmorPenetration>1</defaultArmorPenetration>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionCellFleck>BlastDry</explosionCellFleck>
+		<explosionColorCenter>(0.55, 0.80, 1)</explosionColorCenter>
+		<explosionColorEdge>(0.45, 0.67, 0.95)</explosionColorEdge>
+		<soundExplosion>StargateMod_SGKawooshExplosion</soundExplosion>
+		<combatLogRules>Damage_Flame</combatLogRules>
+	</DamageDef>
+
+</Defs>

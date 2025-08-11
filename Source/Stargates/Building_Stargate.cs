@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 
@@ -12,12 +9,12 @@ namespace StargatesMod
     {
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            CompStargate sgComp = this.GetComp<CompStargate>();
+            CompStargate sgComp = GetComp<CompStargate>();
             foreach (Gizmo gizmo in base.GetGizmos())
             {
                 if (gizmo is Command_LoadToTransporter)
                 {
-                    if (sgComp.stargateIsActive) { yield return gizmo; }
+                    if (sgComp.StargateIsActive) yield return gizmo;
                     continue;
                 }
                 yield return gizmo;
@@ -28,11 +25,11 @@ namespace StargatesMod
         {
             StringBuilder sb = new StringBuilder();
 
-            CompStargate sgComp = this.GetComp<CompStargate>();
+            CompStargate sgComp = GetComp<CompStargate>();
             sb.AppendLine(sgComp.GetInspectString());
 
             CompPowerTrader power = this.TryGetComp<CompPowerTrader>();
-            if (power != null) { sb.AppendLine(power.CompInspectStringExtra()); }
+            if (power != null) sb.AppendLine(power.CompInspectStringExtra());
             
             return sb.ToString().TrimEndNewlines();
         }

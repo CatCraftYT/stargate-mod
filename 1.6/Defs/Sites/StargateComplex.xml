@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<SitePartDef>
+		<defName>StargateMod_StargateSite</defName>
+		<label>ancient stargate site</label>
+		<description>A remote, ancient site known to contain a stargate.</description>
+		<workerClass>StargatesMod.SitePartWorker_Stargate</workerClass>
+		<siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
+		<expandingIconTexture>World/WorldObjects/Expanding/Sites/Stargate/sgcomplex</expandingIconTexture>
+		<requiresFaction>true</requiresFaction>
+		<approachOrderString>Investigate {0}</approachOrderString>
+		<approachingReportString>Investigating {0}</approachingReportString>
+		<arrivedLetter>There is a stargate in this area.</arrivedLetter>
+		<arrivedLetterDef>NeutralEvent</arrivedLetterDef>
+		<wantsThreatPoints>true</wantsThreatPoints>
+		<minThreatPoints>90</minThreatPoints>
+		<tags>
+			<li>StargateMod_StargateSite</li>
+		</tags>
+	</SitePartDef>
+	
+	<GenStepDef>
+		<defName>StargateMod_StargateSite</defName>
+		<linkWithSite>StargateMod_StargateSite</linkWithSite>
+		<order>450</order>
+		<genStep Class="KCSG.GenStep_CustomStructureGen">
+			<structureLayoutDefs>
+				<li>StargateMod_Structure_SGC</li>
+				<li>StargateMod_Structure_AbydosTemple</li>
+				<li>StargateMod_Structure_IndustrialTown</li>
+				<li>StargateMod_Structure_BarrenGate</li>
+				<li>StargateMod_Structure_BarrenGate</li>
+				<li>StargateMod_Structure_JadeHenge</li>
+				<li>StargateMod_Structure_JadeHenge</li>
+			</structureLayoutDefs>
+		</genStep>
+	</GenStepDef>
+
+</Defs>

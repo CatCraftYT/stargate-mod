@@ -6,10 +6,11 @@
 		<li>1.3</li>
 		<li>1.4</li>
 		<li>1.5</li>
+		<li>1.6</li>
 	</supportedVersions>
-	<packageId>CCYT.StargatesMod</packageId>
+	<packageId>ccyt.stargatesmod</packageId>
 
-	<description>Adds Stargates! That's about it.</description>
+	<description>Adds Stargates! With custom sites that can be discovered and looted, as well as travelled to through them.</description>
 
 	<modDependencies>
 		<li>
@@ -25,4 +26,7 @@
 			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
 		</li>
 	</modDependencies>
+	<loadAfter>
+		<li>oskarpotocki.vanillafactionsexpanded.core</li>
+	</loadAfter>
 </ModMetaData>

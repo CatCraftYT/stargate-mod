@@ -17,11 +17,11 @@ namespace StargatesMod
 
             CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
             sgComp.OpenStargateDelayed(-1, 450);
-            sgComp.ticksSinceBufferUnloaded = -150;
-            sgComp.isRecievingGate = true;
+            sgComp.TicksSinceBufferUnloaded = -150;
+            sgComp.IsReceivingGate = true;
             foreach (Pawn pawn in pawns)
             {
-                sgComp.AddToRecieveBuffer(pawn);
+                sgComp.AddToReceiveBuffer(pawn);
             }
         }
         public override bool TryResolveRaidSpawnCenter(IncidentParms parms)
@@ -29,8 +29,8 @@ namespace StargatesMod
             Map map = (Map)parms.target;
             parms.spawnRotation = Rot4.South;
             Thing stargateOnMap = CompStargate.GetStargateOnMap(map);
-            CompStargate sgComp = stargateOnMap == null ? null : stargateOnMap.TryGetComp<CompStargate>();
-            if (stargateOnMap == null || sgComp == null || sgComp.stargateIsActive)
+            CompStargate sgComp = stargateOnMap?.TryGetComp<CompStargate>();
+            if (stargateOnMap == null || sgComp == null || sgComp.StargateIsActive)
             {
                 parms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn;
                 return parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);

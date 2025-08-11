@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<JobDef>
+		<defName>StargateMod_EnterStargate</defName>
+		<driverClass>StargatesMod.JobDriver_EnterStargate</driverClass>
+		<reportString>entering TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	
+	<JobDef>
+		<defName>StargateMod_DialStargate</defName>
+		<driverClass>StargatesMod.JobDriver_DialStargate</driverClass>
+		<reportString>using TargetA.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	
+	<JobDef>
+		<defName>StargateMod_BringToStargate</defName>
+		<driverClass>StargatesMod.JobDriver_BringToStargate</driverClass>
+		<reportString>bringing TargetA to TargetB.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	
+	<JobDef>
+		<defName>StargateMod_InstallIris</defName>
+		<driverClass>StargatesMod.JobDriver_InstallIris</driverClass>
+		<reportString>installing iris on TargetB.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	
+	<JobDef>
+		<defName>StargateMod_DecodeGlyphs</defName>
+		<driverClass>StargatesMod.JobDriver_DecodeGlyphs</driverClass>
+		<reportString>decoding stargate glyphs.</reportString>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+ 
+</Defs>
