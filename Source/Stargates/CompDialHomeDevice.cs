@@ -99,14 +99,14 @@ namespace StargatesMod
 
 
                 
-                foreach (int i in addressComp.AddressList)
+                foreach (PlanetTile pT in addressComp.AddressList)
                 {
-                    if (i != stargate.GateAddress)
+                    if (pT != stargate.GateAddress)
                     {
-                        MapParent sgMap = Find.WorldObjects.MapParentAt(i);
-                        yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(i), sgMap.Label), () =>
+                        MapParent sgMap = Find.WorldObjects.MapParentAt(pT);
+                        yield return new FloatMenuOption("DialGate".Translate(CompStargate.GetStargateDesignation(pT), sgMap.Label), () =>
                         {
-                            lastDialledAddress = i;
+                            lastDialledAddress = pT;
                             Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), parent);
                             selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                         });
