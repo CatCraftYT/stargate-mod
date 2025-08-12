@@ -23,6 +23,7 @@
 	<IrisStatus>Iris is [{0}]</IrisStatus>
 	<TimeUntilGateLock>Time until lock: {0}</TimeUntilGateLock>
 	
+	<!--Gizmo labels and descriptions-->
 	<OpenCloseIris>Open/close iris</OpenCloseIris>
 	<OpenCloseIrisDesc>Open or close this stargate's iris.</OpenCloseIrisDesc>
 	<CloseStargate>Close stargate</CloseStargate>
@@ -32,11 +33,12 @@
 	<RenameGateSite>Rename stargate site</RenameGateSite>
 	<RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</RenameGateSiteDesc>
 	
+	<!--FloatMenu labels-->
 	<EnterStargateAction>Enter stargate</EnterStargateAction>
 	<EnterStargateWithSelectedAction>Enter stargate with selected</EnterStargateWithSelectedAction>
 	<BringPawnToGateAction>Bring downed pawn to stargate</BringPawnToGateAction>
 	<DialGate>Dial {0} ({1})</DialGate>
 	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
 	<CannotDecodeSGSymbols>Decode symbols (glyph deciphering not researched)</CannotDecodeSGSymbols>
-	
+
 </LanguageData>

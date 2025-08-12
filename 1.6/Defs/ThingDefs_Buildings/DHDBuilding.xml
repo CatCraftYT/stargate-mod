@@ -6,7 +6,8 @@
 		<rotatable>false</rotatable>
 		<minifiedDef>MinifiedThing</minifiedDef>
 		<stealable>false</stealable>
-		<passability>Impassable</passability>
+		<passability>PassThroughOnly</passability>
+		<pathCost>30</pathCost>
 		<constructEffect>ConstructMetal</constructEffect>
 		<uiIconScale>0.65</uiIconScale>
 		<fillPercent>0.40</fillPercent>
@@ -35,7 +36,7 @@
 	<ThingDef ParentName="StargateMod_DHDBase">
 		<defName>StargateMod_DialHomeDevice</defName>
 		<label>dial home device</label>
-		<description>An ancient device used to control a stargate.\n\n"Kind of a ring thing, comes with a dialer, you hit the symbols, it spins around and lights come on, it kind of flushes sideways..."</description>
+		<description>An ancient device that connects to a Stargate, allowing someone to input a series of glyphs that constitute an address. when finished, the connected gate will attempt to connect to a stargate at the selected address.\n\n"Kind of a ring thing, comes with a dialer, you hit the symbols, it spins around and lights come on, it kind of flushes sideways..."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/dhd</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
