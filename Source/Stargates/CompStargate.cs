@@ -450,58 +450,6 @@ namespace StargatesMod
             }
         }
 
-        public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
-        {
-            if (!StargateIsActive || IrisIsActivated || !selPawn.CanReach(parent, PathEndMode.Touch, Danger.Deadly))
-            {
-                yield break;
-            }
-
-            yield return new FloatMenuOption("EnterStargateAction".Translate(), () =>
-            {
-                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), parent);
-                selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-            });
-            yield return new FloatMenuOption("BringPawnToGateAction".Translate(), () =>
-            {
-                TargetingParameters targetingParameters = new TargetingParameters()
-                {
-                    onlyTargetIncapacitatedPawns = true,
-                    canTargetBuildings = false,
-                    canTargetItems = true,
-                };
-
-                Find.Targeter.BeginTargeting(targetingParameters, delegate(LocalTargetInfo t)
-                {
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), t.Thing,
-                        parent);
-                    selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                });
-            });
-        }
-
-        public override IEnumerable<FloatMenuOption> CompMultiSelectFloatMenuOptions(IEnumerable<Pawn> selPawns)
-        {
-            if (!StargateIsActive) yield break;
-
-            List<Pawn> allowedPawns = new List<Pawn>();
-
-            foreach (Pawn selPawn in selPawns)
-            {
-                if (selPawn.CanReach(parent, PathEndMode.Touch, Danger.Deadly))
-                    allowedPawns.Add(selPawn);
-            }
-
-            yield return new FloatMenuOption("EnterStargateWithSelectedAction".Translate(), () =>
-            {
-                foreach (Pawn selPawn in allowedPawns)
-                {
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), parent);
-                    selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                }
-            });
-        }
-
         private void CleanupGate()
         {
             if (_connectedStargate != null) CloseStargate(true);
