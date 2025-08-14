@@ -218,9 +218,9 @@ namespace StargatesMod
         {
             if (address.tileId < 0) return "UnknownLower".Translate();
             Rand.PushState(address.tileId);
-            //pattern: P(num)(char)-(num)(num)(num)
-            string designation =
-                $"P{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}";
+            //pattern: (pLDesignation)(num)(char)-(num)(num)(num)
+            string pLDesignation = address.Layer.Def.isSpace ? "O" : "P"; //Planet layer designation: O for orbit / space, P for planetary / other
+            string designation = $"{pLDesignation}{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}"; 
             Rand.PopState();
             return designation;
         }
