@@ -6,6 +6,8 @@
 	<IrisClosed>CLOSED</IrisClosed>
 	<IrisOpen>OPEN</IrisOpen>
 	
+	<!--Notification message text-->
+	<PocketMapDisallowed>Pocket maps do not support stargate addresses.</PocketMapDisallowed>
 	<OnlyOneSGPerMap>Only one of this kind of building can be built per map.</OnlyOneSGPerMap>
 	<GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</GateDialFailed>
 	<GateIsNotActive>Stargate is not active.</GateIsNotActive>
@@ -13,11 +15,13 @@
 	<CannotDialGateIsActive>Cannot dial: stargate is already active</CannotDialGateIsActive>
 	<CannotDialNoDestinations>Cannot dial: no available destinations</CannotDialNoDestinations>
 	<CannotDialIncoming>Cannot dial: incoming wormhole</CannotDialIncoming>
+	<CannotDialAlreadyDialling>Cannot dial: already dialling gate</CannotDialAlreadyDialling>
 	<CannotDialNoPower>Cannot dial: no power</CannotDialNoPower>
 	<NoGateInCaravan>Stargate required in caravan inventory.</NoGateInCaravan>
 	<BlockedByLandmark>Not allowed on landmarks.</BlockedByLandmark>
 	<RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</RespawnGateString>
-	
+
+	<!--InspectString text-->
 	<GateAddress>Stargate address: {0}</GateAddress>
 	<ConnectedToGate>Connected to stargate: {0} ({1})</ConnectedToGate>
 	<IrisStatus>Iris is [{0}]</IrisStatus>
@@ -39,6 +43,10 @@
 	<BringPawnToGateAction>Bring downed pawn to stargate</BringPawnToGateAction>
 	<DialGate>Dial {0} ({1})</DialGate>
 	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
-	<CannotDecodeSGSymbols>Decode symbols (glyph deciphering not researched)</CannotDecodeSGSymbols>
+	<CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</CannotDecodeSGSymbols>
+	
+	<!--Misc-->
+	<SGM_GeneratingStargateSite>Generating stargate site</SGM_GeneratingStargateSite>
+
 
 </LanguageData>
