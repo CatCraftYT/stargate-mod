@@ -43,8 +43,7 @@
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_Stargate</defName>
 		<label>stargate</label>
-		<description>An ancient device that can connect to other instances of it, allowing near-instantaneous travel between two locations.\nWhen the gate finishes dialling, an 'unstable vortex' briefly emerges from it, vaporizing anything in its path.
-			The wormhole that connects stargate A to stargate B only works in one direction, anything entering an incoming wormhole will never be seen again.\n\n"By the time you get to the other side, you're frozen stiff. Like you'd just been through a blizzard... naked."</description>
+		<description>An ancient device that can connect to other instances of it, allowing near-instantaneous travel between two locations.\n\nWhen the gate finishes dialling, an 'unstable vortex' briefly emerges from it, vaporizing anything in its path.\nThe wormhole that is created can only be travelled in one direction. Anything entering an incoming wormhole will never be seen again.\n\n"By the time you get to the other side, you're frozen stiff. Like you'd just been through a blizzard... naked."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_sg1</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -79,8 +78,7 @@
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_OrlinStargate</defName>
 		<label>makeshift stargate</label>
-		<description>A makeshift version of a Stargate. It has been cobbled together with available resources that limit its stability and functionality, making it need an external power source and only being able to use it once before it detonates. its smaller size precludes it from supporting an iris.
-\n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
+		<description>A makeshift version of the Stargate. It has been cobbled together with available resources that limit its stability and functionality, making it need an external power source and only being useable once before it detonates. its smaller size and instability precludes it from supporting an iris. \n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -135,8 +133,7 @@
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_AdvancedStargate</defName>
 		<label>advanced stargate</label>
-		<description>An advanced version of the original Stargate design. It has been created using extensive research into the inner workings of the original, and unlike it uses materials that are known and (semi-)readily available. The DHD functionality has been built-in.
-\n"Way smarter than we are."</description>
+		<description>An advanced version of the original Stargate design. It has been created using extensive research into the inner workings of the original, and unlike it uses materials that are known and (semi-)readily available. The DHD functionality has been built-in. \n"Way smarter than we are."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
