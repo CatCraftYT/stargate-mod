@@ -36,7 +36,7 @@
 	<ThingDef ParentName="StargateMod_DHDBase">
 		<defName>StargateMod_DialHomeDevice</defName>
 		<label>dial home device</label>
-		<description>An ancient device that connects to a Stargate, allowing someone to input a series of glyphs that constitute an address. when finished, the connected gate will attempt to connect to a stargate at the selected address.\n\n"Kind of a ring thing, comes with a dialer, you hit the symbols, it spins around and lights come on, it kind of flushes sideways..."</description>
+		<description>An ancient device that connects to a Stargate,  allowing the user to enter a series of glyphs that make up a stargate address. when finished, the connected gate will attempt to establish a connection to a stargate at the entered address.\n\n"Kind of a ring thing, comes with a dialer, you hit the symbols, it spins around and lights come on, it kind of flushes sideways..."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/dhd</texPath>
 			<graphicClass>Graphic_Single</graphicClass>

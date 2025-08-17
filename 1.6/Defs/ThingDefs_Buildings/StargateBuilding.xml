@@ -43,7 +43,8 @@
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_Stargate</defName>
 		<label>stargate</label>
-		<description>An ancient device that can connect to other instances of it, allowing near-instantaneous travel between two locations.\n\nWhen the gate finishes dialling, an 'unstable vortex' briefly emerges from it, vaporizing anything in its path.\nThe wormhole that is created can only be travelled in one direction. Anything entering an incoming wormhole will never be seen again.\n\n"By the time you get to the other side, you're frozen stiff. Like you'd just been through a blizzard... naked."</description>
+		<description>An ancient, advanced device allowing near-instantaneous travel between it and another stargate through a wormhole. The gate is controlled and powered with a DHD, allowing the user to enter a series of glyphs that make up a stargate address. After having entered a valid address, the linked gate will start dialling, attempting to establish a connection to a stargate at the entered address.\n\nOnce the dialling procedure is successful the gate will open, briefly lashing out with an 'unstable vortex' that vaporizes anything in a small area directly in front of the gate. When the unstable vortex subsides the gate will be safe to enter.\n\nA stargate's wormhole only allows for one direction of travel, from the outgoing gate to the incoming gate. Anything entering a wormhole from the incoming side has never been seen again, making it imperative that users seeking a return trip re-dial the gate on the way back.
+			\n\n"By the time you get to the other side, you're frozen stiff. Like you'd just been through a blizzard... naked."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_sg1</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -78,7 +79,7 @@
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_OrlinStargate</defName>
 		<label>makeshift stargate</label>
-		<description>A makeshift version of the Stargate. It has been cobbled together with available resources that limit its stability and functionality, making it need an external power source and only being useable once before it detonates. its smaller size and instability precludes it from supporting an iris. \n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
+		<description>A makeshift version of the stargate. Its design is rudimentary and unstable, only allowing for one use before it breaks down completely. It requires an external power source.\nThis model's smaller size precludes it from being fitted with an iris. \n\n"You wouldn't believe the things that you can make from the common, simple items lying around your planet. Which reminds me, you're going to need a new microwave."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -133,7 +134,7 @@
 	<ThingDef ParentName="StargateMod_StargateBase">
 		<defName>StargateMod_AdvancedStargate</defName>
 		<label>advanced stargate</label>
-		<description>An advanced version of the original Stargate design. It has been created using extensive research into the inner workings of the original, and unlike it uses materials that are known and (semi-)readily available. The DHD functionality has been built-in. \n"Way smarter than we are."</description>
+		<description>An advanced version of the stargate, built with extensive research into the original design and how to replicate the functionality using more available resources than those the original stargates are built with.\n\nIt features an integrated interface on its side, allowing a user to dial without needing an external DHD. \n\n"Way smarter than we are."</description>
 		<graphicData>
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
