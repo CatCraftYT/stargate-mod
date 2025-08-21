@@ -15,24 +15,33 @@ namespace StargatesMod
             sb.Append("GateAddress".Translate(CompStargate.GetStargateDesignation(site.Tile)));
             return sb.ToString();
         }
-
+ 
         public override void PostMapGenerate(Map map)
         {
             base.PostMapGenerate(map);
             if (map == null) { Log.Error("SitePartWorker map was null on PostMapGenerate. That makes no sense."); return; }
             Thing gateOnMap = CompStargate.GetStargateOnMap(map);
-            var VortexCells = gateOnMap.TryGetComp<CompStargate>().VortexCells;
+            CompStargate gateComp = gateOnMap.TryGetComp<CompStargate>();
+            
+            var vortexCells = gateComp.VortexCells;
+            var gateCells = GenRadial.RadialCellsAround(gateOnMap.InteractionCell, 11, true).ToList();
 
             //move pawns away from vortex
+            if (Prefs.LogVerbose) Log.Message($"StargatesMod: Moving pawns away from stargate vortex..");
             foreach (Pawn pawn in map.mapPawns.AllPawns)
             {
                 Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
-                var cells = GenRadial.RadialCellsAround(pawn.Position, 9, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !VortexCells.Contains(c));
+                if (!gateCells.Contains(pawn.Position)) continue;
+                
+                var cells = GenRadial.RadialCellsAround(pawn.Position, 9, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !vortexCells.Contains(c));
                 var cellsList = cells.ToList();
                 if (!cellsList.Any()) continue;
+                    
+                if (Prefs.LogVerbose) Log.Message($"StargatesMod: Pawn {pawn} position is {pawn.Position}");
                 pawn.Position = cellsList.RandomElement();
                 pawn.pather.StopDead();
                 pawn.jobs.StopAll();
+                if (Prefs.LogVerbose) Log.Message($"StargatesMod: Moved {pawn} away from stargate vortex to {pawn.Position}");
             }
             
             //Fix stackCounts of certain items (especially things certain cases with stack increasing mods)
