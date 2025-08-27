@@ -40,7 +40,7 @@
 	<!--FloatMenu labels-->
 	<EnterStargateAction>Enter stargate</EnterStargateAction>
 	<EnterStargateWithSelectedAction>Enter stargate with selected</EnterStargateWithSelectedAction>
-	<BringPawnToGateAction>Bring downed pawn to stargate</BringPawnToGateAction>
+	<BringThingToGateAction>Bring item or pawn to stargate</BringThingToGateAction>
 	<DialGate>Dial {0} ({1})</DialGate>
 	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
 	<CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</CannotDecodeSGSymbols>

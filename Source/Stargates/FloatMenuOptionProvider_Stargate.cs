@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RimWorld;
 using Verse;
@@ -59,13 +60,28 @@ namespace StargatesMod
                 }, MenuOptionPriority.High);
 
                 
-                yield return new FloatMenuOption("BringPawnToGateAction".Translate(), () =>
+                yield return new FloatMenuOption("BringThingToGateAction".Translate(), () =>
                 {
                     TargetingParameters targetingParameters = new TargetingParameters()
-                    {
-                       onlyTargetIncapacitatedPawns = true,
-                       canTargetBuildings = false,
-                       canTargetItems = true,
+                    { 
+                        canTargetSelf = false,
+                        onlyTargetIncapacitatedPawns = false,
+                        canTargetBuildings = false,
+                        canTargetItems = true,
+                        canTargetAnimals = true,
+                        mapObjectTargetsMustBeAutoAttackable = false,
+                        validator = (Predicate<TargetInfo>) (targ =>
+                        {
+                            if (!targ.HasThing)
+                                return false;
+                            if (targ.Thing is Pawn && targ.Thing == context.FirstSelectedPawn)
+                                return false;
+                            if (targ.Thing is Pawn targ2 && targ.Thing.Faction != Faction.OfPlayer && !targ2.IsPrisonerOfColony)
+                                return false;
+                            if (!(targ.Thing is Pawn) && targ.Thing.def.category != ThingCategory.Item)
+                                return false;
+                            return true;
+                        })
                     };
                 
                     Find.Targeter.BeginTargeting(targetingParameters, delegate (LocalTargetInfo t)
