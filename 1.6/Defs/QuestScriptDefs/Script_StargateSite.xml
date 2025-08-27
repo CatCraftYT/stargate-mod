@@ -84,7 +84,7 @@
 				</li>
 				
 				<li Class="QuestNode_Delay">
-					<delayTicks>15</delayTicks>
+					<delayTicks>1</delayTicks>
 					<outSignalComplete>correctSiteName</outSignalComplete>
 				</li>
 				<li Class="StargatesMod.QuestNode_CorrectSiteName">

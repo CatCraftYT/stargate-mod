@@ -24,12 +24,12 @@ namespace StargatesMod
             }
         }
 
-        public override void ExposeData()
+        /*public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref inSignal, "inSignal");
             Scribe_Values.Look(ref site, "site");
             Scribe_Values.Look(ref quest, "quest");
-        }
+        }*/
     }
 }
