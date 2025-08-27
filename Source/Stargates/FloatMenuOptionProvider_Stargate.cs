@@ -49,7 +49,10 @@ namespace StargatesMod
 
             if (!tmpStargateEnteringPawns.NullOrEmpty())
             {
-                yield return new FloatMenuOption("EnterStargateAction".Translate(), delegate
+                String enterStargateLabel = "EnterStargateAction".Translate();
+                if (context.IsMultiselect) enterStargateLabel = "EnterStargateWithSelectedAction".Translate();
+                
+                yield return new FloatMenuOption(enterStargateLabel, delegate
                 {
                     foreach (Pawn tmpStargateEnteringPawn in tmpStargateEnteringPawns)
                     {
