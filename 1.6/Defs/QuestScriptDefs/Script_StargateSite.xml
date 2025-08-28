@@ -83,6 +83,15 @@
 					<remove>false</remove>
 				</li>
 				
+				<li Class="QuestNode_Delay">
+					<delayTicks>1</delayTicks>
+					<outSignalComplete>correctSiteName</outSignalComplete>
+				</li>
+				<li Class="StargatesMod.QuestNode_CorrectSiteName">
+					<site>$site</site>
+					<inSignal>correctSiteName</inSignal>
+				</li>
+				
 				<li Class="QuestNode_WorldObjectTimeout">
 					<worldObject>$site</worldObject>
 					<isQuestTimeout>true</isQuestTimeout>

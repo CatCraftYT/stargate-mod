@@ -4,6 +4,8 @@
 	<ResearchTabDef>
 		<defName>StargateMod_ResearchTab</defName>
 		<label>Stargates</label>
+		<generalTitle>Stargate research projects</generalTitle>
+		<generalDescription>Research projects relating to the Stargate.</generalDescription>
 	</ResearchTabDef>
 	
 	<ResearchProjectDef Name="StargateMod_ResearchBase" Abstract="True">
