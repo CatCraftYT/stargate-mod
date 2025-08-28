@@ -325,19 +325,13 @@ namespace StargatesMod
             {
                 if (!IsReceivingGate)
                 {
-                    for (int i = 0; i <= _sendBuffer.Count; i++)
-                    {
-                        sgComp.AddToReceiveBuffer(_sendBuffer[i]);
-                        _sendBuffer.Remove(_sendBuffer[i]);
-                    }
+                    sgComp.AddToReceiveBuffer(_sendBuffer[0]);
+                    _sendBuffer.Remove(_sendBuffer[0]);
                 }
                 else
                 {
-                    for (int i = 0; i <= _sendBuffer.Count; i++)
-                    {
-                        _sendBuffer[i].Kill();
-                        _sendBuffer.Remove(_sendBuffer[i]);
-                    }
+                    _sendBuffer[0].Kill();
+                    _sendBuffer.Remove(_sendBuffer[0]);
                 }
             }
 
