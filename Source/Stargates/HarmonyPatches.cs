@@ -116,15 +116,11 @@ namespace StargatesMod
         static bool Prefix(ref IEnumerable<FloatMenuOption> __result, Thing clickedThing, FloatMenuContext context)
         {
             CompStargate sgComp = clickedThing.TryGetComp<CompStargate>();
-            FloatMenuOption option = null;
-            CompTransporter transporter = clickedThing.TryGetComp<CompTransporter>();
+            FloatMenuOption option;
             Pawn selPawn = context.FirstSelectedPawn;
             Pawn carriedPawn = (Pawn)context.FirstSelectedPawn.carryTracker.CarriedThing;
             
-            if (sgComp == null)
-            {
-                return true;
-            }
+            if (sgComp == null) return true;
 
             if (sgComp.StargateIsActive)
             {
@@ -139,7 +135,8 @@ namespace StargatesMod
                 return false;
             }
 
-            __result = null;
+            /*Can't figure out how to not display a floatMenuOption without a NullRefException, so this's fine I guess*/
+            __result = new [] { new FloatMenuOption("CarryHeldToStargateAction_Disabled".Translate(), null) };
             return false;
         }
     }

@@ -78,7 +78,7 @@ namespace StargatesMod
                 
                 LongEventHandler.QueueLongEvent(delegate
                 {
-                    GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap is WorldObject_PermSGSite ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, null);
+                    GetOrGenerateMapUtility.GetOrGenerateMap(connectedMap.Tile, connectedMap is WorldObject_PermSGSite ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, connectedMap.def);
                 }, "SGM_GeneratingStargateSite", doAsynchronously: false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap, callback: delegate
                 {
                     if (Prefs.LogVerbose) Log.Message($"StargatesMod: finished generating map");
