@@ -7,6 +7,7 @@ using RimWorld;
 using UnityEngine;
 using RimWorld.Planet;
 using Verse;
+using Verse.AI;
 
 namespace StargatesMod
 {
@@ -102,6 +103,44 @@ namespace StargatesMod
             else if (__instance.Tile.Tile.Landmark != null) command.Disable("BlockedByLandmark".Translate());
             else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) command.Disable(reason.ToString());
             yield return command;
+        }
+    }
+
+
+    [HarmonyPatch(typeof(FloatMenuOptionProvider_CarryingPawn))]
+    [HarmonyPatch(nameof(FloatMenuOptionProvider_CarryingPawn.GetOptionsFor))]
+    class FixCarryToTransporterForStargate
+    {
+        /*FloatMenuOptionProvider_CarryPawn adds a "Carry [Pawn] to [Thing]" option to any thing that has a CompTransporter, which doesn't work great with stargates because of the kinda unconventional way the CompStargate code utilizes the CompTransporter.
+         This Harmony Prefix makes it not appear if the stargate is not active, and makes sure it actually works when the stargate is active.*/
+        static bool Prefix(ref IEnumerable<FloatMenuOption> __result, Thing clickedThing, FloatMenuContext context)
+        {
+            CompStargate sgComp = clickedThing.TryGetComp<CompStargate>();
+            FloatMenuOption option = null;
+            CompTransporter transporter = clickedThing.TryGetComp<CompTransporter>();
+            Pawn selPawn = context.FirstSelectedPawn;
+            Pawn carriedPawn = (Pawn)context.FirstSelectedPawn.carryTracker.CarriedThing;
+            
+            if (sgComp == null)
+            {
+                return true;
+            }
+
+            if (sgComp.StargateIsActive)
+            {
+                option = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption("CarryHeldToStargateAction".Translate(carriedPawn, clickedThing), delegate
+                {
+                    selPawn.carryTracker.TryDropCarriedThing(selPawn.Position, ThingPlaceMode.Near, out var targPawn);
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), targPawn, clickedThing);
+                    selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                }), selPawn, clickedThing);
+
+                __result = new[] { option };
+                return false;
+            }
+
+            __result = null;
+            return false;
         }
     }
 }

@@ -41,6 +41,7 @@
 	<EnterStargateAction>Enter stargate</EnterStargateAction>
 	<EnterStargateWithSelectedAction>Enter stargate with selected</EnterStargateWithSelectedAction>
 	<BringThingToGateAction>Bring item or pawn to stargate</BringThingToGateAction>
+	<CarryHeldToStargateAction>Carry {0} to {1}</CarryHeldToStargateAction>
 	<DialGate>Dial {0} ({1})</DialGate>
 	<DecodeSGSymbols>Decode symbols</DecodeSGSymbols>
 	<CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</CannotDecodeSGSymbols>
