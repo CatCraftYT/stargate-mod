@@ -10,7 +10,8 @@ namespace StargatesMod
 {
     public class JobDriver_EnterStargate : JobDriver
     {
-        private const TargetIndex stargateToEnter = TargetIndex.A;
+        private const TargetIndex stargateTarg = TargetIndex.A;
+        private const TargetIndex carriedPawnTarg = TargetIndex.B; // Optional
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
@@ -19,15 +20,31 @@ namespace StargatesMod
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
-            this.FailOnDestroyedOrNull(stargateToEnter);
-            this.FailOn(() => !job.GetTarget(stargateToEnter).Thing.TryGetComp<CompStargate>().StargateIsActive);
+            this.FailOnDestroyedOrNull(stargateTarg);
+            this.FailOn(() => !job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>().StargateIsActive);
 
-            yield return Toils_Goto.GotoCell(job.GetTarget(stargateToEnter).Thing.InteractionCell, PathEndMode.OnCell);
+            CompStargate gateComp = job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>();
+            Pawn carriedPawn = (Pawn)job.GetTarget(carriedPawnTarg).Thing;
+            bool carryPawnToGate = carriedPawn != null;
+            
+            if (carryPawnToGate) yield return Toils_Haul.StartCarryThing(carriedPawnTarg);
+            
+            yield return Toils_Goto.GotoCell(job.GetTarget(stargateTarg).Thing.InteractionCell, PathEndMode.OnCell);
+            if (carryPawnToGate)
+            {
+                yield return new Toil
+                {
+                    initAction = () =>
+                    {
+                        pawn.carryTracker.innerContainer.Remove(carriedPawn);
+                        gateComp.AddToSendBuffer(carriedPawn);
+                    }
+                };
+            }
             yield return new Toil
             {
                 initAction = () =>
                 {
-                    CompStargate gateComp = job.GetTarget(stargateToEnter).Thing.TryGetComp<CompStargate>();
                     pawn.DeSpawn();
                     gateComp.AddToSendBuffer(pawn);
                 }
