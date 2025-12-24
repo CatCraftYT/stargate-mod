@@ -6,6 +6,7 @@ using System.Text;
 using StargatesMod.Mod_Settings;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using Verse.Sound;
 
 namespace StargatesMod
@@ -130,11 +131,11 @@ namespace StargatesMod
 
                     FinishDiallingStargate(address, connectedMapParent);
                 }); 
-            }
-            else
-            {
-                FinishDiallingStargate(address, connectedMapParent);
-            }
+             }
+             else
+             {
+                 FinishDiallingStargate(address, connectedMapParent);
+             }
          }
         
         public void OpenStargate(int mapIndex) //Pocket Map
@@ -766,7 +767,7 @@ namespace StargatesMod
                 {
                     Command_Action command = new Command_Action
                     {
-                        defaultLabel = "SGM>TransmitGDO".Translate(),
+                        defaultLabel = "SGM.TransmitGDO".Translate(),
                         defaultDesc = "SGM.TransmitGDODesc".Translate(),
                         icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateTransmitGDO"),
                         action = delegate
