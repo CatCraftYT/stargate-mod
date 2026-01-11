@@ -34,21 +34,30 @@
 	<!--Gizmo labels and descriptions-->
 	<SGM.WakeHibernation>Wake from hibernation</SGM.WakeHibernation>
 	<SGM.WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</SGM.WakeHibernationDesc>
+    
     <SGM.OpenCloseIris>Open/close iris</SGM.OpenCloseIris>
     <SGM.OpenCloseIrisDesc>Open or close this stargate's iris.</SGM.OpenCloseIrisDesc>
+    
     <SGM.CloseStargate>Close stargate</SGM.CloseStargate>
     <SGM.CloseStargateDesc>Close the linked stargate.</SGM.CloseStargateDesc>
+    
     <SGM.CreateSGSite>Create new stargate site</SGM.CreateSGSite>
     <SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
+    
     <SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
     <SGM.RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM.RenameGateSiteDesc>
+    
+    <SGM.TransmitGDO>Transmit GDO code</SGM.TransmitGDO>
     <SGM.TransmitGDODesc>Transmit an identification code through the gate, identifying yourself and opening the iris on your stargate.</SGM.TransmitGDODesc>
+    
+    <SGM.SelectConnectedGate>View connected gate</SGM.SelectConnectedGate>
     <SGM.SelectConnectedGateDesc>View the gate on the other side of the wormhole connection.</SGM.SelectConnectedGateDesc>
+    
     <SGM.SelectGateConflict>View conflicting gate</SGM.SelectGateConflict>
     <SGM.SelectGateConflictDesc>View the active stargate that is preventing this gate from waking. Uninstall or deconstruct the awake gate to enable waking this gate.</SGM.SelectGateConflictDesc>
 	
 	<!--Gizmo disabled messages-->
-	<CannotGDO>Iris is already open.</CannotGDO>
+	<SGM.CannotGDO>Iris is already open.</SGM.CannotGDO>
 	
 	<!--FloatMenu labels-->
 	<SGM.EnterStargateAction>Enter stargate</SGM.EnterStargateAction>
