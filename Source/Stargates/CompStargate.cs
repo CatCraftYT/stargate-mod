@@ -39,7 +39,7 @@ namespace StargatesMod
         Thing _connectedStargate;
 
         private int _checkVortexPawnsTick = -1;
-        private const int _checkVortexPawnsDelayTick = 120;
+        private const int _checkVortexPawnsDelayTick = 30;
         private List<Pawn> _pawnsWatchingStargate;
         
         private Sustainer _puddleSustainer;
@@ -447,22 +447,19 @@ namespace StargatesMod
         {
             if (_pawnsWatchingStargate == null) _pawnsWatchingStargate = new List<Pawn>();
             var radialCenter = parent.Position + new IntVec3(0, 0, -1).RotatedBy(parent.Rotation);
-            var cells = GenRadial.RadialCellsAround(radialCenter, 5, true).ToList();
+            var cells = GenRadial.RadialCellsAround(radialCenter, 4, true).ToList();
             Map map = parent.Map;
             
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"StargatesMod: Checking on pawns in stargate danger zone.. (on TicksUntilOpen {TicksUntilOpen})");
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"StargatesMod: check radius center cell = {radialCenter}");
             
-            foreach (IntVec3 pos in cells)
+            foreach (var thing in cells.SelectMany(pos => map.thingGrid.ThingsAt(pos)))
             {
-                foreach (Thing thing in map.thingGrid.ThingsAt(pos))
-                {
-                    Pawn pawn = thing as Pawn;
-                    if (pawn == null || _pawnsWatchingStargate.Contains(pawn) || pawn.Drafted) continue;
+                if (!(thing is Pawn pawn) || _pawnsWatchingStargate.Contains(pawn) || pawn.Drafted) continue;
                     
-                    Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
-                    var pawnCells = GenRadial.RadialCellsAround(pawn.Position, 3, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !VortexCells.Contains(c)).ToList();
-                    if (!pawnCells.Any()) continue;
+                Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
+                var pawnCells = GenRadial.RadialCellsAround(pawn.Position, 4, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !VortexCells.Contains(c)).ToList();
+                if (!pawnCells.Any()) continue;
                     
                 pawn.jobs.StopAll();
                 pawn.pather.StopDead();
@@ -538,30 +535,32 @@ namespace StargatesMod
         public override void CompTick()
         {
             base.CompTick();
-            if (TicksUntilOpen > 0)
-            {
-                // Make pawns avoid vortex ?
-                if (!IrisIsActivated)
-                {
-                    if (_checkVortexPawnsTick < 0) _checkVortexPawnsTick = TicksUntilOpen;
-                    if (TicksUntilOpen == _checkVortexPawnsTick)
-                    {
-                        CheckVortexPawns();
-                        _checkVortexPawnsTick -= _checkVortexPawnsDelayTick;
-                        if (_checkVortexPawnsTick < 0) _checkVortexPawnsTick = 0;
-                    }
-                }
-                
+            if (TicksUntilOpen > 0) 
                 GateDialTick();
+            
+            
+            /*if (!IrisIsActivated && (TicksUntilOpen == 120 || TicksUntilOpen == 0 || TicksSinceOpened == 50))
+                CheckVortexPawns();*/
+
+            //TODO Test
+            if (!IrisIsActivated)
+            {
+                if (TicksUntilOpen > -1 && _checkVortexPawnsTick < 0 && TicksUntilOpen < 120) _checkVortexPawnsTick = TicksUntilOpen;
+                if (TicksUntilOpen == _checkVortexPawnsTick || TicksSinceOpened == 30)
+                {
+                    CheckVortexPawns();
+                    _checkVortexPawnsTick = TicksUntilOpen - _checkVortexPawnsDelayTick;
+                }
             }
 
             if (!StargateIsActive) return;
+            
             if (!IrisIsActivated && TicksSinceOpened < 150 && TicksSinceOpened % 10 == 0)
                 DoUnstableVortex();
-
+            
             if (parent.Fogged()) FloodFillerFog.FloodUnfog(parent.Position, parent.Map);
-
-            if (_pawnsWatchingStargate.Any()) EndStargateWatching();
+            
+            if (_pawnsWatchingStargate != null && _pawnsWatchingStargate.Any() && TicksSinceOpened == 210 ) EndStargateWatching();
             
             CompStargate sgComp = _connectedStargate.TryGetComp<CompStargate>();
             CompTransporter transComp = parent.GetComp<CompTransporter>();
