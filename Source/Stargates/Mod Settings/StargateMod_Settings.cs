@@ -7,11 +7,13 @@ namespace StargatesMod.Mod_Settings
     {
         /*Mod Settings*/
         public bool ShortenGateDialSeq = false;
+        public bool DebugMode = false;
 
         /*Write Settings to file*/
         public override void ExposeData()
         {
             Scribe_Values.Look(ref ShortenGateDialSeq, "ShortenGateDialSeq");
+            Scribe_Values.Look(ref DebugMode, "DebugMode");
             base.ExposeData();
         }
     }

@@ -24,9 +24,9 @@ namespace StargatesMod.Mod_Settings
             
             /*Section 1*/
             Listing_Standard sec1 = listingStandard.BeginSection(150);
-            sec1.Label("SGM_SettingsCat_Main".Translate());
+            sec1.Label("SGM.SettingsCat.Options".Translate());
             sec1.GapLine();
-            sec1.CheckboxLabeled("ShortenDialSeqLabel".Translate(), ref _settings.ShortenGateDialSeq, "ShortenDialSeqTT".Translate());
+            sec1.CheckboxLabeled("SGM.ShortenDialSeq.Label".Translate(), ref _settings.ShortenGateDialSeq, "SGM.ShortenDialSeq.TT".Translate());
             /*sec1.Label("Setting2");
             sec1.Label("Setting3");
             sec1.Label("Setting4");*/
@@ -34,24 +34,21 @@ namespace StargatesMod.Mod_Settings
 
             listingStandard.Gap();
             
-            /*/*Section 2#1#
-            Listing_Standard sec2 = listingStandard.BeginSection(150);
-            sec2.Label("Test Section 2");
+            /*Section 2*/
+            Listing_Standard sec2 = listingStandard.BeginSection(75);
+            sec2.Label("SGM.SettingsCat.Debug".Translate());
             sec2.GapLine();
-            sec2.Label("Setting1");
-            sec2.Label("Setting2");
-            sec2.Label("Setting3");
-            sec2.Label("Setting4");
+            sec2.CheckboxLabeled("SGM.DebugMode.Label".Translate(), ref _settings.DebugMode, "SGM.DebugMode.TT".Translate());
             listingStandard.EndSection(sec2);
             
-            listingStandard.Gap();*/
+            listingStandard.Gap();
             
             /*Toggleable patches notice*/
-            Listing_Standard SecTP = listingStandard.BeginSection(75);
-            SecTP.Label("SGM_ToggleablePatchesHeader".Translate());
-            SecTP.GapLine();
-            SecTP.Label("SGM_ToggleablePatchesText".Translate());
-            listingStandard.EndSection(SecTP);
+            Listing_Standard secTp = listingStandard.BeginSection(75);
+            secTp.Label("SGM.ToggleablePatches.Header".Translate());
+            secTp.GapLine();
+            secTp.Label("SGM.ToggleablePatches.Text".Translate());
+            listingStandard.EndSection(secTp);
             
             listingStandard.End();
             base.DoSettingsWindowContents(inRect);
@@ -60,7 +57,7 @@ namespace StargatesMod.Mod_Settings
         /*Settings mod label*/
         public override string SettingsCategory()
         {
-            return "SGM_StargatesMod".Translate();
+            return "StargatesMod".Translate();
         }
     }
 }

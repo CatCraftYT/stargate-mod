@@ -82,12 +82,17 @@
     
 	<!-- == Settings keys == -->
 	<!--Settings Categories-->
-	<SettingsCat_Main>Options</SettingsCat_Main>
+	<SGM.SettingsCat.Options>Options</SGM.SettingsCat.Options>
+    <SGM.SettingsCat.Debug>Debug</SGM.SettingsCat.Debug>
 	
 	<!--Settings labels and tooltips-->
-	<!--.....-->
+	<SGM.ShortenDialSeq.Label>Shorten gate dial sequence</SGM.ShortenDialSeq.Label>
+    <SGM.ShortenDialSeq.TT>Shorten the time it takes for the gate to dial an address.</SGM.ShortenDialSeq.TT>
 	
+    <SGM.DebugMode.Label>Debug mode</SGM.DebugMode.Label>
+    <SGM.DebugMode.TT>Enable debug mode, for troubleshooting</SGM.DebugMode.TT>
+    
 	<!--Toggleable patches notice-->
-	<ToggleablePatchesHeader>Optional Patches</ToggleablePatchesHeader>
-	<ToggleablePatchesText>Optional patch-based settings from this mod can be found in the Vanilla Expanded Framework settings, under "Toggleable Patches"</ToggleablePatchesText>
+	<SGM.ToggleablePatches.Header>Optional Patches</SGM.ToggleablePatches.Header>
+	<SGM.ToggleablePatches.Text>Optional patch-based settings from this mod can be found in the Vanilla Expanded Framework settings, under "Toggleable Patches"</SGM.ToggleablePatches.Text>
 </LanguageData>

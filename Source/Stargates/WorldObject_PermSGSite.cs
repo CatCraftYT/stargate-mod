@@ -5,6 +5,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using RimWorld.Planet;
+using StargatesMod.Mod_Settings;
 
 namespace StargatesMod
 {
@@ -13,6 +14,8 @@ namespace StargatesMod
         public string SiteName;
         public ThingDef GateDef = ThingDef.Named("StargateMod_Stargate");
         public ThingDef DhdDef = ThingDef.Named("StargateMod_DialHomeDevice");
+        
+        private readonly StargatesMod_Settings _settings = LoadedModManager.GetMod<StargatesMod_Mod>().GetSettings<StargatesMod_Settings>();
 
         public override string Label => SiteName ?? base.Label;
 
@@ -73,7 +76,7 @@ namespace StargatesMod
 
             Thing gateOnMap = CompStargate.GetStargateOnMap(Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(Map);
-            if (Prefs.LogVerbose) Log.Message($"StargatesMod: perm sg site post map gen: dhddef={DhdDef} gatedef={GateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}");
+            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"StargatesMod: perm sg site post map gen: dhddef={DhdDef} gatedef={GateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}");
             
             if (gateOnMap != null)
             {
@@ -105,7 +108,7 @@ namespace StargatesMod
             DhdDef = dhdOnMap?.def;
             GateDef = gateOnMap?.def;
             
-            if (Prefs.LogVerbose) Log.Message($"StargatesMod: perm map about to be removed: dhddef={DhdDef} gatedef={GateDef}");
+            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"StargatesMod: perm map about to be removed: dhddef={DhdDef} gatedef={GateDef}");
         }
 
         public override void Notify_MyMapRemoved(Map map)
