@@ -71,25 +71,7 @@ namespace StargatesMod
         {
             get
             {
-                //TODO Improve?
-                Rot4 rot = parent.Rotation;
-                if (rot == Rot4.North)
-                {
-                    foreach (IntVec3 offset in Props.vortexPattern_north) yield return offset + parent.Position;
-                }
-                else if (rot == Rot4.South)
-                {
-                    foreach (IntVec3 offset in Props.vortexPattern_south) yield return offset + parent.Position;
-                }
-                else if (rot == Rot4.East)
-                {
-                    foreach (IntVec3 offset in Props.vortexPattern_east) yield return offset + parent.Position;
-                }
-                else if (rot == Rot4.West)
-                {
-                    foreach (IntVec3 offset in Props.vortexPattern_west) yield return offset + parent.Position;
-                }
-                
+                foreach (IntVec3 offset in Props.vortexPattern) yield return parent.Position + offset.RotatedBy(parent.Rotation);
             }
         }
 
@@ -328,16 +310,10 @@ namespace StargatesMod
         private void DoUnstableVortex()
         {
             List<Thing> excludedThings = new List<Thing> { parent };
+            List<IntVec3> vortexPattern = Props.vortexPattern.Select(pos => pos.RotatedBy(parent.Rotation)).ToList();
             
-            List<IntVec3> vortexPattern = new List<IntVec3>();
-            Rot4 rot = parent.Rotation;
-            if (rot == Rot4.North) vortexPattern = Props.vortexPattern_north;
-            if (rot == Rot4.South) vortexPattern = Props.vortexPattern_south;
-            if (rot == Rot4.East) vortexPattern = Props.vortexPattern_east;
-            if (rot == Rot4.West) vortexPattern = Props.vortexPattern_west;
-            
-            excludedThings.AddRange(from pos in vortexPattern 
-                from thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos) 
+            excludedThings.AddRange(from pos in vortexPattern
+                from thing in parent.Map.thingGrid.ThingsAt(pos) 
                 where thing.def.passability == Traversability.Standable select thing);
             
             /*List<ThingDef> destroySpecial = new List<ThingDef>(); // TODO ADD
@@ -903,7 +879,7 @@ namespace StargatesMod
         public string irisTexture;
         public Vector2 puddleDrawSize;
 
-        public List<IntVec3> vortexPattern_north = new List<IntVec3>
+        public List<IntVec3> vortexPattern = new List<IntVec3>
         {
             new IntVec3(0, 0, 1),
             new IntVec3(1, 0, 1),
@@ -919,66 +895,6 @@ namespace StargatesMod
             new IntVec3(-1, 0, -2),
             new IntVec3(0, 0, -3)
         };
-        
-        public List<IntVec3> vortexPattern_south = new List<IntVec3>
-        {
-            new IntVec3(0, 0, -1),
-            new IntVec3(1, 0, -1),
-            new IntVec3(-1, 0, -1),
-            new IntVec3(0, 0, 0),
-            new IntVec3(1, 0, 0),
-            new IntVec3(-1, 0, 0),
-            new IntVec3(0, 0, 1),
-            new IntVec3(1, 0, 1),
-            new IntVec3(-1, 0, 1),
-            new IntVec3(0, 0, 2),
-            new IntVec3(1, 0, 2),
-            new IntVec3(-1, 0, 2),
-            new IntVec3(0, 0, 3)
-        };
-        
-        public List<IntVec3> vortexPattern_east = new List<IntVec3>
-        {
-            new IntVec3(1, 0, 0),
-            new IntVec3(1, 0, 1),
-            new IntVec3(1, 0, -1),
-            
-            new IntVec3(0, 0, 0),
-            new IntVec3(0, 0, 1),
-            new IntVec3(0, 0, -1),
-            
-            new IntVec3(-1, 0, 0),
-            new IntVec3(-1, 0, 1),
-            new IntVec3(-1, 0, -1),
-            
-            new IntVec3(-2, 0, 0),
-            new IntVec3(-2, 0, 1), 
-            new IntVec3(-2, 0, -1),
-            
-            new IntVec3(-3, 0, 0)
-        };
-        
-        public List<IntVec3> vortexPattern_west = new List<IntVec3>
-        {
-            new IntVec3(-1, 0, 0),
-            new IntVec3(-1, 0, 1),
-            new IntVec3(-1, 0, -1),
-            
-            new IntVec3(0, 0, 0),
-            new IntVec3(0, 0, 1),
-            new IntVec3(0, 0, -1),
-            
-            new IntVec3(1, 0, 0),
-            new IntVec3(1, 0, 1),
-            new IntVec3(1, 0, -1),
-            
-            new IntVec3(2, 0, 0),
-            new IntVec3(2, 0, 1), 
-            new IntVec3(2, 0, -1),
-            
-            new IntVec3(3, 0, 0)
-        };
-
     }
 }
 

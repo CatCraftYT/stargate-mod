@@ -28,7 +28,7 @@ namespace StargatesMod
             // If self-dialler, make pawn initiate dial from the (left) side instead of the center
             int subX = dhdComp.parent.def.size.x / 2;
             if (dhdComp.Props.selfDialler)
-                targetCell = job.GetTarget(targetDHD).Thing.InteractionCell + new IntVec3(-subX, 0, 0);
+                targetCell = job.GetTarget(targetDHD).Thing.InteractionCell + new IntVec3(-subX, 0, 0).RotatedBy(dhdComp.GetLinkedStargateComp().parent.Rotation);
             
             
             
