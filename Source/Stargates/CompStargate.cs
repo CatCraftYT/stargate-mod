@@ -93,7 +93,7 @@ namespace StargatesMod
         {
              if (_queuedAddressPocketMap > -1)
              {
-                 Log.Error($"StargatesMod: Tried opening stargate with regular address but a pocketmap address was queued - in CompStargate");
+                 Log.Error($"StargatesMod: Tried opening stargate with regular address but a pocketmap address was queued");
                  _queuedAddress = -1;
                  _queuedAddressPocketMap = -1;
                  return;
@@ -486,14 +486,10 @@ namespace StargatesMod
         private void WormholeContentDisposal(bool isRecvBuffer)
         {
             Thing thingToDestroy = isRecvBuffer ? _recvBuffer[0] : _sendBuffer[0];
-            if (thingToDestroy is Pawn pawn)
-            {
-                // Remove death refusal hediff (if present) before killing pawn, to avoid error.
-                foreach (var hediff in pawn.health.hediffSet.hediffs.ToList().Where(hediff => hediff.def.defName == "DeathRefusal"))
-                {
-                    pawn.health.RemoveHediff(hediff);
-                }
-            }
+            
+            //Remove deathRefusal hediff to avoid error
+            if (thingToDestroy is Pawn pawn && pawn.health.hediffSet.HasHediff(HediffDefOf.DeathRefusal))
+                pawn.health.RemoveHediff(pawn.health.hediffSet.hediffs.Find(hediff  => hediff is Hediff_DeathRefusal));
             
             DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
 
@@ -598,41 +594,14 @@ namespace StargatesMod
                     PlayTeleportSound();
                 }
                 else WormholeContentDisposal(true);
-
-                if (sgComp.IsInPocketMap)
-                {
-                    if (_connectedAddressPocketMap == -1 && !_recvBuffer.Any())
-                    {
-                        CloseStargate(false);
-                    }
-                }
-                else
-                {
-                    if (_connectedAddress == -1 && !_recvBuffer.Any())
-                    {
-                        CloseStargate(false);
-                    }
-                }
-
-                TicksSinceBufferUnloaded++;
-                TicksSinceOpened++;
-                if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
-                    CloseStargate(true);
-            }
-
-            if (sgComp.IsInPocketMap)
-            {
-                if (_connectedAddressPocketMap == -1 && !_recvBuffer.Any())
-                    CloseStargate(false);
-            }
-            else
-            {
-                if (_connectedAddress == -1 && !_recvBuffer.Any())
-                    CloseStargate(false);
             }
 
             TicksSinceBufferUnloaded++;
             TicksSinceOpened++;
+            
+            if (_connectedAddress == -1 && _connectedAddressPocketMap == -1  && !_recvBuffer.Any())
+                CloseStargate(false);
+            
 
             if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
                 CloseStargate(true);
@@ -646,16 +615,11 @@ namespace StargatesMod
             
             if (StargateIsActive)
             {
-                if (IsInPocketMap)
-                {
-                    if (_connectedStargate == null && _connectedAddressPocketMap != -1)
-                        _connectedStargate = GetStargateOnMap(Find.Maps[_connectedAddressPocketMap]);
-                }
-                else
-                {
-                    if (_connectedStargate == null && _connectedAddress != -1)
-                        _connectedStargate = GetStargateOnMap(Find.WorldObjects.MapParentAt(_connectedAddress).Map);
-                }
+                bool connAddress = _connectedAddress != -1;
+                bool pocketConnAddress = _connectedAddressPocketMap != -1;
+                if (_connectedStargate == null && (connAddress || pocketConnAddress))
+                    _connectedStargate = GetStargateOnMap(connAddress ? Find.WorldObjects.MapParentAt(_connectedAddress).Map : Find.Maps[_connectedAddressPocketMap]);
+                
                 _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
             }
 
