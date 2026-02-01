@@ -38,8 +38,8 @@ namespace StargatesMod
         int _connectedAddressPocketMap;
         Thing _connectedStargate;
 
-        private int _checkVortexPawnsTick = -1;
-        private const int _checkVortexPawnsDelayTick = 30;
+        private int _checkVortexPawnsTick = 120;
+        private const int _checkVortexPawnsDelayTick = 10;
         private List<Pawn> _pawnsWatchingStargate;
         
         private Sustainer _puddleSustainer;
@@ -444,10 +444,10 @@ namespace StargatesMod
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] Checking on pawns in stargate danger zone.. (on TicksUntilOpen {TicksUntilOpen})");
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] check radius center cell = {radialCenter}");
             
-            foreach (var thing in cells.SelectMany(pos => map.thingGrid.ThingsAt(pos)))
+            foreach (var thing in cells.SelectMany(pos => map.thingGrid.ThingsAt(pos)).Where(thing => thing is Pawn pawn && !pawn.DeadOrDowned && !pawn.Drafted && _pawnsWatchingStargate.Contains(pawn)))
             {
-                if (!(thing is Pawn pawn) || _pawnsWatchingStargate.Contains(pawn) || pawn.Drafted) continue;
-                    
+                if (!(thing is Pawn pawn)) continue;
+                
                 Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
                 var pawnCells = GenRadial.RadialCellsAround(pawn.Position, 4, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !VortexCells.Contains(c)).ToList();
                 if (!pawnCells.Any()) continue;
@@ -455,7 +455,7 @@ namespace StargatesMod
                 pawn.jobs.StopAll();
                 pawn.pather.StopDead();
                 var destPos = pawnCells.RandomElement();
-                if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"StargatesMod: Directing {pawn} away from vortex to position {destPos}");
+                if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] Directing {pawn} away from vortex to position {destPos}");
                 pawn.jobs.ClearQueuedJobs();
                 Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate"), parent, destPos);
                 pawn.jobs.StartJob(job);
@@ -466,12 +466,11 @@ namespace StargatesMod
         private void EndStargateWatching()
         {
             if (!_pawnsWatchingStargate.Any()) return;
-            foreach (Pawn pawn in _pawnsWatchingStargate.ToList())
+            foreach (var pawn in _pawnsWatchingStargate.ToList().Where(pawn => !pawn.DeadOrDowned && !pawn.Drafted && pawn.CurJob.def == DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate")))
             {
-                if (pawn.CurJob.def == DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate")) 
-                    pawn.jobs.StopAll();
-                _pawnsWatchingStargate.Remove(pawn);
+                pawn.jobs.StopAll();
             }
+            _pawnsWatchingStargate.Clear();
         }
         
         private void WormholeContentDisposal(bool isRecvBuffer)
@@ -530,10 +529,10 @@ namespace StargatesMod
                 CheckVortexPawns();*/
 
             //TODO Test
-            if (!IrisIsActivated)
+            if (!StargateIsActive && !IrisIsActivated)
             {
-                if (TicksUntilOpen > -1 && _checkVortexPawnsTick < 0 && TicksUntilOpen < 120) _checkVortexPawnsTick = TicksUntilOpen;
-                if (TicksUntilOpen == _checkVortexPawnsTick || TicksSinceOpened == 30)
+                if (TicksUntilOpen > -1 && _checkVortexPawnsTick < 0) _checkVortexPawnsTick = _checkVortexPawnsDelayTick;
+                if (TicksUntilOpen == _checkVortexPawnsTick)
                 {
                     CheckVortexPawns();
                     _checkVortexPawnsTick = TicksUntilOpen - _checkVortexPawnsDelayTick;

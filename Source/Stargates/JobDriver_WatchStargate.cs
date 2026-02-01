@@ -22,6 +22,7 @@ namespace StargatesMod
         {
             this.FailOnDestroyedOrNull(stargateToWatch);
             /*this.FailOn(() => !job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>().StargateIsActive);*/
+            this.FailOn(() => pawn.DeadOrDowned);
 
             CompStargate gateComp = job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>();
             Toil watch;
