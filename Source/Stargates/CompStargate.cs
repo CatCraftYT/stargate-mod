@@ -356,47 +356,65 @@ namespace StargatesMod
         private void InitGate()
         {
             bool isHibernatingAlready = IsHibernating;
-            
-            if (GetStargateOnMap(parent.Map, parent) == null)
-            {
-                if (parent.Map.IsPocketMap)
-                {
-                    if (parent.Map.PocketMapParent.sourceMap != null && GetStargateOnMap(parent.Map.PocketMapParent.sourceMap) != null)
-                    {
-                        if (isHibernatingAlready) Messages.Message("CannotWake_SourceMap".Translate(), MessageTypeDefOf.RejectInput);
-                        else Messages.Message("GateHibernating_SourceMap".Translate(), MessageTypeDefOf.CautionInput);
-                        if (_conflictingGate == null) _conflictingGate = GetStargateOnMap(parent.Map.PocketMapParent.sourceMap);
-                        if (isHibernatingAlready) Messages.Message("SGM.CannotWake_SourceMap".Translate(), MessageTypeDefOf.RejectInput);
-                        else Messages.Message("SGM.GateHibernating_SourceMap".Translate(), MessageTypeDefOf.CautionInput);
-                        IsHibernating = true;
-                    }
-                    else
-                    {
-                        PocketMapGateAddress = parent.Map.Index;
-                        Find.World.GetComponent<WorldComp_StargateAddresses>().AddPocketMapAddress(PocketMapGateAddress);
-                        IsInPocketMap = true;
-                        IsHibernating = false;
-                        _conflictingGate = null;
-                    }
+            bool mapHasStargate = GetStargateOnMap(parent.Map, parent) != null;
 
+            bool mapHasChildMap = parent.Map.ChildPocketMaps.Any();
+            List<Map> childMapsWithStargate = new List <Map>();
+            childMapsWithStargate.AddRange(from map in parent.Map.ChildPocketMaps where GetStargateOnMap(map) != null select map);
+            bool childMapHasStargate = mapHasChildMap && childMapsWithStargate.Any();
+            
+            bool mapIsPocketMap = parent.Map.IsPocketMap;
+            bool pocketMapHasSourceMap = mapIsPocketMap && parent.Map.PocketMapParent.sourceMap != null;
+            bool sourceMapHasStargate = pocketMapHasSourceMap && GetStargateOnMap(parent.Map.PocketMapParent.sourceMap) != null;
+
+            
+            if (mapHasStargate || childMapHasStargate || sourceMapHasStargate)
+            {
+                string cannotWakeMessage = "SGM.CannotWake";
+                string gateHibernatingMessage = "SGM.GateHibernating";
+
+                if (childMapHasStargate)
+                {
+                    cannotWakeMessage += "_ChildMap";
+                    gateHibernatingMessage += "_ChildMap";
+                    
+                    _conflictingGate = GetStargateOnMap(childMapsWithStargate.First());
+                }
+                else if (sourceMapHasStargate)
+                {
+                    cannotWakeMessage += "_SourceMap";
+                    gateHibernatingMessage += "_SourceMap";
+                    
+                    _conflictingGate = GetStargateOnMap(parent.Map.PocketMapParent.sourceMap);
+                }
+                else _conflictingGate = GetStargateOnMap(parent.Map, parent);
+                
+                if (isHibernatingAlready) Messages.Message(cannotWakeMessage.Translate(), MessageTypeDefOf.RejectInput);
+                else Messages.Message(gateHibernatingMessage.Translate(), MessageTypeDefOf.CautionInput);
+
+                IsHibernating = true;
+            }
+            else
+            {
+                var addressWorldComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
+                
+                IsInPocketMap = mapIsPocketMap;
+                if (IsInPocketMap)
+                {
+                    PocketMapGateAddress = parent.Map.Index;
+                    addressWorldComp.AddPocketMapAddress(PocketMapGateAddress);
                 }
                 else
                 {
                     GateAddress = parent.Map.Tile;
-                    Find.World.GetComponent<WorldComp_StargateAddresses>().AddAddress(GateAddress);
-                    IsHibernating = false;
-                    _conflictingGate = null;
+                    addressWorldComp.AddAddress(GateAddress);
                 }
+                IsHibernating = false;
+                _conflictingGate = null;
+                
+                
+                if (isHibernatingAlready) SGSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
             }
-            else
-            {
-                if (isHibernatingAlready) Messages.Message("SGM.CannotWake".Translate(), MessageTypeDefOf.RejectInput);
-                else Messages.Message("SGM.GateHibernating".Translate(), MessageTypeDefOf.CautionInput);
-                if (_conflictingGate == null) _conflictingGate = GetStargateOnMap(parent.Map, parent);
-                IsHibernating = true;
-            }
-            
-            if (isHibernatingAlready && !IsHibernating) SGSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
         }
 
         private void GateDialTick()
