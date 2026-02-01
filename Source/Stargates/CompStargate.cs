@@ -11,6 +11,14 @@ using Verse.Sound;
 
 namespace StargatesMod
 {
+    enum DialMode
+    {
+        Map,
+        PocketMap,
+        IncomingRaid,
+        Invalid
+    }
+    
     public class CompStargate : ThingComp
     {
         const int glowRadius = 10;
@@ -35,7 +43,7 @@ namespace StargatesMod
         PlanetTile _queuedAddress = -1;
         int _queuedAddressPocketMap = -1;
         PlanetTile _connectedAddress = -1;
-        int _connectedAddressPocketMap = -1;
+        int _pocketMapConnectedAddress = -1;
         Thing _connectedStargate;
 
         private int _checkVortexPawnsTick = 120;
@@ -80,16 +88,10 @@ namespace StargatesMod
         public void OpenStargateDelayed(PlanetTile address, int delay, bool isPocketMapAddress = false)
         {
             if (!isPocketMapAddress)
-            {
                 _queuedAddress = address;
-                TicksUntilOpen = delay;
-            }
-            else
-            {
-                _queuedAddressPocketMap = address;
-                TicksUntilOpen = delay;
-            }
+            else _queuedAddressPocketMap = address;
 
+            TicksUntilOpen = delay;
             _checkVortexPawnsTick = 120;
         }
         
@@ -100,160 +102,123 @@ namespace StargatesMod
             
             _checkVortexPawnsTick = 120;
         }*/
-
+        
+        
         public void OpenStargate(PlanetTile address)
         {
-             if (_queuedAddressPocketMap > -1)
+             /*if (_queuedAddressPocketMap > -1)
              {
                  Log.Error($"[StargatesMod] Tried opening stargate with regular address but a pocketmap address was queued");
                  _queuedAddress = -1;
                  _queuedAddressPocketMap = -1;
                  return;
-             }
+             }*/
 
-             if (_queuedAddress == -1 && _queuedAddressPocketMap == -1)
+             DialMode mode;
+             if (_queuedAddress > -1 && _queuedAddressPocketMap <= -1) mode = DialMode.Map;
+             else if (_queuedAddressPocketMap > -1 && _queuedAddress <= -1) mode = DialMode.PocketMap;
+             else if (_queuedAddress == -1 && _queuedAddressPocketMap == -1) mode = DialMode.IncomingRaid;
+             else mode = DialMode.Invalid;
+
+
+             var connectedMapParent = (MapParent)null;
+             /*PocketMapParent connectedPocketMapParent = null;*/
+             switch (mode)
              {
-                 IsReceivingGate = true;
-                 TicksSinceBufferUnloaded = -150;
-                 StargateIsActive = true;
+                 case DialMode.Invalid:
+                     Log.Error($"[StargatesMod] Dial failed: Invalid dialMode");
+                     DialFail();
+                     return;
+                 case DialMode.IncomingRaid:
+                     IsReceivingGate = true;
+                     TicksSinceBufferUnloaded = -150;
+                     StargateIsActive = true;
+                     break;
+                 case DialMode.Map:
+                     connectedMapParent = Find.WorldObjects.MapParentAt(address);
+                     break;
+                 case DialMode.PocketMap:
+                     var pocketMapIndex = _queuedAddressPocketMap;
+                     connectedMapParent = Find.Maps.ElementAt(pocketMapIndex).PocketMapParent as PocketMapParent;
+                     break;
              }
              
-             MapParent connectedMapParent = Find.WorldObjects.MapParentAt(address);
-             if (connectedMapParent == null)
+             
+             if (mode != DialMode.IncomingRaid && connectedMapParent == null)
              {
-                 Log.Error($"[StargatesMod] Failed to find MapParent at address {address}");
+                 StringBuilder sb =  new StringBuilder();
+                 sb.Append("[StargatesMod] Failed to find MapParent at ");
+                 sb.Append(mode == DialMode.Map
+                     ? $"map address {_queuedAddress} "
+                     : $"pocket map address {_queuedAddressPocketMap} ");
+                 sb.Append($"with mode {mode}");
+                 
+                 Log.Error(sb.ToString());
                  DialFail();
                  return;
              }
-             
-             if (!connectedMapParent.HasMap)
+                 
+             if (mode == DialMode.Map && connectedMapParent is { HasMap: false })
              {
                  if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] generating map for {connectedMapParent}");
                 
-                LongEventHandler.QueueLongEvent(delegate
-                {
-                    GetOrGenerateMapUtility.GetOrGenerateMap(connectedMapParent.Tile, connectedMapParent is WorldObject_PermSGSite ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, connectedMapParent.def);
-                }, "SGM.GeneratingStargateSite", doAsynchronously: false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap, callback: delegate
-                {
-                    if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] finished generating map");
+                 LongEventHandler.QueueLongEvent(delegate
+                 {
+                     GetOrGenerateMapUtility.GetOrGenerateMap(connectedMapParent.Tile, connectedMapParent is WorldObject_PermSGSite ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, connectedMapParent.def);
+                 }, "SGM.GeneratingStargateSite", doAsynchronously: false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap, callback: delegate
+                 {
+                     if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] finished generating map");
 
-                    FinishDiallingStargate(address, connectedMapParent);
-                }); 
+                     FinishDiallingStargate(address, connectedMapParent, mode);
+                 }); 
              }
-             else
-             {
-                 FinishDiallingStargate(address, connectedMapParent);
-             }
-        }
-        
-        public void OpenStargate(int mapIndex) //Pocket Map
-        {
-            if (_queuedAddress > -1)
-            {
-                Log.Error($"[StargatesMod] Tried opening stargate with pocketmap address but a regular address was queued");
-                _queuedAddress = -1;
-                _queuedAddressPocketMap = -1;
-                return;
-            }
-            
-            if (_queuedAddressPocketMap > -1)
-            {
-                PocketMapParent connectedMap = Find.Maps.ElementAt(mapIndex).PocketMapParent;
-                if (connectedMap == null || !connectedMap.HasMap)
-                {
-                    Log.Error($"[StargatesMod] Failed to find pocketMap at mapIndex {mapIndex}");
-                    DialFail();
-                    return;
-                }
-
-                
-                Thing connectedGate = GetStargateOnMap(connectedMap.Map);
-
-                if (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive)
-                {
-                    if (connectedGate == null) Log.Error($"StargatesMod] Failed to find target stargate");
-                    else if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] failed to dial stargate; target stargate was already active");
-                    DialFail();
-                    return;
-                }
-                StargateIsActive = true;
-                
-                _connectedAddressPocketMap = mapIndex;
-
-                _connectedStargate = connectedGate;
-                CompStargate connectedSgComp = _connectedStargate.TryGetComp<CompStargate>();
-                connectedSgComp.StargateIsActive = true;
-                connectedSgComp.IsReceivingGate = true;
-            
-                if (IsInPocketMap) connectedSgComp._connectedAddressPocketMap = PocketMapGateAddress;
-                else connectedSgComp._connectedAddress = GateAddress;
-                connectedSgComp._connectedStargate = parent;
-
-                connectedSgComp._puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(connectedSgComp.parent));
-                SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(connectedSgComp.parent));
-
-                CompGlower otherGlowComp = connectedSgComp.parent.GetComp<CompGlower>();
-                otherGlowComp.Props.glowRadius = glowRadius;
-                otherGlowComp.PostSpawnSetup(false);
-            }
-            else if (_queuedAddressPocketMap == -1)
-            {
-                _connectedAddressPocketMap = mapIndex;
-                IsReceivingGate = true;
-                TicksSinceBufferUnloaded = -150;
-                StargateIsActive = true;
-            }
-            else
-            {
-                Log.Error($"[StargatesMod] queued pocketmap address was invalid: {_queuedAddressPocketMap}");
-                DialFail();
-                return;
-            }
-            
-            _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
-            SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(parent));
-
-            CompGlower glowComp = parent.GetComp<CompGlower>();
-            glowComp.Props.glowRadius = glowRadius;
-            glowComp.PostSpawnSetup(false);
-            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] finished opening gate {parent}");
+             else FinishDiallingStargate(address, connectedMapParent, mode);
         }
 
-
-        private void FinishDiallingStargate(PlanetTile address, MapParent connectedMapParent)
+        private void FinishDiallingStargate(PlanetTile address, MapParent connectedMapParent, DialMode mode)
         {
-            Thing connectedGate = null;
-
-            if (address > -1)
-            {
-                connectedGate = GetStargateOnMap(connectedMapParent.Map);
-                
-                if (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive)
-                {
-                    if (connectedGate == null) Log.Error($"StargatesMod] Failed to find target stargate");
-                    else if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] failed to dial stargate; target stargate was already active");
-                    DialFail();
-                    return;
-                }
-            }
+            CompStargate connectedSgComp = null;
+            
             StargateIsActive = true;
-            _connectedAddress = address;
 
-            if (_connectedAddress > -1)
+            if (mode != DialMode.IncomingRaid)
             {
+                var connectedGate = GetStargateOnMap(connectedMapParent.Map);
+                
+                if (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive)
+                {
+                    if (connectedGate == null) Log.Error($"StargatesMod] Failed to find target stargate");
+                    else if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] failed to dial stargate; target stargate was already active");
+                    DialFail();
+                    return;
+                }
+                
                 _connectedStargate = connectedGate;
-                CompStargate connectedSgComp = _connectedStargate.TryGetComp<CompStargate>();
+                
+                connectedSgComp = _connectedStargate.TryGetComp<CompStargate>();
                 connectedSgComp.StargateIsActive = true;
                 connectedSgComp.IsReceivingGate = true;
-                connectedSgComp._connectedAddress = GateAddress;
                 connectedSgComp._connectedStargate = parent;
 
                 connectedSgComp._puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(connectedSgComp.parent));
                 SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(connectedSgComp.parent));
-
+                    
                 CompGlower otherGlowComp = connectedSgComp.parent.GetComp<CompGlower>();
                 otherGlowComp.Props.glowRadius = glowRadius;
                 otherGlowComp.PostSpawnSetup(false);
+            }
+            
+            switch (mode)
+            {
+                case DialMode.Map:
+                    _connectedAddress = address;
+                    connectedSgComp?._connectedAddress = GateAddress;
+                    break;
+                
+                case DialMode.PocketMap:
+                    _pocketMapConnectedAddress = address;
+                    connectedSgComp?._pocketMapConnectedAddress = PocketMapGateAddress;
+                    break;
             }
             
             _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
@@ -667,7 +632,7 @@ namespace StargatesMod
             TicksSinceBufferUnloaded++;
             TicksSinceOpened++;
             
-            if (_connectedAddress == -1 && _connectedAddressPocketMap == -1  && !_recvBuffer.Any())
+            if (_connectedAddress == -1 && _pocketMapConnectedAddress == -1  && !_recvBuffer.Any())
                 CloseStargate(false);
             
 
@@ -684,9 +649,9 @@ namespace StargatesMod
             if (StargateIsActive)
             {
                 bool connAddress = _connectedAddress != -1;
-                bool pocketConnAddress = _connectedAddressPocketMap != -1;
+                bool pocketConnAddress = _pocketMapConnectedAddress != -1;
                 if (_connectedStargate == null && (connAddress || pocketConnAddress))
-                    _connectedStargate = GetStargateOnMap(connAddress ? Find.WorldObjects.MapParentAt(_connectedAddress).Map : Find.Maps[_connectedAddressPocketMap]);
+                    _connectedStargate = GetStargateOnMap(connAddress ? Find.WorldObjects.MapParentAt(_connectedAddress).Map : Find.Maps[_pocketMapConnectedAddress]);
                 
                 _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
             }
@@ -709,8 +674,8 @@ namespace StargatesMod
             string connectedDisplayAddress;
             if (_connectedAddress > -1)
                 connectedDisplayAddress = "" + GetStargateDesignation(_connectedAddress);
-            else if (_connectedAddressPocketMap > -1)
-                connectedDisplayAddress = "PM-" + addressComp.PocketMapAddressList.IndexOf(_connectedAddressPocketMap);
+            else if (_pocketMapConnectedAddress > -1)
+                connectedDisplayAddress = "PM-" + addressComp.PocketMapAddressList.IndexOf(_pocketMapConnectedAddress);
             else connectedDisplayAddress = "SGM.Unknown".Translate();
             
             StringBuilder sb = new StringBuilder();
@@ -738,7 +703,7 @@ namespace StargatesMod
             sb.AppendLine($"ticksSinceBufferUnloaded = {TicksSinceBufferUnloaded}");
 
             sb.AppendLine($"connectedAddress = {_connectedAddress}");
-            sb.AppendLine($"connectedAddressPocketMap = {_connectedAddressPocketMap}");
+            sb.AppendLine($"connectedAddressPocketMap = {_pocketMapConnectedAddress}");
             
             var string1 = _pawnsWatchingStargate == null ? "null" : "notNull";
             sb.AppendLine($"_PawnsWatchingStargate = {string1}");
@@ -751,7 +716,7 @@ namespace StargatesMod
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) yield return gizmo;
             
-            if (StargateIsActive && (_connectedAddress > -1 || _connectedAddressPocketMap > -1))
+            if (StargateIsActive && (_connectedAddress > -1 || _pocketMapConnectedAddress > -1))
             {
                 Command_Action selectConnectedGate = new Command_Action
                 {
@@ -886,7 +851,7 @@ namespace StargatesMod
             Scribe_Values.Look(ref TicksSinceOpened, "TicksSinceOpened");
             Scribe_Values.Look(ref IsHibernating, "IsHibernating");
             Scribe_Values.Look(ref _connectedAddress, "_connectedAddress");
-            Scribe_Values.Look(ref _connectedAddressPocketMap, "_connectedAddressPocketMap");
+            Scribe_Values.Look(ref _pocketMapConnectedAddress, "_connectedAddressPocketMap");
             Scribe_References.Look(ref _connectedStargate, "_connectedStargate");
             Scribe_Collections.Look(ref _recvBuffer, "_recvBuffer", LookMode.GlobalTargetInfo);
             Scribe_Collections.Look(ref _sendBuffer, "_sendBuffer", LookMode.GlobalTargetInfo);
