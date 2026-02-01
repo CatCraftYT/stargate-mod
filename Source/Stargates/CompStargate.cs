@@ -59,19 +59,19 @@ namespace StargatesMod
         public CompProperties_Stargate Props => (CompProperties_Stargate)props;
 
         Graphic StargatePuddle =>
-            _stargatePuddle ?? (_stargatePuddle = GraphicDatabase.Get<Graphic_Single>(Props.puddleTexture,
-                ShaderDatabase.Mote, Props.puddleDrawSize, Color.white));
+            _stargatePuddle ??= GraphicDatabase.Get<Graphic_Single>(Props.PuddleTexture,
+                ShaderDatabase.Mote, Props.PuddleDrawSize, Color.white);
 
         Graphic StargateIris =>
-            _stargateIris ?? (_stargateIris = GraphicDatabase.Get<Graphic_Single>(Props.irisTexture,
-                ShaderDatabase.Mote, Props.puddleDrawSize, Color.white));
+            _stargateIris ??= GraphicDatabase.Get<Graphic_Single>(Props.IrisTexture,
+                ShaderDatabase.Mote, Props.PuddleDrawSize, Color.white);
 
         bool GateIsLoadingTransporter
         {
             get
             {
                 CompTransporter transComp = parent.GetComp<CompTransporter>();
-                return transComp != null && (transComp.LoadingInProgressOrReadyToLaunch && transComp.AnyInGroupHasAnythingLeftToLoad);
+                return transComp is { LoadingInProgressOrReadyToLaunch: true, AnyInGroupHasAnythingLeftToLoad: true };
             }
         }
 
@@ -126,7 +126,7 @@ namespace StargatesMod
              switch (mode)
              {
                  case DialMode.Invalid:
-                     Log.Error($"[StargatesMod] Dial failed: Invalid dialMode");
+                     Log.Error("[StargatesMod] Dial failed: Invalid dialMode");
                      DialFail();
                      return;
                  case DialMode.IncomingRaid:
@@ -139,7 +139,7 @@ namespace StargatesMod
                      break;
                  case DialMode.PocketMap:
                      var pocketMapIndex = _queuedAddressPocketMap;
-                     connectedMapParent = Find.Maps.ElementAt(pocketMapIndex).PocketMapParent as PocketMapParent;
+                     connectedMapParent = Find.Maps.ElementAt(pocketMapIndex).PocketMapParent;
                      break;
              }
              
@@ -167,7 +167,7 @@ namespace StargatesMod
                      GetOrGenerateMapUtility.GetOrGenerateMap(connectedMapParent.Tile, connectedMapParent is WorldObject_PermSGSite ? new IntVec3(75, 1, 75) : Find.World.info.initialMapSize, connectedMapParent.def);
                  }, "SGM.GeneratingStargateSite", doAsynchronously: false, GameAndMapInitExceptionHandlers.ErrorWhileGeneratingMap, callback: delegate
                  {
-                     if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] finished generating map");
+                     if (Prefs.LogVerbose || _settings.DebugMode) Log.Message("[StargatesMod] finished generating map");
 
                      FinishDiallingStargate(address, connectedMapParent, mode);
                  }); 
@@ -293,8 +293,8 @@ namespace StargatesMod
         {
             Thing gateOnMap = null;
             
-            Thing thing = map.listerBuildings.allBuildingsColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback() ??
-                          map.listerBuildings.allBuildingsNonColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)).FirstOrFallback();
+            Thing thing = map.listerBuildings.allBuildingsColonist.Where(t => t.def.thingClass == typeof(Building_Stargate) && !t.TryGetComp<CompStargate>().IsHibernating).FirstOrFallback() ??
+                          map.listerBuildings.allBuildingsNonColonist.Where(t => t.def.thingClass == typeof(Building_Stargate) && !t.TryGetComp<CompStargate>().IsHibernating).FirstOrFallback();
 
             if (thing != thingToIgnore) 
                 gateOnMap = thing;
@@ -331,7 +331,7 @@ namespace StargatesMod
 
         private void DoUnstableVortex()
         {
-            List<Thing> excludedThings = new List<Thing> { parent };
+            List<Thing> excludedThings = [parent];
             List<IntVec3> vortexPattern = VortexCells.ToList();
             
             // exclude walls directly behind gate (e.g. walls of enclosed rooms of orbital complexes)
@@ -378,31 +378,32 @@ namespace StargatesMod
         private void InitGate()
         {
             bool isHibernatingAlready = IsHibernating;
-            bool mapHasStargate = GetStargateOnMap(parent.Map, parent) != null;
+            
+            bool mapHasActiveStargate = GetStargateOnMap(parent.Map, parent) != null;
 
             bool mapHasChildMap = parent.Map.ChildPocketMaps.Any();
-            List<Map> childMapsWithStargate = new List <Map>();
-            childMapsWithStargate.AddRange(from map in parent.Map.ChildPocketMaps where GetStargateOnMap(map) != null select map);
-            bool childMapHasStargate = mapHasChildMap && childMapsWithStargate.Any();
+            List<Map> childMapsWithActiveStargate = [];
+            childMapsWithActiveStargate.AddRange(from map in parent.Map.ChildPocketMaps where GetStargateOnMap(map) != null select map);
+            bool childMapHasStargate = mapHasChildMap && childMapsWithActiveStargate.Any();
             
             bool mapIsPocketMap = parent.Map.IsPocketMap;
             bool pocketMapHasSourceMap = mapIsPocketMap && parent.Map.PocketMapParent.sourceMap != null;
-            bool sourceMapHasStargate = pocketMapHasSourceMap && GetStargateOnMap(parent.Map.PocketMapParent.sourceMap) != null;
+            bool sourceMapHasActiveStargate = pocketMapHasSourceMap && GetStargateOnMap(parent.Map.PocketMapParent.sourceMap) != null;
 
             
-            if (mapHasStargate || childMapHasStargate || sourceMapHasStargate)
+            if (mapHasActiveStargate || childMapHasStargate || sourceMapHasActiveStargate)
             {
-                string cannotWakeMessage = "SGM.CannotWake";
-                string gateHibernatingMessage = "SGM.GateHibernating";
+                string cannotWakeMessage = "SGM.Notif.CannotWake";
+                string gateHibernatingMessage = "SGM.Notif.GateHibernating";
 
                 if (childMapHasStargate)
                 {
                     cannotWakeMessage += "_ChildMap";
                     gateHibernatingMessage += "_ChildMap";
                     
-                    _conflictingGate = GetStargateOnMap(childMapsWithStargate.First());
+                    _conflictingGate = GetStargateOnMap(childMapsWithActiveStargate.First());
                 }
-                else if (sourceMapHasStargate)
+                else if (sourceMapHasActiveStargate)
                 {
                     cannotWakeMessage += "_SourceMap";
                     gateHibernatingMessage += "_SourceMap";
@@ -482,7 +483,7 @@ namespace StargatesMod
         
         private void CheckVortexPawns()
         {
-            if (_pawnsWatchingStargate == null) _pawnsWatchingStargate = new List<Pawn>();
+            _pawnsWatchingStargate ??= [];
             var radialCenter = parent.Position + new IntVec3(0, 0, -1).RotatedBy(parent.Rotation);
             var cells = GenRadial.RadialCellsAround(radialCenter, 4, true).ToList();
             Map map = parent.Map;
@@ -490,9 +491,9 @@ namespace StargatesMod
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] Checking on pawns in stargate danger zone.. (on TicksUntilOpen {TicksUntilOpen})");
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] check radius center cell = {radialCenter}");
             
-            foreach (var thing in cells.SelectMany(pos => map.thingGrid.ThingsAt(pos)).Where(thing => thing is Pawn pawn && !pawn.DeadOrDowned && !pawn.Drafted && _pawnsWatchingStargate.Contains(pawn)))
+            foreach (var thing in cells.SelectMany(pos => map.thingGrid.ThingsAt(pos)).Where(thing => thing is Pawn { DeadOrDowned: false, Drafted: false } pawn && _pawnsWatchingStargate.Contains(pawn)))
             {
-                if (!(thing is Pawn pawn)) continue;
+                if (thing is not Pawn pawn) continue;
                 
                 Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
                 var pawnCells = GenRadial.RadialCellsAround(pawn.Position, 4, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !VortexCells.Contains(c)).ToList();
@@ -570,7 +571,6 @@ namespace StargatesMod
             if (TicksUntilOpen > 0) 
                 GateDialTick();
             
-            //TODO Test
             if (!StargateIsActive && !IrisIsActivated)
             {
                 if (TicksUntilOpen > -1 && _checkVortexPawnsTick < 0) _checkVortexPawnsTick = _checkVortexPawnsDelayTick;
@@ -658,7 +658,7 @@ namespace StargatesMod
 
             //fix nullreferenceexception that happens when the innercontainer disappears for some reason, hopefully this doesn't end up causing a bug that will take hours to track down ;)
             CompTransporter transComp = parent.GetComp<CompTransporter>();
-            if (transComp != null && transComp.innerContainer == null)
+            if (transComp is { innerContainer: null })
                 transComp.innerContainer = new ThingOwner<Thing>(transComp);
             
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
@@ -737,7 +737,7 @@ namespace StargatesMod
                 {
                     defaultLabel = "SGM.OpenCloseIris".Translate(),
                     defaultDesc = "SGM.OpenCloseIrisDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get(Props.irisTexture),
+                    icon = ContentFinder<Texture2D>.Get(Props.IrisTexture),
                     action = delegate
                     {
                         ChangeIrisState();
@@ -874,12 +874,12 @@ namespace StargatesMod
 
         public bool canHaveIris = true;
         public bool explodeOnUse = false;
-        public string puddleTexture;
-        public string irisTexture;
-        public Vector2 puddleDrawSize;
+        public string PuddleTexture;
+        public string IrisTexture;
+        public Vector2 PuddleDrawSize;
 
-        public List<IntVec3> vortexPattern = new List<IntVec3>
-        {
+        public List<IntVec3> vortexPattern =
+        [
             new IntVec3(0, 0, 1),
             new IntVec3(1, 0, 1),
             new IntVec3(-1, 0, 1),
@@ -893,7 +893,7 @@ namespace StargatesMod
             new IntVec3(1, 0, -2),
             new IntVec3(-1, 0, -2),
             new IntVec3(0, 0, -3)
-        };
+        ];
     }
 }
 

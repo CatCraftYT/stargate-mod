@@ -26,9 +26,9 @@
     <SGM.CannotWake_SourceMap>Cannot Wake gate: This pocket map's parent map already contains an active gate.</SGM.CannotWake_SourceMap>
     <SGM.CannotWake_ChildMap>Cannot wake gate: (one of) This map's child pocket map(s) already contains an active gate.</SGM.CannotWake_ChildMap>
     
-    <SGM.GateHibernating>Built gate is hibernating: </SGM.GateHibernating>
-    <SGM.GateHibernating_SourceMap>Built gate is hibernating: This pocket map's parent map already contains an active gate.</SGM.GateHibernating_SourceMap>
-    <SGM.GateHibernating_ChildMap>Built gate is hibernating: (one of) This map's child pocket map(s) already contains an active gate.</SGM.GateHibernating_ChildMap>
+    <SGM.Notif.GateHibernating>Built gate is hibernating: Active gate already present on this map.</SGM.Notif.GateHibernating>
+    <SGM.Notif.GateHibernating_SourceMap>Built gate is hibernating: This pocket map's parent map already contains an active gate.</SGM.Notif.GateHibernating_SourceMap>
+    <SGM.Notif.GateHibernating_ChildMap>Built gate is hibernating: (one of) This map's child pocket map(s) already contains an active gate.</SGM.Notif.GateHibernating_ChildMap>
 
 	<!--InspectString text-->
 	<SGM.GateAddress>Stargate address: {0}</SGM.GateAddress>
