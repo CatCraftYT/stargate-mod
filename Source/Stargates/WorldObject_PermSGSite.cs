@@ -76,7 +76,7 @@ namespace StargatesMod
 
             Thing gateOnMap = CompStargate.GetStargateOnMap(Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(Map);
-            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"StargatesMod: perm sg site post map gen: dhddef={DhdDef} gatedef={GateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}");
+            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] perm sg site post map gen: dhddef={DhdDef} gatedef={GateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}");
             
             if (gateOnMap != null)
             {
@@ -108,7 +108,7 @@ namespace StargatesMod
             DhdDef = dhdOnMap?.def;
             GateDef = gateOnMap?.def;
             
-            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"StargatesMod: perm map about to be removed: dhddef={DhdDef} gatedef={GateDef}");
+            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] perm map about to be removed: dhddef={DhdDef} gatedef={GateDef}");
         }
 
         public override void Notify_MyMapRemoved(Map map)

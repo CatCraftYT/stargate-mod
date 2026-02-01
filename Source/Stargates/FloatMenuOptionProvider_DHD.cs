@@ -98,15 +98,14 @@ namespace StargatesMod
                 
                 if (pMParent == null)
                 {
-                    Log.Error("StargatesMod: PocketMapParent was null in FloatMenuOptionProvider_DHD");
+                    Log.Error("[StargatesMod] PocketMapParent was null in FloatMenuOptionProvider_DHD");
                     continue;
                 }
 
-                yield return new FloatMenuOption("DialGate".Translate("PM-" + i, pMParent.Map.generatorDef.label), () =>
+                yield return new FloatMenuOption("SGM.DialGate".Translate("PM-" + i, pMParent.Map.generatorDef.label), () =>
                 {
                     dhdComp.queuedPocketMapAddress = mapIndex;
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"),
-                        dhdComp.parent);
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 });
             }

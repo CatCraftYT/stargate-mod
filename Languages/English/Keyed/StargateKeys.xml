@@ -3,23 +3,32 @@
     <!--Mod name-->
     <StargatesMod>Stargates!</StargatesMod>
 
+    <!-- misc -->
 	<SGM.Incoming>incoming</SGM.Incoming>
 	<SGM.Outgoing>outgoing</SGM.Outgoing>
+    
 	<SGM.IrisClosed>CLOSED</SGM.IrisClosed>
 	<SGM.IrisOpen>OPEN</SGM.IrisOpen>
+    
 	<SGM.Present>Present</SGM.Present>
 	<SGM.Missing>Missing</SGM.Missing>
 	<SGM.NotNeeded>(not needed)</SGM.NotNeeded>
+    
+    <SGM.StargateIdle>Idle</SGM.StargateIdle>
+	<SGM.Unknown>unknown</SGM.Unknown>
 	
 	<!--Notification message text-->
-	<SGM.PocketMapDisallowed>Stargates cannot be placed on pocket maps.</SGM.PocketMapDisallowed>
 	<SGM.GateDialFailed>Could not activate stargate: Receiving gate no longer exists or is currently in use.</SGM.GateDialFailed>
 	<SGM.NoGateInCaravan>Stargate required in caravan inventory.</SGM.NoGateInCaravan>
-	<SGM.BlockedByLandmark>Not allowed on landmarks.</SGM.BlockedByLandmark>
-    <SGM.CannotWake>Cannot wake gate: Active gate already present.</SGM.CannotWake>
-    <SGM.CannotWake_SourceMap>Cannot wake gate on pocket map: Associated source map already possesses active gate.</SGM.CannotWake_SourceMap>
-    <SGM.GateHibernating>Built gate is hibernating: Conflict with existing, awake gate</SGM.GateHibernating>
-    <SGM.GateHibernating_SourceMap>Built gate is hibernating: Conflict with existing, awake gate on pocket map's source map</SGM.GateHibernating_SourceMap>
+	<SGM.BlockedByLandmark>Stargate sites cannot be placed on landmarks.</SGM.BlockedByLandmark>
+    
+    <SGM.CannotWake>Cannot wake gate: this map already contains an active gate.</SGM.CannotWake>
+    <SGM.CannotWake_SourceMap>Cannot Wake gate: This pocket map's parent map already contains an active gate.</SGM.CannotWake_SourceMap>
+    <SGM.CannotWake_ChildMap>Cannot wake gate: (one of) This map's child pocket map(s) already contains an active gate.</SGM.CannotWake_ChildMap>
+    
+    <SGM.GateHibernating>Built gate is hibernating: </SGM.GateHibernating>
+    <SGM.GateHibernating_SourceMap>Built gate is hibernating: This pocket map's parent map already contains an active gate.</SGM.GateHibernating_SourceMap>
+    <SGM.GateHibernating_ChildMap>Built gate is hibernating: (one of) This map's child pocket map(s) already contains an active gate.</SGM.GateHibernating_ChildMap>
 
 	<!--InspectString text-->
 	<SGM.GateAddress>Stargate address: {0}</SGM.GateAddress>
@@ -33,7 +42,7 @@
 	
 	<!--Gizmo labels and descriptions-->
 	<SGM.WakeHibernation>Wake from hibernation</SGM.WakeHibernation>
-	<SGM.WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this map.</SGM.WakeHibernationDesc>
+	<SGM.WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this location. Only one gate can be active on a location, including any linked (pocket / parent) maps.</SGM.WakeHibernationDesc>
     
     <SGM.OpenCloseIris>Open/close iris</SGM.OpenCloseIris>
     <SGM.OpenCloseIrisDesc>Open or close this stargate's iris.</SGM.OpenCloseIrisDesc>
@@ -45,16 +54,16 @@
     <SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
     
     <SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
-    <SGM.RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM.RenameGateSiteDesc>
+    <SGM.RenameGateSiteDesc>Give this stargate site a more recognisable name.</SGM.RenameGateSiteDesc>
     
     <SGM.TransmitGDO>Transmit GDO code</SGM.TransmitGDO>
-    <SGM.TransmitGDODesc>Transmit an identification code through the gate, identifying yourself and opening the iris on your stargate.</SGM.TransmitGDODesc>
+    <SGM.TransmitGDODesc>Transmit an identification code through the gate, opening the iris on the other side.</SGM.TransmitGDODesc>
     
     <SGM.SelectConnectedGate>View connected gate</SGM.SelectConnectedGate>
-    <SGM.SelectConnectedGateDesc>View the gate on the other side of the wormhole connection.</SGM.SelectConnectedGateDesc>
+    <SGM.SelectConnectedGateDesc>Jump to the gate on the other side of the wormhole connection.</SGM.SelectConnectedGateDesc>
     
     <SGM.SelectGateConflict>View conflicting gate</SGM.SelectGateConflict>
-    <SGM.SelectGateConflictDesc>View the active stargate that is preventing this gate from waking. Uninstall or deconstruct the awake gate to enable waking this gate.</SGM.SelectGateConflictDesc>
+    <SGM.SelectGateConflictDesc>Jump to the gate that's preventing this gate from waking.</SGM.SelectGateConflictDesc>
 	
 	<!--Gizmo disabled messages-->
 	<SGM.CannotGDO>Iris is already open.</SGM.CannotGDO>
