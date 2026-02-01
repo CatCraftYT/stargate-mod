@@ -166,7 +166,7 @@ namespace StargatesMod
             CompGlower glowComp = parent.GetComp<CompGlower>();
             glowComp.Props.glowRadius = glowRadius;
             glowComp.PostSpawnSetup(false);
-            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"StargatesMod: finished opening gate {parent}");
+            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] finished opening gate {parent}");
         }
 
 
@@ -421,10 +421,14 @@ namespace StargatesMod
         {
             if (!_settings.ShortenGateDialSeq)
             {
-                if (TicksUntilOpen == 900 || TicksUntilOpen == 600 || TicksUntilOpen == 300)
+                switch (TicksUntilOpen)
                 {
-                    SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
-                    _prevRingSoundQueue = TicksUntilOpen;
+                    case 900:
+                    case 600:
+                    case 300:
+                        SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
+                        _prevRingSoundQueue = TicksUntilOpen;
+                        break;
                 }
 
                 if (TicksUntilOpen == _prevRingSoundQueue - 240 && _chevronSoundCounter < 3)
@@ -562,11 +566,12 @@ namespace StargatesMod
             if (!IrisIsActivated && TicksSinceOpened < 150 && TicksSinceOpened % 10 == 0)
                 DoUnstableVortex();
             
-            if (parent.Fogged()) FloodFillerFog.FloodUnfog(parent.Position, parent.Map);
+            if (IsReceivingGate && TicksSinceOpened < 60 && parent.Fogged()) FloodFillerFog.FloodUnfog(parent.Position, parent.Map);
             
             if (_pawnsWatchingStargate != null && _pawnsWatchingStargate.Any() && TicksSinceOpened == 210 ) EndStargateWatching();
             
             CompStargate sgComp = _connectedStargate.TryGetComp<CompStargate>();
+            CompStargate connectedStargateComp = _connectedStargate.TryGetComp<CompStargate>();
             CompTransporter transComp = parent.GetComp<CompTransporter>();
             
             if (transComp != null)
@@ -586,7 +591,7 @@ namespace StargatesMod
             {
                 if (!IsReceivingGate)
                 {
-                    sgComp.AddToReceiveBuffer(_sendBuffer[0]);
+                    connectedStargateComp.AddToReceiveBuffer(_sendBuffer[0]);
                     _sendBuffer.Remove(_sendBuffer[0]);
                 }
                 else WormholeContentDisposal(false);
@@ -611,7 +616,7 @@ namespace StargatesMod
                 CloseStargate(false);
             
 
-            if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !_connectedStargate.TryGetComp<CompStargate>().GateIsLoadingTransporter)
+            if (IsReceivingGate && TicksSinceBufferUnloaded > 2500 && !connectedStargateComp.GateIsLoadingTransporter)
                 CloseStargate(true);
         }
 
@@ -670,14 +675,6 @@ namespace StargatesMod
             if (HasIris) sb.AppendLine("SGM.IrisStatus".Translate((IrisIsActivated ? "SGM.IrisClosed" : "SGM.IrisOpen").Translate()));
             if (TicksUntilOpen > 0) sb.AppendLine("SGM.TimeUntilGateLock".Translate(TicksUntilOpen.ToStringTicksToPeriod()));
 
-            if (_settings.DebugMode)
-            {
-                sb.AppendLine("== DebugInfo ==");
-                sb.AppendLine($"TicksSinceOpened = {TicksSinceOpened}");
-                sb.AppendLine($"TicksUntilOpen = {TicksUntilOpen}");
-                sb.AppendLine($"ticksSinceBufferUnloaded = {TicksSinceBufferUnloaded}");
-            }
-            
             
             if (!_settings.DebugMode) return sb.ToString().TrimEndNewlines();
             sb.AppendLine("=== DebugInfo ===");
