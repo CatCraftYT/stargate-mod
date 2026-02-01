@@ -58,8 +58,11 @@ namespace StargatesMod
 
             if (!addressComp.AddressList.Contains(sgComp.GateAddress))
             {
-                yield return new FloatMenuOption("SGM.CannotDialInvalidAddress".Translate(), null);
-                yield break;
+                if (!addressComp.PocketMapAddressList.Contains(sgComp.PocketMapGateAddress))
+                {
+                    yield return new FloatMenuOption("SGM.CannotDialInvalidAddress".Translate(), null);
+                    yield break;
+                }
             }
             
             if (sgComp.TicksUntilOpen > -1)
