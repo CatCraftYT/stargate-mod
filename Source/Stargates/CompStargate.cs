@@ -310,32 +310,26 @@ namespace StargatesMod
         private void DoUnstableVortex()
         {
             List<Thing> excludedThings = new List<Thing> { parent };
-            List<IntVec3> vortexPattern = Props.vortexPattern.Select(pos => pos.RotatedBy(parent.Rotation)).ToList();
+            List<IntVec3> vortexPattern = VortexCells.ToList();
+            
+            // exclude walls directly behind gate (e.g. walls of enclosed rooms of orbital complexes)
+            excludedThings.AddRange(from pos in vortexPattern
+                from thing in parent.Map.thingGrid.ThingsAt(pos)
+                where (pos - parent.Position == new IntVec3(0, 0, 1) || pos - parent.Position == new IntVec3(1, 0, 1) || pos - parent.Position== new IntVec3(-1, 0, 1)) 
+                      && thing.def.category == ThingCategory.Building && thing.def.passability == Traversability.Impassable 
+                select thing);
             
             excludedThings.AddRange(from pos in vortexPattern
-                from thing in parent.Map.thingGrid.ThingsAt(pos) 
-                where thing.def.passability == Traversability.Standable select thing);
+                from thing in parent.Map.thingGrid.ThingsAt(pos)
+                where thing.def.category == ThingCategory.Building &&
+                      thing.def.passability == Traversability.Standable && !thing.def.IsDoor
+                select thing);
             
-            /*List<ThingDef> destroySpecial = new List<ThingDef>(); // TODO ADD
-            foreach (IntVec3 pos in Props.vortexPattern)
-            {
-                foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
-                {
-                    // Stop vortex from destroying walls in the vortex cells behind the gate, otherwise it will breach the gateroom of orbital gate sites
-                    if ((pos == new IntVec3(0, 0, 1) || pos == new IntVec3(1, 0, 1) || pos == new IntVec3(-1, 0, 1)) && thing.def.category == ThingCategory.Building && thing.def.passability == Traversability.Impassable) 
-                        excludedThings.Add(thing);
-                    
-                    // TODO ADD
-                    // Exclude anything that is standable, but only if it is a building (and not a door) (any thing that doesn't have a traversability will come back as being Standable)
-                    if (thing.def.category == ThingCategory.Building && thing.def.passability == Traversability.Standable && !thing.def.IsDoor)
-                        excludedThings.Add(thing);
-                        
-                    //TODO ADD
-                    // Mark for destroying metals that don't use hitpoints
-                    if (thing.def.IsMetal && !thing.def.useHitPoints) 
-                        destroySpecial.Add(thing.def);
-                }
-            }*/
+            List<Thing> destroySpecial = new List<Thing>();
+            destroySpecial.AddRange(from pos in vortexPattern
+                from thing in parent.Map.thingGrid.ThingsAt(pos)
+                where thing.def.IsMetal && !thing.def.useHitPoints
+                    select thing);
 
             foreach (IntVec3 pos in vortexPattern)
             {
@@ -344,21 +338,18 @@ namespace StargatesMod
                 Explosion explosion = (Explosion)GenSpawn.Spawn(ThingDefOf.Explosion, parent.Position, parent.Map);
                 explosion.damageFalloff = false;
                 explosion.damAmount = damType.defaultDamage;
-                explosion.Position = parent.Position + pos;
+                explosion.Position = pos;
                 explosion.radius = 0.5f;
                 explosion.damType = damType;
                 explosion.StartExplosion(null, excludedThings);
-
-                //TODO ADD
-                //
-                // Destroy things (Metals) that were marked for destroying
-                /*foreach (Thing thing in parent.Map.thingGrid.ThingsAt(parent.Position + pos))
+                
+                
+                foreach (var thing in destroySpecial)
                 {
-                    foreach (ThingDef toDestroy in destroySpecial)
-                    {
-                        if (thing.def.defName == toDestroy.defName && !thing.DestroyedOrNull()) thing.Destroy();
-                    }
-                }*/
+                    if(Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] destroying specialThing {thing}");
+                    thing.Destroy();
+                }
+                destroySpecial.Clear();
             }
         }
 

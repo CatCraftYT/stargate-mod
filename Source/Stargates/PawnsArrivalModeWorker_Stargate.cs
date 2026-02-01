@@ -39,6 +39,7 @@ namespace StargatesMod
                 return parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);
             }
 
+            parms.spawnRotation = stargateOnMap.Rotation;
             parms.spawnCenter = stargateOnMap.Position;
             return true;
         }

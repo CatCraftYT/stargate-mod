@@ -112,26 +112,11 @@
 				<explodeOnUse>True</explodeOnUse>
 				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
 				<puddleDrawSize>(5.3,5.3)</puddleDrawSize>
-				<vortexPattern_north>
+				<vortexPattern>
 					<li>(0,0,0)</li>
 					<li>(0,0,-1)</li>
 					<li>(0,0,-2)</li>
-				</vortexPattern_north>
-				<vortexPattern_south>
-					<li>(0,0,0)</li>
-					<li>(0,0,1)</li>
-					<li>(0,0,2)</li>
-				</vortexPattern_south>
-				<vortexPattern_east>
-					<li>(0,0,0)</li>
-					<li>(-1,0,0)</li>
-					<li>(-2,0,0)</li>
-				</vortexPattern_east>
-				<vortexPattern_west>
-					<li>(0,0,0)</li>
-					<li>(1,0,0)</li>
-					<li>(2,0,0)</li>
-				</vortexPattern_west>
+				</vortexPattern>
 			</li>
 			<li Class="StargatesMod.CompProperties_DialHomeDevice">
 				<selfDialler>True</selfDialler>
