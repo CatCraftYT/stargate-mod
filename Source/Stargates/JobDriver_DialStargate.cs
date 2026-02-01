@@ -48,7 +48,7 @@ namespace StargatesMod
                     }
                     else
                     {
-                        linkedStargate.OpenStargateDelayed(dhdComp.queuedPocketMapAddress, lockDelay);
+                        linkedStargate.OpenStargateDelayed(dhdComp.queuedPocketMapAddress, lockDelay, true);
                         dhdComp.queuedPocketMapAddress = -1;
                     }
                     
