@@ -12,10 +12,10 @@ namespace StargatesMod
 		{
 			return new TargetingParameters
 			{
-				validator = x =>
+				validator = targetInfo =>
 				{
-					CompStargate sgComp = x.Thing.TryGetComp<CompStargate>();
-					return x.Thing != null && sgComp != null && sgComp.Props.canHaveIris && !sgComp.HasIris;
+					CompStargate sgComp = targetInfo.Thing.TryGetComp<CompStargate>();
+					return targetInfo.Thing != null && sgComp != null && sgComp.Props.canHaveIris && !sgComp.HasIris;
 				}
 			};
 		}

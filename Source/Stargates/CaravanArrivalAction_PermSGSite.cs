@@ -4,19 +4,14 @@ using Verse;
 
 namespace StargatesMod
 {
-    public class CaravanArrivalAction_PermSGSite : CaravanArrivalAction
+    public class CaravanArrivalAction_PermSGSite(MapParent site) : CaravanArrivalAction
     {
-		MapParent arrivalSite;
+		MapParent arrivalSite = site;
 
         public override string Label => "ApproachSite".Translate(arrivalSite.Label);
         public override string ReportString => "ApproachingSite".Translate(arrivalSite.Label);
 
-		public CaravanArrivalAction_PermSGSite(MapParent site)
-        {
-			arrivalSite = site;
-        }
-
-		public override FloatMenuAcceptanceReport StillValid(Caravan caravan, PlanetTile destinationTile)
+        public override FloatMenuAcceptanceReport StillValid(Caravan caravan, PlanetTile destinationTile)
         {
             return arrivalSite == null || arrivalSite.Tile == destinationTile;
         }

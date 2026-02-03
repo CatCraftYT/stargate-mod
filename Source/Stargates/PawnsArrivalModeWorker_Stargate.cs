@@ -12,7 +12,7 @@ namespace StargatesMod
         public override void Arrive(List<Pawn> pawns, IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            Thing stargateOnMap = CompStargate.GetStargateOnMap(map);
+            Thing stargateOnMap = CompStargate.GetActiveStargateOnMap(map);
 
             CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
             
@@ -33,7 +33,7 @@ namespace StargatesMod
         {
             Map map = (Map)parms.target;
             
-            Thing stargateOnMap = CompStargate.GetStargateOnMap(map);
+            Thing stargateOnMap = CompStargate.GetActiveStargateOnMap(map);
             CompStargate sgComp = stargateOnMap?.TryGetComp<CompStargate>();
             
             if (stargateOnMap == null || sgComp == null || sgComp.StargateIsActive)

@@ -47,7 +47,7 @@ namespace StargatesMod
                 dhdLabel = $"({DhdDef.label.CapitalizeFirst()})";
             }
             
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine("SGM.GateAddress".Translate(CompStargate.GetStargateDesignation(Tile)));
             sb.AppendLine("-----");
             sb.AppendLine("SGM.StargateStatus".Translate(gatePresenceLabel, gateLabel));
@@ -74,7 +74,7 @@ namespace StargatesMod
             foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction.OfPlayer)).ToList()) 
                 pawn.Destroy();
 
-            Thing gateOnMap = CompStargate.GetStargateOnMap(Map);
+            Thing gateOnMap = CompStargate.GetActiveStargateOnMap(Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(Map);
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] perm sg site post map gen: dhddef={DhdDef} gatedef={GateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}");
             
@@ -102,7 +102,7 @@ namespace StargatesMod
 
         public override void Notify_MyMapAboutToBeRemoved()
         {
-            Thing gateOnMap = CompStargate.GetStargateOnMap(Map);
+            Thing gateOnMap = CompStargate.GetActiveStargateOnMap(Map);
             Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(Map);
             
             DhdDef = dhdOnMap?.def;

@@ -23,7 +23,7 @@ namespace StargatesMod
 
         public override string GetInspectString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             CompStargate sgComp = GetComp<CompStargate>();
             sb.AppendLine(sgComp.GetInspectString());

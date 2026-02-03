@@ -1,16 +1,15 @@
 ﻿using RimWorld.Planet;
 using Verse;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StargatesMod
 {
-    public class WorldComp_StargateAddresses : WorldComponent
+    public class WorldComp_StargateAddresses(World world) : WorldComponent(world)
     {
-        public List<PlanetTile> AddressList = new List<PlanetTile>();
+        public List<PlanetTile> AddressList = [];
 
-        public List<int> PocketMapAddressList = new List<int>();
-
-        public WorldComp_StargateAddresses(World world) : base(world) { }
+        public List<int> PocketMapAddressList = [];
 
         public void RemoveAddress(PlanetTile address)
         {
@@ -36,20 +35,22 @@ namespace StargatesMod
 
         public void CleanupAddresses()
         {
-            foreach (PlanetTile pT in new List<PlanetTile>(AddressList))
+            foreach (PlanetTile tile in from tile in new List<PlanetTile>(AddressList)
+                     let sgMap = Find.WorldObjects.MapParentAt(tile)
+                     let site = sgMap as Site
+                     where sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && sgMap is not WorldObject_PermSGSite)
+                     select tile)
             {
-                MapParent sgMap = Find.WorldObjects.MapParentAt(pT);
-                Site site = sgMap as Site;
-
-                if (sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && !(sgMap is WorldObject_PermSGSite)))
-                    RemoveAddress(pT);
+                RemoveAddress(tile);
             }
 
-            foreach (int i in new List<int>(PocketMapAddressList))
+            foreach (int address in from address in new List<int>(PocketMapAddressList) 
+                     let map = Find.Maps[address] 
+                     let pMParent = map.PocketMapParent 
+                     where pMParent is not { HasMap: true } 
+                     select address)
             {
-                Map map = Find.Maps[i];
-                PocketMapParent pMParent = map.PocketMapParent;
-                if (pMParent == null || !pMParent.HasMap) RemovePocketMapAddress(i);
+                RemovePocketMapAddress(address);
             }
         }
 

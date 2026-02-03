@@ -27,7 +27,7 @@ namespace StargatesMod
     {
         static void Postfix(Map ___map, ref bool __result)
         {
-            Thing sgThing = CompStargate.GetStargateOnMap(___map);
+            Thing sgThing = CompStargate.GetActiveStargateOnMap(___map);
             CompStargate sgComp = sgThing?.TryGetComp<CompStargate>();
             
             if (sgComp == null) return;
@@ -46,7 +46,7 @@ namespace StargatesMod
 
             bool containsStargate = __instance.AllThings.Select(thing => thing.GetInnerIfMinified()).Where(inner => inner != null).Any(inner => inner.TryGetComp<CompStargate>() != null);
             
-            Command_Action commandCreateSite = new Command_Action
+            Command_Action commandCreateSite = new()
             {
                 icon = ContentFinder<Texture2D>.Get("World/WorldObjects/Expanding/sgsite_perm"),
                 action = () =>
@@ -68,7 +68,7 @@ namespace StargatesMod
                     if (gateDef != null && !gateDef.HasComp<CompDialHomeDevice>())
                     {
                         things = __instance.AllThings.ToList();
-                        foreach (var thing in things)
+                        foreach (Thing thing in things)
                         {
                             Thing inner = thing.GetInnerIfMinified();
                             if (inner?.TryGetComp<CompDialHomeDevice>() == null || inner.def.thingClass == typeof(Building_Stargate)) continue;
@@ -114,17 +114,17 @@ namespace StargatesMod
             {
                 FloatMenuOption optionCarryToStargate = FloatMenuUtility.DecoratePrioritizedTask(new FloatMenuOption("SGM.CarryHeldToStargateAction".Translate(carriedPawn, clickedThing), delegate
                 {
-                    selPawn.carryTracker.TryDropCarriedThing(selPawn.Position, ThingPlaceMode.Near, out var targPawn);
+                    selPawn.carryTracker.TryDropCarriedThing(selPawn.Position, ThingPlaceMode.Near, out Thing targPawn);
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), targPawn, clickedThing);
                     selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 }), selPawn, clickedThing);
 
-                __result = new[] { optionCarryToStargate };
+                __result = [optionCarryToStargate];
                 return false;
             }
 
             /*Can't figure out how to not display a floatMenuOption without a NullRefException, so this's fine I guess*/
-            __result = new [] { new FloatMenuOption("SGM.CarryHeldToStargateAction_Disabled".Translate(), null) };
+            __result = [new FloatMenuOption("SGM.CarryHeldToStargateAction_Disabled".Translate(), null)];
             return false;
         }
     }

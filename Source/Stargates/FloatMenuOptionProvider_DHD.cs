@@ -26,12 +26,12 @@ namespace StargatesMod
             CompStargate sgComp = dhdComp.GetLinkedStargateComp();
             
             
-            if (!CanReachDHD(context.FirstSelectedPawn, clickedThing) || !dhdComp.IsConnectedToStargate) yield break;
+            if (!CanReachDhd(context.FirstSelectedPawn, clickedThing) || !dhdComp.IsConnectedToStargate) yield break;
             
             if (dhdComp.Props.requiresPower)
             {
                 CompPowerTrader compPowerTrader = dhdComp.parent.TryGetComp<CompPowerTrader>();
-                if (compPowerTrader != null && !compPowerTrader.PowerOn)
+                if (compPowerTrader is { PowerOn: false })
                 {
                     yield return new FloatMenuOption("SGM.CannotDialNoPower".Translate(), null);
                     yield break;
@@ -58,7 +58,7 @@ namespace StargatesMod
 
             if (!addressComp.AddressList.Contains(sgComp.GateAddress))
             {
-                if (!addressComp.PocketMapAddressList.Contains(sgComp.PocketMapGateAddress))
+                if (!addressComp.PocketMapAddressList.Contains(sgComp.GateAddressPocketMap))
                 {
                     yield return new FloatMenuOption("SGM.CannotDialInvalidAddress".Translate(), null);
                     yield break;
@@ -76,45 +76,44 @@ namespace StargatesMod
                 yield break; 
             }
                 
-            foreach (PlanetTile pT in addressComp.AddressList)
+            foreach (PlanetTile tile in addressComp.AddressList)
             {
-                if (pT == sgComp.GateAddress) continue;
+                if (tile == sgComp.GateAddress) continue;
                 
-                MapParent destMapParent = Find.WorldObjects.MapParentAt(pT);
-                MenuOptionPriority priority = MenuOptionPriority.High;
+                MapParent destMapParent = Find.WorldObjects.MapParentAt(tile);
                 
-                yield return new FloatMenuOption("SGM.DialGate".Translate(CompStargate.GetStargateDesignation(pT), destMapParent.Label), () =>
+                yield return new FloatMenuOption("SGM.DialGate".Translate(CompStargate.GetStargateDesignation(tile), destMapParent.Label), () =>
                 {
-                    dhdComp.queuedAddress = pT;
+                    dhdComp.queuedAddress = tile;
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                     
                 }, MenuOptionPriority.SummonThreat);
             }
 
-            for (var i = 0; i < addressComp.PocketMapAddressList.Count; i++)
+            foreach (int mapIndex in addressComp.PocketMapAddressList)
             {
-                var mapIndex = addressComp.PocketMapAddressList[i];
-                if (mapIndex == sgComp.PocketMapGateAddress) continue;
+                if (mapIndex == sgComp.GateAddressPocketMap) continue;
 
-                PocketMapParent pMParent = Find.Maps[mapIndex].PocketMapParent;
+                PocketMapParent pocketMapParent = Find.Maps[mapIndex].PocketMapParent;
                 
-                if (pMParent == null)
+                if (pocketMapParent == null)
                 {
-                    Log.Error("[StargatesMod] PocketMapParent was null in FloatMenuOptionProvider_DHD");
+                    Log.Error("[StargatesMod] Could not find PocketMapParent for mapIndex: " + mapIndex);
                     continue;
                 }
 
-                yield return new FloatMenuOption("SGM.DialGate".Translate("PM-" + i, pMParent.Map.generatorDef.label), () =>
+                int index = mapIndex;
+                yield return new FloatMenuOption("SGM.DialGate".Translate(CompStargate.GetStargateDesignation(pocketMapParent.sourceMap.Tile), pocketMapParent.Map.generatorDef.label), () =>
                 {
-                    dhdComp.queuedPocketMapAddress = mapIndex;
+                    dhdComp.queuedPocketMapAddress = index;
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 }, MenuOptionPriority.SummonThreat);
             }
         }
 
-        private static AcceptanceReport CanReachDHD(Pawn pawn, Thing dhd)
+        private static AcceptanceReport CanReachDhd(Pawn pawn, Thing dhd)
         {
             if (!pawn.CanReach(dhd, PathEndMode.ClosestTouch, Danger.Deadly))
                 return "NoPath".Translate();

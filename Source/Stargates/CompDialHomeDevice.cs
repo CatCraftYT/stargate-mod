@@ -18,15 +18,20 @@ namespace StargatesMod
         public CompStargate GetLinkedStargateComp()
         {
             if (Props.selfDialler) return parent.TryGetComp<CompStargate>(); 
-            if (compFacility.LinkedBuildings.Count == 0)  return null;
-            if (compFacility.LinkedBuildings.Count > 1)
+            switch (compFacility.LinkedBuildings.Count)
             {
-                // TODO Improve?
-                foreach (Thing t in compFacility.LinkedBuildings)
+                case 0:
+                    return null;
+                case > 1:
                 {
-                    if (!t.TryGetComp<CompStargate>().IsHibernating) return t.TryGetComp<CompStargate>();
+                    foreach (Thing thing in compFacility.LinkedBuildings.Where(t => !t.TryGetComp<CompStargate>().IsHibernating))
+                    {
+                        return thing.TryGetComp<CompStargate>();
+                    }
+                    break;
                 }
             }
+
             return compFacility.LinkedBuildings[0].TryGetComp<CompStargate>();
         }
 
@@ -62,7 +67,7 @@ namespace StargatesMod
             
             if (compStargate == null) yield break;
             
-            Command_Action commandCloseGate = new Command_Action
+            Command_Action commandCloseGate = new()
             {
                 defaultLabel = "SGM.CloseStargate".Translate(),
                 defaultDesc = "SGM.CloseStargateDesc".Translate(),

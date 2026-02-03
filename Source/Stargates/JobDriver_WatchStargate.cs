@@ -24,13 +24,12 @@ namespace StargatesMod
             /*this.FailOn(() => !job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>().StargateIsActive);*/
             this.FailOn(() => pawn.DeadOrDowned);
 
-            CompStargate gateComp = job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>();
-            Toil watch;
-            
-            
+            /*CompStargate gateComp = job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>();*/
+
+
             yield return Toils_Goto.GotoCell(watchPosition, PathEndMode.OnCell);
 
-            watch = ToilMaker.MakeToil();
+            Toil watch = ToilMaker.MakeToil();
             watch.AddPreTickIntervalAction(WatchTickAction);
             watch.handlingFacing = true;
             watch.defaultCompleteMode = ToilCompleteMode.Delay;

@@ -8,7 +8,7 @@ namespace StargatesMod
     {
         public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
         {
-            if (!selPawn.CanReach(this.parent, PathEndMode.Touch, Danger.Deadly, false, false, TraverseMode.ByPawn))
+            if (!selPawn.CanReach(parent, PathEndMode.Touch, Danger.Deadly, false, false, TraverseMode.ByPawn))
             {
                 yield break;
             }
@@ -17,14 +17,11 @@ namespace StargatesMod
             {
                 yield return new FloatMenuOption("SGM.DecodeSGSymbols".Translate(), () =>
                 {
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DecodeGlyphs"), this.parent);
+                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DecodeGlyphs"), parent);
                     selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 });
             }
-            else
-            {
-                yield return new FloatMenuOption("SGM.CannotDecodeSGSymbols".Translate(), null);
-            }
+            else yield return new FloatMenuOption("SGM.CannotDecodeSGSymbols".Translate(), null);
         }
     }
 

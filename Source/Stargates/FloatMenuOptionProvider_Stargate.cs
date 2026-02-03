@@ -21,7 +21,7 @@ namespace StargatesMod
 
         public override IEnumerable<FloatMenuOption> GetOptionsFor(Thing clickedThing, FloatMenuContext context)
         {
-            List<Pawn> tmpStargateEnteringPawns = new List<Pawn>();
+            List<Pawn> tmpStargateEnteringPawns = [];
             
             CompStargate sgComp = clickedThing.TryGetComp<CompStargate>();
             
@@ -59,7 +59,7 @@ namespace StargatesMod
                 
             yield return new FloatMenuOption("SGM.BringThingToGateAction".Translate(), () =>
             {
-                TargetingParameters targetingParameters = new TargetingParameters()
+                TargetingParameters targetingParameters = new()
                 { 
                     canTargetSelf = false,
                     onlyTargetIncapacitatedPawns = false,

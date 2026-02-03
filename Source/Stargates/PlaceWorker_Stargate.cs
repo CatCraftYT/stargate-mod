@@ -13,7 +13,7 @@ namespace StargatesMod
             
             foreach (CompProperties props in def.comps)
             {
-                if (!(props is CompProperties_Stargate sgProps)) continue;
+                if (props is not CompProperties_Stargate sgProps) continue;
                 
                 List<IntVec3> vortexPattern = sgProps.vortexPattern.Select(pos => center + pos.RotatedBy(rot)).ToList();
                 GenDraw.DrawFieldEdges(vortexPattern, Color.red);
