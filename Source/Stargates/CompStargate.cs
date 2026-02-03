@@ -743,8 +743,7 @@ namespace StargatesMod
                 yield return irisControl;
             }
             
-            
-            if (!IsReceivingGate && Faction.OfPlayer.def.techLevel >= TechLevel.Industrial)
+            if (!IsReceivingGate && ConnectedStargate != null && Faction.OfPlayer.def.techLevel >= TechLevel.Industrial)
             {
                 CompStargate connectedSGComp = _connectedStargate.TryGetComp<CompStargate>();
                 
