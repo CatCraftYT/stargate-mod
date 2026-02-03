@@ -403,38 +403,12 @@ namespace StargatesMod
         {
             bool isHibernatingAlready = IsHibernating;
             
-            bool mapHasActiveStargate = GetStargateOnMap(parent.Map, parent) != null;
-
-            bool mapHasChildMap = parent.Map.ChildPocketMaps.Any();
-            List<Map> childMapsWithActiveStargate = [];
-            childMapsWithActiveStargate.AddRange(from map in parent.Map.ChildPocketMaps where GetStargateOnMap(map) != null select map);
-            bool childMapHasStargate = mapHasChildMap && childMapsWithActiveStargate.Any();
-            
-            bool mapIsPocketMap = parent.Map.IsPocketMap;
-            bool pocketMapHasSourceMap = mapIsPocketMap && parent.Map.PocketMapParent.sourceMap != null;
-            bool sourceMapHasActiveStargate = pocketMapHasSourceMap && GetStargateOnMap(parent.Map.PocketMapParent.sourceMap) != null;
-
-            
-            if (mapHasActiveStargate || childMapHasStargate || sourceMapHasActiveStargate)
+            if (GetAllStargatesOnMap(parent.Map, includeLinkedMaps: true).Any())
             {
                 string cannotWakeMessage = "SGM.Notif.CannotWake";
                 string gateHibernatingMessage = "SGM.Notif.GateHibernating";
-
-                if (childMapHasStargate)
-                {
-                    cannotWakeMessage += "_ChildMap";
-                    gateHibernatingMessage += "_ChildMap";
-                    
-                    _conflictingGate = GetStargateOnMap(childMapsWithActiveStargate.First());
-                }
-                else if (sourceMapHasActiveStargate)
-                {
-                    cannotWakeMessage += "_SourceMap";
-                    gateHibernatingMessage += "_SourceMap";
-                    
-                    _conflictingGate = GetStargateOnMap(parent.Map.PocketMapParent.sourceMap);
-                }
-                else _conflictingGate = GetStargateOnMap(parent.Map, parent);
+                
+                ConflictingGate = GetAllStargatesOnMap(parent.Map, includeLinkedMaps: true).First();
                 
                 if (isHibernatingAlready) Messages.Message(cannotWakeMessage.Translate(), MessageTypeDefOf.RejectInput);
                 else Messages.Message(gateHibernatingMessage.Translate(), MessageTypeDefOf.CautionInput);
@@ -445,11 +419,11 @@ namespace StargatesMod
             {
                 var addressWorldComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
                 
-                IsInPocketMap = mapIsPocketMap;
+                IsInPocketMap = parent.Map.IsPocketMap;
                 if (IsInPocketMap)
                 {
-                    PocketMapGateAddress = parent.Map.Index;
-                    addressWorldComp.AddPocketMapAddress(PocketMapGateAddress);
+                    GateAddressPocketMap = parent.Map.Index;
+                    addressWorldComp.AddPocketMapAddress(GateAddressPocketMap);
                 }
                 else
                 {
@@ -457,7 +431,7 @@ namespace StargatesMod
                     addressWorldComp.AddAddress(GateAddress);
                 }
                 IsHibernating = false;
-                _conflictingGate = null;
+                ConflictingGate = null;
                 
                 
                 if (isHibernatingAlready) SGSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
