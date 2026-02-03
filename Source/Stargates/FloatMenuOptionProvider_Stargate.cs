@@ -54,7 +54,7 @@ namespace StargatesMod
                     job.count = 1;
                     tmpStargateEnteringPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 }
-            }, MenuOptionPriority.High);
+            }, MenuOptionPriority.SummonThreat);
 
                 
             yield return new FloatMenuOption("SGM.BringThingToGateAction".Translate(), () =>
@@ -87,7 +87,7 @@ namespace StargatesMod
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), t.Thing, sgComp.parent); 
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 });
-            });
+            }, MenuOptionPriority.SummonThreat);
         }
 
         private static AcceptanceReport CanReachStargate(Pawn pawn, Thing stargate)

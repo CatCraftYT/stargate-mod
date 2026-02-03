@@ -89,7 +89,7 @@ namespace StargatesMod
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                     
-                }, priority);// TODO Test?
+                }, MenuOptionPriority.SummonThreat);
             }
 
             for (var i = 0; i < addressComp.PocketMapAddressList.Count; i++)
@@ -110,7 +110,7 @@ namespace StargatesMod
                     dhdComp.queuedPocketMapAddress = mapIndex;
                     Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                });
+                }, MenuOptionPriority.SummonThreat);
             }
         }
 
