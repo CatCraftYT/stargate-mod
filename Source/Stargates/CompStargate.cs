@@ -816,26 +816,33 @@ namespace StargatesMod
             yield return devAddRemoveIris;
         }
 
-        private void CleanupGate()
+        private void CleanupGate(Map map)
         {
             if (_connectedStargate != null) CloseStargate(true);
 
             if (IsInPocketMap) Find.World.GetComponent<WorldComp_StargateAddresses>().RemovePocketMapAddress(PocketMapGateAddress);
             else Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(GateAddress);
+            
+            List<Thing> gates = GetAllStargatesOnMap(map, excludeHibernating: false, includeLinkedMaps: true);
+            if (!gates.Any()) return;
+            foreach (Thing gate in gates.Where(g => g.TryGetComp<CompStargate>().ConflictingGate == parent))
+            {
+                gate.TryGetComp<CompStargate>().ConflictingGate = null;
+            }
         }
         
         public override void PostDeSpawn(Map map, DestroyMode mode = DestroyMode.Vanish)
         {
             base.PostDeSpawn(map, mode);
-            CleanupGate();
+            CleanupGate(map);
         }
 
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
             base.PostDestroy(mode, previousMap);
-            CleanupGate();
+            CleanupGate(previousMap);
         }
-
+        
         public override void PostExposeData()
         {
             base.PostExposeData();
