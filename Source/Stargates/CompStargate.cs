@@ -24,63 +24,51 @@ namespace StargatesMod
         const int glowRadius = 10;
         const string alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-        private List<Thing> _sendBuffer = new List<Thing>();
-        private List<Thing> _recvBuffer = new List<Thing>();
+        private List<Thing> _sendBuffer = [];
+        private List<Thing> _recvBuffer = [];
         public int TicksSinceBufferUnloaded;
         public int TicksSinceOpened;
         public PlanetTile GateAddress;
-        public int PocketMapGateAddress;
+        public int GateAddressPocketMap;
         public bool IsInPocketMap = false;
         public bool StargateIsActive;
         public bool IsReceivingGate;
         public bool IsHibernating;
-        Thing _conflictingGate;
+        public Thing ConflictingGate;
         public bool HasIris = false;
         public int TicksUntilOpen = -1;
         public bool IrisIsActivated = false;
         private int _prevRingSoundQueue = 0;
         private int _chevronSoundCounter = 0;
-        PlanetTile _queuedAddress = -1;
-        int _queuedAddressPocketMap = -1;
-        PlanetTile _connectedAddress = -1;
-        int _pocketMapConnectedAddress = -1;
-        Thing _connectedStargate;
+        private PlanetTile _queuedAddress = -1;
+        private int _queuedAddressPocketMap = -1;
+        public PlanetTile ConnectedAddress = -1;
+        public int ConnectedAddressPocketMap = -1;
+        public Thing ConnectedStargate;
 
         private int _checkVortexPawnsTick = 120;
         private const int _checkVortexPawnsDelayTick = 10;
         private List<Pawn> _pawnsWatchingStargate;
         
         private Sustainer _puddleSustainer;
-        private Graphic _stargatePuddle;
-        private Graphic _stargateIris;
 
         private readonly StargatesMod_Settings _settings = LoadedModManager.GetMod<StargatesMod_Mod>().GetSettings<StargatesMod_Settings>();
         
         public CompProperties_Stargate Props => (CompProperties_Stargate)props;
 
-        Graphic StargatePuddle =>
-            _stargatePuddle ??= GraphicDatabase.Get<Graphic_Single>(Props.PuddleTexture,
-                ShaderDatabase.Mote, Props.PuddleDrawSize, Color.white);
+        private Graphic StargatePuddle =>
+            field ??= GraphicDatabase.Get<Graphic_Single>(Props.puddleTexture,
+                ShaderDatabase.Mote, Props.puddleDrawSize, Color.white);
 
-        Graphic StargateIris =>
-            _stargateIris ??= GraphicDatabase.Get<Graphic_Single>(Props.IrisTexture,
-                ShaderDatabase.Mote, Props.PuddleDrawSize, Color.white);
+        private Graphic StargateIris =>
+            field ??= GraphicDatabase.Get<Graphic_Single>(Props.irisTexture,
+                ShaderDatabase.Mote, Props.puddleDrawSize, Color.white);
 
-        bool GateIsLoadingTransporter
-        {
-            get
-            {
-                CompTransporter transComp = parent.GetComp<CompTransporter>();
-                return transComp is { LoadingInProgressOrReadyToLaunch: true, AnyInGroupHasAnythingLeftToLoad: true };
-            }
-        }
+        private bool GateIsLoadingTransporter => parent.GetComp<CompTransporter>() is { LoadingInProgressOrReadyToLaunch: true, AnyInGroupHasAnythingLeftToLoad: true };
 
         public IEnumerable<IntVec3> VortexCells
         {
-            get
-            {
-                foreach (IntVec3 offset in Props.vortexPattern) yield return parent.Position + offset.RotatedBy(parent.Rotation);
-            }
+            get { return Props.vortexPattern.Select(offset => parent.Position + offset.RotatedBy(parent.Rotation)); }
         }
 
         #region DHD Controls
@@ -95,34 +83,16 @@ namespace StargatesMod
             _checkVortexPawnsTick = 120;
         }
         
-        /*public void OpenStargateDelayed(int mapIndex, int delay) //Pocket Map
-        {
-            _queuedAddressPocketMap = mapIndex;
-            TicksUntilOpen = delay;
-            
-            _checkVortexPawnsTick = 120;
-        }*/
-        
         
         public void OpenStargate(PlanetTile address)
         {
-             /*if (_queuedAddressPocketMap > -1)
-             {
-                 Log.Error($"[StargatesMod] Tried opening stargate with regular address but a pocketmap address was queued");
-                 _queuedAddress = -1;
-                 _queuedAddressPocketMap = -1;
-                 return;
-             }*/
-
              DialMode mode;
              if (_queuedAddress > -1 && _queuedAddressPocketMap <= -1) mode = DialMode.Map;
              else if (_queuedAddressPocketMap > -1 && _queuedAddress <= -1) mode = DialMode.PocketMap;
              else if (_queuedAddress == -1 && _queuedAddressPocketMap == -1) mode = DialMode.IncomingRaid;
              else mode = DialMode.Invalid;
-
-
+             
              var connectedMapParent = (MapParent)null;
-             /*PocketMapParent connectedPocketMapParent = null;*/
              switch (mode)
              {
                  case DialMode.Invalid:
@@ -138,15 +108,14 @@ namespace StargatesMod
                      connectedMapParent = Find.WorldObjects.MapParentAt(address);
                      break;
                  case DialMode.PocketMap:
-                     var pocketMapIndex = _queuedAddressPocketMap;
+                     int pocketMapIndex = _queuedAddressPocketMap;
                      connectedMapParent = Find.Maps.ElementAt(pocketMapIndex).PocketMapParent;
                      break;
              }
              
-             
              if (mode != DialMode.IncomingRaid && connectedMapParent == null)
              {
-                 StringBuilder sb =  new StringBuilder();
+                 StringBuilder sb =  new();
                  sb.Append("[StargatesMod] Failed to find MapParent at ");
                  sb.Append(mode == DialMode.Map
                      ? $"map address {_queuedAddress} "
@@ -177,25 +146,23 @@ namespace StargatesMod
 
         private void FinishDiallingStargate(PlanetTile address, MapParent connectedMapParent, DialMode mode)
         {
-            CompStargate connectedSgComp = null;
-            
             StargateIsActive = true;
 
             if (mode != DialMode.IncomingRaid)
             {
-                var connectedGate = GetStargateOnMap(connectedMapParent.Map);
+                Thing connectedGate = GetActiveStargateOnMap(connectedMapParent.Map);
                 
                 if (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive)
                 {
-                    if (connectedGate == null) Log.Error($"StargatesMod] Failed to find target stargate");
+                    if (connectedGate == null) Log.Error($"[StargatesMod] Failed to find target stargate");
                     else if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] failed to dial stargate; target stargate was already active");
                     DialFail();
                     return;
                 }
                 
-                _connectedStargate = connectedGate;
+                ConnectedStargate = connectedGate;
                 
-                connectedSgComp = _connectedStargate.TryGetComp<CompStargate>();
+                CompStargate connectedSgComp = ConnectedStargate.TryGetComp<CompStargate>();
                 connectedSgComp.StargateIsActive = true;
                 connectedSgComp.IsReceivingGate = true;
                 connectedSgComp.ConnectedStargate = parent;
@@ -241,9 +208,9 @@ namespace StargatesMod
             CompStargate connectedGateComp = null;
             if (closeOtherGate)
             {
-                connectedGateComp = _connectedStargate.TryGetComp<CompStargate>();
+                connectedGateComp = ConnectedStargate.TryGetComp<CompStargate>();
                 
-                if (_connectedStargate == null || connectedGateComp == null)
+                if (ConnectedStargate == null || connectedGateComp == null)
                     Log.Warning($"Receiving stargate connected to stargate {parent.ThingID} didn't have CompStargate, but this stargate wanted it closed.");
                 else connectedGateComp.CloseStargate(false);
             }
@@ -268,8 +235,8 @@ namespace StargatesMod
             StargateIsActive = false;
             TicksSinceBufferUnloaded = 0;
             TicksSinceOpened = 0;
-            _connectedAddress = -1;
-            _connectedStargate = null;
+            ConnectedAddress = -1;
+            ConnectedStargate = null;
             IsReceivingGate = false;
         }
 
@@ -280,20 +247,15 @@ namespace StargatesMod
 
             _queuedAddress = -1;
             _queuedAddressPocketMap = -1;
-            _connectedStargate = null;
+            ConnectedStargate = null;
         }
         
         #endregion
 
-        public static Thing GetStargateOnMap(Map map, Thing thingToIgnore = null)
+        public static Thing GetActiveStargateOnMap(Map map, Thing thingToIgnore = null)
         {
-            Thing gateOnMap = null;
-            
-            Thing thing = map.listerBuildings.allBuildingsColonist.Where(t => t.def.thingClass == typeof(Building_Stargate) && !t.TryGetComp<CompStargate>().IsHibernating).FirstOrFallback() ??
-                          map.listerBuildings.allBuildingsNonColonist.Where(t => t.def.thingClass == typeof(Building_Stargate) && !t.TryGetComp<CompStargate>().IsHibernating).FirstOrFallback();
-
-            if (thing != thingToIgnore) 
-                gateOnMap = thing;
+            Thing gateOnMap = map.listerBuildings.allBuildingsColonist.Where(t => t.def.thingClass == typeof(Building_Stargate) && !t.TryGetComp<CompStargate>().IsHibernating && t != thingToIgnore).FirstOrFallback() ??
+                              map.listerBuildings.allBuildingsNonColonist.Where(t => t.def.thingClass == typeof(Building_Stargate) && !t.TryGetComp<CompStargate>().IsHibernating && t != thingToIgnore).FirstOrFallback();
             
             return gateOnMap;
         }
@@ -327,9 +289,9 @@ namespace StargatesMod
             if (address.tileId < 0) return "UnknownLower".Translate();
             
             Rand.PushState(address.tileId);
-            //pattern: (pLDesignation)(num)(char)-(num)(num)(num)
-            string pLDesignation = address.Layer.Def.isSpace ? "O" : "P"; //Planet layer designation: O for orbit / space, P for planetary / other
-            string designation = $"{pLDesignation}{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}"; 
+            //pattern: (prefix)(num)(char)-(num)(num)(num)
+            string prefix = address.Layer.Def.isSpace ? "O" : "P"; //Planet layer designation: O for orbit / space, P for planetary / other
+            string designation = $"{prefix}{Rand.RangeInclusive(0, 9)}{alpha[Rand.RangeInclusive(0, 25)]}-{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}{Rand.RangeInclusive(0, 9)}"; 
             Rand.PopState();
             
             return designation;
@@ -478,24 +440,28 @@ namespace StargatesMod
         private void CheckVortexPawns()
         {
             _pawnsWatchingStargate ??= [];
-            var radialCenter = parent.Position + new IntVec3(0, 0, -1).RotatedBy(parent.Rotation);
-            var cells = GenRadial.RadialCellsAround(radialCenter, 4, true).ToList();
+            IntVec3 radialCenter = parent.Position + new IntVec3(0, 0, -1).RotatedBy(parent.Rotation);
+            List<IntVec3> cells = GenRadial.RadialCellsAround(radialCenter, 6, true).ToList();
             Map map = parent.Map;
             
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] Checking on pawns in stargate danger zone.. (on TicksUntilOpen {TicksUntilOpen})");
             if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] check radius center cell = {radialCenter}");
             
-            foreach (var thing in cells.SelectMany(pos => map.thingGrid.ThingsAt(pos)).Where(thing => thing is Pawn { DeadOrDowned: false, Drafted: false } pawn && _pawnsWatchingStargate.Contains(pawn)))
+            foreach (Thing thing in cells.SelectMany(pos => map.thingGrid.ThingsAt(pos)).Where(thing => thing is Pawn { DeadOrDowned: false, Drafted: false } pawn && !_pawnsWatchingStargate.Contains(pawn)))
             {
-                if (thing is not Pawn pawn) continue;
+                Pawn pawn = (Pawn)thing;
                 
                 Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
-                var pawnCells = GenRadial.RadialCellsAround(pawn.Position, 4, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !VortexCells.Contains(c)).ToList();
-                if (!pawnCells.Any()) continue;
+                List<IntVec3> pawnCells = GenRadial.RadialCellsAround(pawn.Position, 6, true).Where(c => c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !VortexCells.Contains(c)).ToList();
+                if (!pawnCells.Any())
+                {
+                    Log.Warning($"[StargatesMod] Could not find any valid cells to send {pawn} to while directing them away from the vortex zone.");
+                    continue;
+                }
                     
                 pawn.jobs.StopAll();
                 pawn.pather.StopDead();
-                var destPos = pawnCells.RandomElement();
+                IntVec3 destPos = pawnCells.RandomElement();
                 if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] Directing {pawn} away from vortex to position {destPos}");
                 pawn.jobs.ClearQueuedJobs();
                 Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate"), parent, destPos);
@@ -507,7 +473,7 @@ namespace StargatesMod
         private void EndStargateWatching()
         {
             if (!_pawnsWatchingStargate.Any()) return;
-            foreach (var pawn in _pawnsWatchingStargate.ToList().Where(pawn => !pawn.DeadOrDowned && !pawn.Drafted && pawn.CurJob.def == DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate")))
+            foreach (Pawn pawn in _pawnsWatchingStargate.ToList().Where(pawn => !pawn.DeadOrDowned && !pawn.Drafted && pawn.CurJob.def == DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate")))
             {
                 pawn.jobs.StopAll();
             }
@@ -522,7 +488,7 @@ namespace StargatesMod
             if (thingToDestroy is Pawn pawn && pawn.health.hediffSet.HasHediff(HediffDefOf.DeathRefusal))
                 pawn.health.RemoveHediff(pawn.health.hediffSet.hediffs.Find(hediff  => hediff is Hediff_DeathRefusal));
             
-            DamageInfo disintDeathInfo = new DamageInfo(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
+            DamageInfo disintDeathInfo = new(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
 
             if (!thingToDestroy.DestroyedOrNull()) thingToDestroy.Kill(disintDeathInfo);
             
@@ -588,7 +554,7 @@ namespace StargatesMod
             if (_pawnsWatchingStargate != null && _pawnsWatchingStargate.Any() && TicksSinceOpened == 210 ) EndStargateWatching();
             
             
-            CompStargate connectedStargateComp = _connectedStargate.TryGetComp<CompStargate>();
+            CompStargate connectedStargateComp = ConnectedStargate.TryGetComp<CompStargate>();
             CompTransporter transComp = parent.GetComp<CompTransporter>();
             
             if (transComp != null)
@@ -629,7 +595,7 @@ namespace StargatesMod
             TicksSinceBufferUnloaded++;
             TicksSinceOpened++;
             
-            if (_connectedAddress == -1 && _pocketMapConnectedAddress == -1  && !_recvBuffer.Any())
+            if (ConnectedAddress == -1 && ConnectedAddressPocketMap == -1  && !_recvBuffer.Any())
                 CloseStargate(false);
             
 
@@ -645,10 +611,10 @@ namespace StargatesMod
             
             if (StargateIsActive)
             {
-                bool connAddress = _connectedAddress != -1;
-                bool pocketConnAddress = _pocketMapConnectedAddress != -1;
-                if (_connectedStargate == null && (connAddress || pocketConnAddress))
-                    _connectedStargate = GetStargateOnMap(connAddress ? Find.WorldObjects.MapParentAt(_connectedAddress).Map : Find.Maps[_pocketMapConnectedAddress]);
+                bool connAddress = ConnectedAddress != -1;
+                bool pocketConnAddress = ConnectedAddressPocketMap != -1;
+                if (ConnectedStargate == null && (connAddress || pocketConnAddress))
+                    ConnectedStargate = GetActiveStargateOnMap(connAddress ? Find.WorldObjects.MapParentAt(ConnectedAddress).Map : Find.Maps[ConnectedAddressPocketMap]);
                 
                 _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
             }
@@ -658,7 +624,7 @@ namespace StargatesMod
             if (transComp is { innerContainer: null })
                 transComp.innerContainer = new ThingOwner<Thing>(transComp);
             
-            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
+            if (Prefs.LogVerbose || _settings.DebugMode) Log.Message($"[StargatesMod] compsg postspawnssetup: sgactive={StargateIsActive} connectgate={ConnectedStargate} connectaddress={ConnectedAddress}, mapparent={parent.Map.Parent}");
         }
 
         public string GetInspectString()
@@ -672,7 +638,7 @@ namespace StargatesMod
                 connectedDisplayAddress = "" + GetStargateDesignation(ConnectedStargate.Map.PocketMapParent.sourceMap.Tile);
             else connectedDisplayAddress = "SGM.Unknown".Translate();
             
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine(!IsHibernating
                 ? "SGM.GateAddress".Translate(displayedAddress)
                 : "SGM.GateHibernating".Translate());
@@ -713,16 +679,16 @@ namespace StargatesMod
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra()) yield return gizmo;
             
-            if (StargateIsActive && (_connectedAddress > -1 || _pocketMapConnectedAddress > -1))
+            if (StargateIsActive && ConnectedStargate != null)
             {
-                Command_Action selectConnectedGate = new Command_Action
+                Command_Action selectConnectedGate = new()
                 {
                     defaultLabel = "SGM.SelectConnectedGate".Translate(),
                     defaultDesc = "SGM.SelectConnectedGateDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Gizmos/SelectStargate"),
                     action = delegate
                     {
-                        CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(_connectedStargate));
+                        CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(ConnectedStargate));
                     }
                 };
                 yield return selectConnectedGate;
@@ -730,11 +696,11 @@ namespace StargatesMod
             
             if (Props.canHaveIris && HasIris)
             {
-                Command_Action irisControl = new Command_Action
+                Command_Action irisControl = new()
                 {
                     defaultLabel = "SGM.OpenCloseIris".Translate(),
                     defaultDesc = "SGM.OpenCloseIrisDesc".Translate(),
-                    icon = ContentFinder<Texture2D>.Get(Props.IrisTexture),
+                    icon = ContentFinder<Texture2D>.Get(Props.irisTexture),
                     action = delegate
                     {
                         ChangeIrisState();
@@ -745,30 +711,29 @@ namespace StargatesMod
             
             if (!IsReceivingGate && ConnectedStargate != null && Faction.OfPlayer.def.techLevel >= TechLevel.Industrial)
             {
-                CompStargate connectedSGComp = _connectedStargate.TryGetComp<CompStargate>();
+                CompStargate connectedSgComp = ConnectedStargate.TryGetComp<CompStargate>();
                 
-                if (connectedSGComp != null && _connectedStargate.Faction == Faction.OfPlayer
-                                            && connectedSGComp.Props.canHaveIris && connectedSGComp.HasIris)
+                if (ConnectedStargate.Faction == Faction.OfPlayer && connectedSgComp.Props.canHaveIris && connectedSgComp.HasIris)
                 {
-                    Command_Action remoteIrisControl = new Command_Action
+                    Command_Action remoteIrisControl = new()
                     {
                         defaultLabel = "SGM.TransmitGDO".Translate(),
                         defaultDesc = "SGM.TransmitGDODesc".Translate(),
                         icon = ContentFinder<Texture2D>.Get("UI/Gizmos/StargateTransmitGDO"),
                         action = delegate
                         {
-                            CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(_connectedStargate));
-                            connectedSGComp.ChangeIrisState();
+                            CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(ConnectedStargate));
+                            connectedSgComp.ChangeIrisState();
                         }
                     };
-                    if (!connectedSGComp.IrisIsActivated) remoteIrisControl.Disable("SGM.CannotGDO".Translate());
+                    if (!connectedSgComp.IrisIsActivated) remoteIrisControl.Disable("SGM.CannotGDO".Translate());
                     yield return remoteIrisControl;
                 }
             }
             
             if (IsHibernating)
             {
-                Command_Action makeActiveGate = new Command_Action
+                Command_Action makeActiveGate = new()
                 {
                     defaultLabel = "SGM.WakeHibernation".Translate(),
                     defaultDesc = "SGM.WakeHibernationDesc".Translate(),
@@ -777,16 +742,16 @@ namespace StargatesMod
                 };
                 yield return makeActiveGate;
 
-                if (_conflictingGate != null)
+                if (ConflictingGate != null)
                 {
-                    Command_Action selectConflictingGate = new Command_Action
+                    Command_Action selectConflictingGate = new()
                     {
                         defaultLabel = "SGM.SelectGateConflict".Translate(),
                         defaultDesc = "SGM.SelectGateConflictDesc".Translate(),
                         icon = ContentFinder<Texture2D>.Get("UI/Gizmos/SelectStargate"),
                         action = delegate
                         {
-                            CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(_conflictingGate));
+                            CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(ConflictingGate));
                         }
                     };
                     yield return selectConflictingGate;
@@ -795,7 +760,7 @@ namespace StargatesMod
             
             if (!Prefs.DevMode) yield break;
             
-            Command_Action devForceClose = new Command_Action
+            Command_Action devForceClose = new()
             {
                 defaultLabel = "Force close",
                 defaultDesc = "Force close this gate to hopefully remove strange behaviours (this will not close gate at the other end).",
@@ -808,7 +773,7 @@ namespace StargatesMod
             yield return devForceClose;
             
             if (!Props.canHaveIris) yield break;
-            Command_Action devAddRemoveIris = new Command_Action
+            Command_Action devAddRemoveIris = new()
             {
                 defaultLabel = "Add/remove iris",
                 action = delegate { HasIris = !HasIris; }
@@ -818,9 +783,9 @@ namespace StargatesMod
 
         private void CleanupGate(Map map)
         {
-            if (_connectedStargate != null) CloseStargate(true);
+            if (ConnectedStargate != null) CloseStargate(true);
 
-            if (IsInPocketMap) Find.World.GetComponent<WorldComp_StargateAddresses>().RemovePocketMapAddress(PocketMapGateAddress);
+            if (IsInPocketMap) Find.World.GetComponent<WorldComp_StargateAddresses>().RemovePocketMapAddress(GateAddressPocketMap);
             else Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(GateAddress);
             
             List<Thing> gates = GetAllStargatesOnMap(map, excludeHibernating: false, includeLinkedMaps: true);
@@ -853,9 +818,9 @@ namespace StargatesMod
             Scribe_Values.Look(ref IrisIsActivated, "IrisIsActivated");
             Scribe_Values.Look(ref TicksSinceOpened, "TicksSinceOpened");
             Scribe_Values.Look(ref IsHibernating, "IsHibernating");
-            Scribe_Values.Look(ref _connectedAddress, "_connectedAddress");
-            Scribe_Values.Look(ref _pocketMapConnectedAddress, "_connectedAddressPocketMap");
-            Scribe_References.Look(ref _connectedStargate, "_connectedStargate");
+            Scribe_Values.Look(ref ConnectedAddress, "_connectedAddress");
+            Scribe_Values.Look(ref ConnectedAddressPocketMap, "_connectedAddressPocketMap");
+            Scribe_References.Look(ref ConnectedStargate, "_connectedStargate");
             Scribe_Collections.Look(ref _recvBuffer, "_recvBuffer", LookMode.GlobalTargetInfo);
             Scribe_Collections.Look(ref _sendBuffer, "_sendBuffer", LookMode.GlobalTargetInfo);
         }
@@ -877,25 +842,25 @@ namespace StargatesMod
 
         public bool canHaveIris = true;
         public bool explodeOnUse = false;
-        public string PuddleTexture;
-        public string IrisTexture;
-        public Vector2 PuddleDrawSize;
+        public string puddleTexture;
+        public string irisTexture;
+        public Vector2 puddleDrawSize;
 
         public List<IntVec3> vortexPattern =
         [
-            new IntVec3(0, 0, 1),
-            new IntVec3(1, 0, 1),
-            new IntVec3(-1, 0, 1),
-            new IntVec3(0, 0, 0),
-            new IntVec3(1, 0, 0),
-            new IntVec3(-1, 0, 0),
-            new IntVec3(0, 0, -1),
-            new IntVec3(1, 0, -1),
-            new IntVec3(-1, 0, -1),
-            new IntVec3(0, 0, -2),
-            new IntVec3(1, 0, -2),
-            new IntVec3(-1, 0, -2),
-            new IntVec3(0, 0, -3)
+            new(0, 0, 1),
+            new(1, 0, 1),
+            new(-1, 0, 1),
+            new(0, 0, 0),
+            new(1, 0, 0),
+            new(-1, 0, 0),
+            new(0, 0, -1),
+            new(1, 0, -1),
+            new(-1, 0, -1),
+            new(0, 0, -2),
+            new(1, 0, -2),
+            new(-1, 0, -2),
+            new(0, 0, -3)
         ];
     }
 }
