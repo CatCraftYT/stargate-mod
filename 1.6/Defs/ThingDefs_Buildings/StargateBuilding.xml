@@ -5,7 +5,7 @@
 		<thingClass>StargatesMod.Building_Stargate</thingClass>
 		<minifiedDef>MinifiedThing</minifiedDef>
 		<stealable>false</stealable>
-		<pathCost>3</pathCost>
+		<pathCost>60</pathCost>
 		<constructEffect>ConstructMetal</constructEffect>
 		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<fillPercent>0.20</fillPercent>
