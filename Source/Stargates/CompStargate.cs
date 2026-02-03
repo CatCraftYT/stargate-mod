@@ -302,6 +302,30 @@ namespace StargatesMod
             return gateOnMap;
         }
 
+        public static List<Thing> GetAllStargatesOnMap(Map map, List<Thing> thingsToIgnore = null, bool excludeHibernating = true, bool includeLinkedMaps = false)
+        {
+            List<Thing> gates = [];
+            
+            gates.AddRange(map.listerBuildings.allBuildingsColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)));
+            gates.AddRange(map.listerBuildings.allBuildingsNonColonist.Where(t => t.def.thingClass == typeof(Building_Stargate)));
+            
+            if (excludeHibernating) gates.RemoveWhere(t => t.TryGetComp<CompStargate>().IsHibernating);
+            if (thingsToIgnore != null) gates.RemoveWhere(thingsToIgnore.Contains);
+
+            if (!includeLinkedMaps) return gates;
+            
+            if (map.IsPocketMap && map.PocketMapParent.sourceMap != null) gates.AddRange(GetAllStargatesOnMap(map.PocketMapParent.sourceMap, excludeHibernating: false));
+            if (map.ChildPocketMaps.Any())
+            {
+                foreach (Map childMap in map.ChildPocketMaps)
+                {
+                    gates.AddRange(GetAllStargatesOnMap(childMap, excludeHibernating: false));
+                }
+            }
+
+            return gates;
+        }
+
         public static string GetStargateDesignation(PlanetTile address)
         {
             if (address.tileId < 0) return "UnknownLower".Translate();
