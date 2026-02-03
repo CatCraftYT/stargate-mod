@@ -198,7 +198,7 @@ namespace StargatesMod
                 connectedSgComp = _connectedStargate.TryGetComp<CompStargate>();
                 connectedSgComp.StargateIsActive = true;
                 connectedSgComp.IsReceivingGate = true;
-                connectedSgComp._connectedStargate = parent;
+                connectedSgComp.ConnectedStargate = parent;
                 
                 if (mode == DialMode.Map)
                     ConnectedAddress = address;
@@ -663,16 +663,13 @@ namespace StargatesMod
 
         public string GetInspectString()
         {
-            WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
-            
-            string displayedAddress = GetStargateDesignation(GateAddress);
-            if (IsInPocketMap) displayedAddress = "PM-" + addressComp.PocketMapAddressList.IndexOf(PocketMapGateAddress);
+            string displayedAddress = "" + GetStargateDesignation(!IsInPocketMap ? GateAddress : parent.Map.PocketMapParent.sourceMap.Tile);
             
             string connectedDisplayAddress;
-            if (_connectedAddress > -1)
-                connectedDisplayAddress = "" + GetStargateDesignation(_connectedAddress);
-            else if (_pocketMapConnectedAddress > -1)
-                connectedDisplayAddress = "PM-" + addressComp.PocketMapAddressList.IndexOf(_pocketMapConnectedAddress);
+            if (ConnectedAddress.tileId > -1)
+                connectedDisplayAddress = "" + GetStargateDesignation(ConnectedAddress);
+            else if (ConnectedAddressPocketMap > -1 && ConnectedStargate?.Map.PocketMapParent?.sourceMap?.Tile != null)
+                connectedDisplayAddress = "" + GetStargateDesignation(ConnectedStargate.Map.PocketMapParent.sourceMap.Tile);
             else connectedDisplayAddress = "SGM.Unknown".Translate();
             
             StringBuilder sb = new StringBuilder();
@@ -681,7 +678,7 @@ namespace StargatesMod
                 : "SGM.GateHibernating".Translate());
             switch (StargateIsActive)
             {
-                case false when TicksUntilOpen <= -1:
+                case false when TicksUntilOpen <= -1 && !IsHibernating:
                     sb.AppendLine("SGM.StargateIdle".Translate());
                     break;
                 case true:
@@ -699,12 +696,15 @@ namespace StargatesMod
             sb.AppendLine($"TicksUntilOpen = {TicksUntilOpen}");
             sb.AppendLine($"ticksSinceBufferUnloaded = {TicksSinceBufferUnloaded}");
 
-            sb.AppendLine($"connectedAddress = {_connectedAddress}");
-            sb.AppendLine($"connectedAddressPocketMap = {_pocketMapConnectedAddress}");
+            sb.AppendLine($"connectedAddress = {ConnectedAddress}");
+            sb.AppendLine($"connectedAddressPocketMap = {ConnectedAddressPocketMap}");
             
-            var string1 = _pawnsWatchingStargate == null ? "null" : "notNull";
-            sb.AppendLine($"_PawnsWatchingStargate = {string1}");
-            if (_pawnsWatchingStargate != null && _pawnsWatchingStargate.Any()) sb.AppendLine($"_PawnsWatchingStargate0 = {_pawnsWatchingStargate[0]}");
+            string conflictingGateStr = ConflictingGate == null ? "null" : ConflictingGate.ToString();
+            sb.AppendLine($"_conflictingGate = " + conflictingGateStr);
+            
+            string pawnsWatchingStargateStr = _pawnsWatchingStargate == null || !_pawnsWatchingStargate.Any() 
+                ? "null" : _pawnsWatchingStargate[0].ToString();
+            sb.AppendLine($"_PawnsWatchingStargate0 = {pawnsWatchingStargateStr}");
 
             return sb.ToString().TrimEndNewlines();
         }
