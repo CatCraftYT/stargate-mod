@@ -199,6 +199,15 @@ namespace StargatesMod
                 connectedSgComp.StargateIsActive = true;
                 connectedSgComp.IsReceivingGate = true;
                 connectedSgComp._connectedStargate = parent;
+                
+                if (mode == DialMode.Map)
+                    ConnectedAddress = address;
+                else if (mode == DialMode.PocketMap) 
+                    ConnectedAddressPocketMap = address.tileId;
+
+                if (!IsInPocketMap) connectedSgComp.ConnectedAddress = GateAddress;
+                else connectedSgComp.ConnectedAddressPocketMap = GateAddressPocketMap;
+                
 
                 connectedSgComp._puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(connectedSgComp.parent));
                 SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(connectedSgComp.parent));
@@ -206,19 +215,6 @@ namespace StargatesMod
                 CompGlower otherGlowComp = connectedSgComp.parent.GetComp<CompGlower>();
                 otherGlowComp.Props.glowRadius = glowRadius;
                 otherGlowComp.PostSpawnSetup(false);
-            }
-            
-            switch (mode)
-            {
-                case DialMode.Map:
-                    _connectedAddress = address;
-                    connectedSgComp?._connectedAddress = GateAddress;
-                    break;
-                
-                case DialMode.PocketMap:
-                    _pocketMapConnectedAddress = address;
-                    connectedSgComp?._pocketMapConnectedAddress = PocketMapGateAddress;
-                    break;
             }
             
             _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
