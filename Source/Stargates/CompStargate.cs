@@ -571,11 +571,14 @@ namespace StargatesMod
             
             if (!StargateIsActive && !IrisIsActivated)
             {
-                if (TicksUntilOpen > -1 && _checkVortexPawnsTick < 0) _checkVortexPawnsTick = _checkVortexPawnsDelayTick;
-                if (TicksUntilOpen == _checkVortexPawnsTick)
+                if (TicksUntilOpen > -1)
                 {
-                    CheckVortexPawns();
-                    _checkVortexPawnsTick = TicksUntilOpen - _checkVortexPawnsDelayTick;
+                    if (_checkVortexPawnsTick < 0) _checkVortexPawnsTick = _checkVortexPawnsDelayTick;
+                    if (TicksUntilOpen == _checkVortexPawnsTick)
+                    {
+                        CheckVortexPawns();
+                        _checkVortexPawnsTick = TicksUntilOpen - _checkVortexPawnsDelayTick;
+                    }
                 }
             }
 
