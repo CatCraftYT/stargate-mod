@@ -20,15 +20,10 @@
 	<!--Notification message text-->
 	<SGM.GateDialFailed>Could not activate stargate: Receiving gate no longer exists or is currently in use.</SGM.GateDialFailed>
 	<SGM.NoGateInCaravan>Stargate required in caravan inventory.</SGM.NoGateInCaravan>
-	<SGM.BlockedByLandmark>Stargate sites cannot be placed on landmarks.</SGM.BlockedByLandmark>
+	<SGM.BlockedByLandmark>Stargate sites cannot be created on landmarks.</SGM.BlockedByLandmark>
     
-    <SGM.CannotWake>Cannot wake gate: this map already contains an active gate.</SGM.CannotWake>
-    <SGM.CannotWake_SourceMap>Cannot Wake gate: This pocket map's parent map already contains an active gate.</SGM.CannotWake_SourceMap>
-    <SGM.CannotWake_ChildMap>Cannot wake gate: (one of) This map's child pocket map(s) already contains an active gate.</SGM.CannotWake_ChildMap>
-    
-    <SGM.Notif.GateHibernating>Built gate is hibernating: Active gate already present on this map.</SGM.Notif.GateHibernating>
-    <SGM.Notif.GateHibernating_SourceMap>Built gate is hibernating: This pocket map's parent map already contains an active gate.</SGM.Notif.GateHibernating_SourceMap>
-    <SGM.Notif.GateHibernating_ChildMap>Built gate is hibernating: (one of) This map's child pocket map(s) already contains an active gate.</SGM.Notif.GateHibernating_ChildMap>
+    <SGM.Notif.CannotWake>Cannot wake gate: active gate already present in the local area.</SGM.Notif.CannotWake>
+    <SGM.Notif.GateHibernating>Built gate is hibernating: active gate already present in the local area.</SGM.Notif.GateHibernating>
 
 	<!--InspectString text-->
 	<SGM.GateAddress>Stargate address: {0}</SGM.GateAddress>
@@ -42,13 +37,13 @@
 	
 	<!--Gizmo labels and descriptions-->
 	<SGM.WakeHibernation>Wake from hibernation</SGM.WakeHibernation>
-	<SGM.WakeHibernationDesc>Wake this stargate from hibernation, making it the active gate for this location. Only one gate can be active on a location, including any linked (pocket / parent) maps.</SGM.WakeHibernationDesc>
+	<SGM.WakeHibernationDesc>Make this the active gate in the local area. Only one gate can be active at the same time. \nThe local area includes this map, and any associated sub-maps (pocket maps).</SGM.WakeHibernationDesc>
     
     <SGM.OpenCloseIris>Open/close iris</SGM.OpenCloseIris>
     <SGM.OpenCloseIrisDesc>Open or close this stargate's iris.</SGM.OpenCloseIrisDesc>
     
     <SGM.CloseStargate>Close stargate</SGM.CloseStargate>
-    <SGM.CloseStargateDesc>Close the linked stargate.</SGM.CloseStargateDesc>
+    <SGM.CloseStargateDesc>Close the active wormhole connection.</SGM.CloseStargateDesc>
     
     <SGM.CreateSGSite>Create new stargate site</SGM.CreateSGSite>
     <SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
@@ -66,6 +61,7 @@
     <SGM.SelectGateConflictDesc>Jump to the gate that's preventing this gate from waking.</SGM.SelectGateConflictDesc>
 	
 	<!--Gizmo disabled messages-->
+	<SGM.GateIsNotActive>Stargate is not active.</SGM.GateIsNotActive>
 	<SGM.CannotGDO>Iris is already open.</SGM.CannotGDO>
 	
 	<!--FloatMenu labels-->
