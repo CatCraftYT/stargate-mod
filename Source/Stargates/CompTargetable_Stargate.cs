@@ -2,27 +2,26 @@
 using Verse;
 using System.Collections.Generic;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class CompTargetable_Stargate : CompTargetable
 {
-    public class CompTargetable_Stargate : CompTargetable
+    protected override bool PlayerChoosesTarget => true;
+
+    protected override TargetingParameters GetTargetingParameters()
     {
-		protected override bool PlayerChoosesTarget => true;
+        return new TargetingParameters
+        {
+            validator = targetInfo =>
+            {
+                CompStargate sgComp = targetInfo.Thing.TryGetComp<CompStargate>();
+                return targetInfo.Thing != null && sgComp != null && sgComp.Props.canHaveIris && !sgComp.HasIris;
+            }
+        };
+    }
 
-		protected override TargetingParameters GetTargetingParameters()
-		{
-			return new TargetingParameters
-			{
-				validator = targetInfo =>
-				{
-					CompStargate sgComp = targetInfo.Thing.TryGetComp<CompStargate>();
-					return targetInfo.Thing != null && sgComp != null && sgComp.Props.canHaveIris && !sgComp.HasIris;
-				}
-			};
-		}
-
-		public override IEnumerable<Thing> GetTargets(Thing targetChosenByPlayer = null)
-		{
-			yield return targetChosenByPlayer;
-		}
-	}
+    public override IEnumerable<Thing> GetTargets(Thing targetChosenByPlayer = null)
+    {
+        yield return targetChosenByPlayer;
+    }
 }

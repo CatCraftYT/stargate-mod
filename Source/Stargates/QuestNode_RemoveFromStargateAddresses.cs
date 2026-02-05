@@ -2,30 +2,29 @@
 using RimWorld.QuestGen;
 using Verse;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class QuestNode_AddStargateAddresses : QuestNode
 {
-    public class QuestNode_AddStargateAddresses : QuestNode
+    public SlateRef<Site> address;
+    public SlateRef<bool> remove;
+
+    protected override bool TestRunInt(Slate slate)
     {
-        public SlateRef<Site> address;
-        public SlateRef<bool> remove;
+        return true;
+    }
 
-        protected override bool TestRunInt(Slate slate)
-        {
-            return true;
-        }
+    protected override void RunInt()
+    {
+        Slate slate = QuestGen.slate;
+        Site site = address.GetValue(slate);
+        PlanetTile tile = site.Tile;
 
-        protected override void RunInt()
-        {
-            Slate slate = QuestGen.slate;
-            Site site = address.GetValue(slate);
-            PlanetTile tile = site.Tile;
-
-            WorldComp_StargateAddresses sgWorldComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
-            if (sgWorldComp == null) { Log.Error("QuestNode_AddStargateAddresses tried to get WorldComp_StargateAddresses but it was null."); return; }
+        WorldComp_StargateAddresses sgWorldComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
+        if (sgWorldComp == null) { Log.Error("QuestNode_AddStargateAddresses tried to get WorldComp_StargateAddresses but it was null."); return; }
             
-            sgWorldComp.CleanupAddresses();
-            if (remove.GetValue(slate)) sgWorldComp.AddressList.Remove(tile);
-            else sgWorldComp.AddressList.Add(tile);
-        }
+        sgWorldComp.CleanupAddresses();
+        if (remove.GetValue(slate)) sgWorldComp.AddressList.Remove(tile);
+        else sgWorldComp.AddressList.Add(tile);
     }
 }

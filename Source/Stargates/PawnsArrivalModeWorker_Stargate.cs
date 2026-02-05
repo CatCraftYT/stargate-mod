@@ -1,50 +1,48 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
-using StargatesMod.Mod_Settings;
 using Verse;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
 {
-    public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
-    {
-        private readonly StargatesMod_Settings _settings = LoadedModManager.GetMod<StargatesMod_Mod>().GetSettings<StargatesMod_Settings>();
+    private readonly StargatesModSettings _modSettings = LoadedModManager.GetMod<StargatesMod>().GetSettings<StargatesModSettings>();
         
-        public override void Arrive(List<Pawn> pawns, IncidentParms parms)
+    public override void Arrive(List<Pawn> pawns, IncidentParms parms)
+    {
+        Map map = (Map)parms.target;
+        Thing stargateOnMap = CompStargate.GetActiveStargateOnMap(map);
+
+        CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
+            
+        int lockDelay = 900;
+        if (_modSettings.ShortenGateDialSeq) lockDelay = 450;
+
+        sgComp.OpenStargateDelayed(-1, lockDelay);
+            
+        /*sgComp.TicksSinceBufferUnloaded = -150;
+        sgComp.IsReceivingGate = true;*/
+            
+        foreach (Pawn pawn in pawns)
         {
-            Map map = (Map)parms.target;
-            Thing stargateOnMap = CompStargate.GetActiveStargateOnMap(map);
-
-            CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
-            
-            int lockDelay = 900;
-            if (_settings.ShortenGateDialSeq) lockDelay = 450;
-
-            sgComp.OpenStargateDelayed(-1, lockDelay);
-            
-            /*sgComp.TicksSinceBufferUnloaded = -150;
-            sgComp.IsReceivingGate = true;*/
-            
-            foreach (Pawn pawn in pawns)
-            {
-                sgComp.AddToReceiveBuffer(pawn);
-            }
+            sgComp.AddToReceiveBuffer(pawn);
         }
-        public override bool TryResolveRaidSpawnCenter(IncidentParms parms)
+    }
+    public override bool TryResolveRaidSpawnCenter(IncidentParms parms)
+    {
+        Map map = (Map)parms.target;
+            
+        Thing stargateOnMap = CompStargate.GetActiveStargateOnMap(map);
+        CompStargate sgComp = stargateOnMap?.TryGetComp<CompStargate>();
+            
+        if (stargateOnMap == null || sgComp == null || sgComp.StargateIsActive)
         {
-            Map map = (Map)parms.target;
-            
-            Thing stargateOnMap = CompStargate.GetActiveStargateOnMap(map);
-            CompStargate sgComp = stargateOnMap?.TryGetComp<CompStargate>();
-            
-            if (stargateOnMap == null || sgComp == null || sgComp.StargateIsActive)
-            {
-                parms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn;
-                return parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);
-            }
-
-            parms.spawnRotation = stargateOnMap.Rotation;
-            parms.spawnCenter = stargateOnMap.Position;
-            return true;
+            parms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn;
+            return parms.raidArrivalMode.Worker.TryResolveRaidSpawnCenter(parms);
         }
+
+        parms.spawnRotation = stargateOnMap.Rotation;
+        parms.spawnCenter = stargateOnMap.Position;
+        return true;
     }
 }

@@ -3,50 +3,49 @@ using Verse;
 using Verse.AI;
 using System.Collections.Generic;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class JobDriver_InstallIris : JobDriver
 {
-    public class JobDriver_InstallIris : JobDriver
+    private const TargetIndex irisItemTarg = TargetIndex.A;
+    private const TargetIndex stargateTarg = TargetIndex.B;
+
+    public override bool TryMakePreToilReservations(bool errorOnFailed)
     {
-        private const TargetIndex irisItemTarg = TargetIndex.A;
-        private const TargetIndex stargateTarg = TargetIndex.B;
+        job.count = 1;
+        Thing stargate = (Thing)job.GetTarget(stargateTarg);
+        Thing iris = (Thing)job.GetTarget(irisItemTarg);
+            
+        return pawn.Reserve(stargate, job) && pawn.Reserve(iris, job);
+    }
 
-        public override bool TryMakePreToilReservations(bool errorOnFailed)
+    protected override IEnumerable<Toil> MakeNewToils()
+    {
+        int useDuration = job.GetTarget(TargetIndex.A).Thing.TryGetComp<CompUsable>().Props.useDuration;
+        Thing irisItem = (Thing)job.GetTarget(irisItemTarg);
+
+        this.FailOnDestroyedOrNull(stargateTarg);
+        this.FailOnDestroyedNullOrForbidden(irisItemTarg);
+
+        yield return Toils_Goto.GotoThing(irisItemTarg, PathEndMode.Touch);
+        yield return Toils_Haul.StartCarryThing(irisItemTarg);
+        yield return Toils_Goto.GotoThing(stargateTarg, PathEndMode.Touch);
+            
+        Toil toil = Toils_General.Wait(useDuration);
+        toil.WithProgressBarToilDelay(stargateTarg);
+        toil.WithEffect(TargetThingB.def.repairEffect, TargetIndex.B);
+        yield return toil;
+            
+        yield return new Toil
         {
-            job.count = 1;
-            Thing stargate = (Thing)job.GetTarget(stargateTarg);
-            Thing iris = (Thing)job.GetTarget(irisItemTarg);
-            
-            return pawn.Reserve(stargate, job) && pawn.Reserve(iris, job);
-        }
-
-        protected override IEnumerable<Toil> MakeNewToils()
-        {
-            int useDuration = job.GetTarget(TargetIndex.A).Thing.TryGetComp<CompUsable>().Props.useDuration;
-            Thing irisItem = (Thing)job.GetTarget(irisItemTarg);
-
-            this.FailOnDestroyedOrNull(stargateTarg);
-            this.FailOnDestroyedNullOrForbidden(irisItemTarg);
-
-            yield return Toils_Goto.GotoThing(irisItemTarg, PathEndMode.Touch);
-            yield return Toils_Haul.StartCarryThing(irisItemTarg);
-            yield return Toils_Goto.GotoThing(stargateTarg, PathEndMode.Touch);
-            
-            Toil toil = Toils_General.Wait(useDuration);
-            toil.WithProgressBarToilDelay(stargateTarg);
-            toil.WithEffect(TargetThingB.def.repairEffect, TargetIndex.B);
-            yield return toil;
-            
-            yield return new Toil
+            initAction = () =>
             {
-                initAction = () =>
-                {
-                    CompStargate gateComp = job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>();
+                CompStargate gateComp = job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>();
                     
-                    pawn.carryTracker.innerContainer.Remove(irisItem);
-                    irisItem.Destroy();
-                    gateComp.HasIris = true;
-                }
-            };
-        }
+                pawn.carryTracker.innerContainer.Remove(irisItem);
+                irisItem.Destroy();
+                gateComp.HasIris = true;
+            }
+        };
     }
 }

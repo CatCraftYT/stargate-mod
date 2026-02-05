@@ -6,41 +6,40 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class JobDriver_WatchStargate : JobDriver
 {
-    public class JobDriver_WatchStargate : JobDriver
+    private const TargetIndex stargateToWatch = TargetIndex.A;
+    private const TargetIndex watchPosition = TargetIndex.B;
+
+    public override bool TryMakePreToilReservations(bool errorOnFailed)
     {
-        private const TargetIndex stargateToWatch = TargetIndex.A;
-        private const TargetIndex watchPosition = TargetIndex.B;
+        return true;
+    }
 
-        public override bool TryMakePreToilReservations(bool errorOnFailed)
-        {
-            return true;
-        }
+    protected override IEnumerable<Toil> MakeNewToils()
+    {
+        this.FailOnDestroyedOrNull(stargateToWatch);
+        /*this.FailOn(() => !job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>().StargateIsActive);*/
+        this.FailOn(() => pawn.DeadOrDowned);
 
-        protected override IEnumerable<Toil> MakeNewToils()
-        {
-            this.FailOnDestroyedOrNull(stargateToWatch);
-            /*this.FailOn(() => !job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>().StargateIsActive);*/
-            this.FailOn(() => pawn.DeadOrDowned);
-
-            /*CompStargate gateComp = job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>();*/
+        /*CompStargate gateComp = job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>();*/
 
 
-            yield return Toils_Goto.GotoCell(watchPosition, PathEndMode.OnCell);
+        yield return Toils_Goto.GotoCell(watchPosition, PathEndMode.OnCell);
 
-            Toil watch = ToilMaker.MakeToil();
-            watch.AddPreTickIntervalAction(WatchTickAction);
-            watch.handlingFacing = true;
-            watch.defaultCompleteMode = ToilCompleteMode.Delay;
-            watch.defaultDuration = 900;
+        Toil watch = ToilMaker.MakeToil();
+        watch.AddPreTickIntervalAction(WatchTickAction);
+        watch.handlingFacing = true;
+        watch.defaultCompleteMode = ToilCompleteMode.Delay;
+        watch.defaultDuration = 900;
             
-            yield return watch;
-        }
+        yield return watch;
+    }
 
-        protected void WatchTickAction(int delta)
-        {
-            pawn.rotationTracker.FaceCell(job.GetTarget(stargateToWatch).Cell);
-        }
+    protected void WatchTickAction(int delta)
+    {
+        pawn.rotationTracker.FaceCell(job.GetTarget(stargateToWatch).Cell);
     }
 }

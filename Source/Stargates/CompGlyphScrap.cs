@@ -2,34 +2,33 @@
 using Verse.AI;
 using System.Collections.Generic;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class CompGlyphScrap : ThingComp
 {
-    public class CompGlyphScrap : ThingComp
+    public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
     {
-        public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
+        if (!selPawn.CanReach(parent, PathEndMode.Touch, Danger.Deadly, false, false, TraverseMode.ByPawn))
         {
-            if (!selPawn.CanReach(parent, PathEndMode.Touch, Danger.Deadly, false, false, TraverseMode.ByPawn))
-            {
-                yield break;
-            }
-
-            if (DefDatabase<ResearchProjectDef>.GetNamed("StargateMod_GlyphDeciphering").IsFinished)
-            {
-                yield return new FloatMenuOption("SGM.DecodeSGSymbols".Translate(), () =>
-                {
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DecodeGlyphs"), parent);
-                    selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
-                });
-            }
-            else yield return new FloatMenuOption("SGM.CannotDecodeSGSymbols".Translate(), null);
+            yield break;
         }
+
+        if (DefDatabase<ResearchProjectDef>.GetNamed("StargateMod_GlyphDeciphering").IsFinished)
+        {
+            yield return new FloatMenuOption("SGM.DecodeSGSymbols".Translate(), () =>
+            {
+                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DecodeGlyphs"), parent);
+                selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+            });
+        }
+        else yield return new FloatMenuOption("SGM.CannotDecodeSGSymbols".Translate(), null);
     }
+}
 
-    public class CompProperties_GlyphScrap : CompProperties
+public class CompProperties_GlyphScrap : CompProperties
+{
+    public CompProperties_GlyphScrap()
     {
-        public CompProperties_GlyphScrap()
-        {
-            this.compClass = typeof(CompGlyphScrap);
-        }
+        this.compClass = typeof(CompGlyphScrap);
     }
 }

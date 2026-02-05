@@ -2,34 +2,33 @@
 using RimWorld.Planet;
 using Verse;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class CaravanArrivalAction_PermSgSite(MapParent site) : CaravanArrivalAction
 {
-    public class CaravanArrivalAction_PermSGSite(MapParent site) : CaravanArrivalAction
+    MapParent arrivalSite = site;
+
+    public override string Label => "ApproachSite".Translate(arrivalSite.Label);
+    public override string ReportString => "ApproachingSite".Translate(arrivalSite.Label);
+
+    public override FloatMenuAcceptanceReport StillValid(Caravan caravan, PlanetTile destinationTile)
     {
-		MapParent arrivalSite = site;
+        return arrivalSite == null || arrivalSite.Tile == destinationTile;
+    }
 
-        public override string Label => "ApproachSite".Translate(arrivalSite.Label);
-        public override string ReportString => "ApproachingSite".Translate(arrivalSite.Label);
-
-        public override FloatMenuAcceptanceReport StillValid(Caravan caravan, PlanetTile destinationTile)
+    public override void Arrived(Caravan caravan)
+    {
+        Find.LetterStack.ReceiveLetter("LetterLabelCaravanEnteredMap".Translate(arrivalSite), "LetterCaravanEnteredMap".Translate(caravan.Label, arrivalSite).CapitalizeFirst(), LetterDefOf.NeutralEvent, caravan.PawnsListForReading);
+        LongEventHandler.QueueLongEvent(() =>
         {
-            return arrivalSite == null || arrivalSite.Tile == destinationTile;
-        }
+            GetOrGenerateMapUtility.GetOrGenerateMap(arrivalSite.Tile, new IntVec3(75, 1, 75), arrivalSite.def);
+            CaravanEnterMapUtility.Enter(caravan, arrivalSite.Map, CaravanEnterMode.Center);
+        }, "GeneratingMapForNewEncounter", false, null);
+    }
 
-        public override void Arrived(Caravan caravan)
-		{
-			Find.LetterStack.ReceiveLetter("LetterLabelCaravanEnteredMap".Translate(arrivalSite), "LetterCaravanEnteredMap".Translate(caravan.Label, arrivalSite).CapitalizeFirst(), LetterDefOf.NeutralEvent, caravan.PawnsListForReading);
-			LongEventHandler.QueueLongEvent(() =>
-			{
-				GetOrGenerateMapUtility.GetOrGenerateMap(arrivalSite.Tile, new IntVec3(75, 1, 75), arrivalSite.def);
-				CaravanEnterMapUtility.Enter(caravan, arrivalSite.Map, CaravanEnterMode.Center);
-			}, "GeneratingMapForNewEncounter", false, null);
-		}
-
-        public override void ExposeData()
-		{
-			base.ExposeData();
-			Scribe_References.Look(ref arrivalSite, "arrivalSite");
-		}
-	}
+    public override void ExposeData()
+    {
+        base.ExposeData();
+        Scribe_References.Look(ref arrivalSite, "arrivalSite");
+    }
 }

@@ -2,51 +2,50 @@
 using Verse.AI;
 using System.Collections.Generic;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class JobDriver_EnterStargate : JobDriver
 {
-    public class JobDriver_EnterStargate : JobDriver
+    private const TargetIndex stargateTarg = TargetIndex.A;
+    private const TargetIndex carriedPawnTarg = TargetIndex.B; // Optional
+
+    public override bool TryMakePreToilReservations(bool errorOnFailed)
     {
-        private const TargetIndex stargateTarg = TargetIndex.A;
-        private const TargetIndex carriedPawnTarg = TargetIndex.B; // Optional
+        return true;
+    }
 
-        public override bool TryMakePreToilReservations(bool errorOnFailed)
-        {
-            return true;
-        }
+    protected override IEnumerable<Toil> MakeNewToils()
+    {
+        this.FailOnDestroyedOrNull(stargateTarg);
+        this.FailOn(() => !job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>().StargateIsActive);
 
-        protected override IEnumerable<Toil> MakeNewToils()
-        {
-            this.FailOnDestroyedOrNull(stargateTarg);
-            this.FailOn(() => !job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>().StargateIsActive);
-
-            CompStargate gateComp = job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>();
-            Pawn carriedPawn = (Pawn)job.GetTarget(carriedPawnTarg).Thing;
-            bool carryPawnToGate = carriedPawn != null;
+        CompStargate gateComp = job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>();
+        Pawn carriedPawn = (Pawn)job.GetTarget(carriedPawnTarg).Thing;
+        bool carryPawnToGate = carriedPawn != null;
             
-            if (carryPawnToGate) yield return Toils_Haul.StartCarryThing(carriedPawnTarg);
+        if (carryPawnToGate) yield return Toils_Haul.StartCarryThing(carriedPawnTarg);
             
-            yield return Toils_Goto.GotoCell(job.GetTarget(stargateTarg).Thing.InteractionCell, PathEndMode.OnCell);
-            if (carryPawnToGate)
-            {
-                yield return new Toil
-                {
-                    initAction = () =>
-                    {
-                        if (!pawn.carryTracker.innerContainer.Contains(carriedPawn)) return;
-                        
-                        pawn.carryTracker.innerContainer.Remove(carriedPawn);
-                        gateComp.AddToSendBuffer(carriedPawn);
-                    }
-                };
-            }
+        yield return Toils_Goto.GotoCell(job.GetTarget(stargateTarg).Thing.InteractionCell, PathEndMode.OnCell);
+        if (carryPawnToGate)
+        {
             yield return new Toil
             {
                 initAction = () =>
                 {
-                    pawn.DeSpawn();
-                    gateComp.AddToSendBuffer(pawn);
+                    if (!pawn.carryTracker.innerContainer.Contains(carriedPawn)) return;
+                        
+                    pawn.carryTracker.innerContainer.Remove(carriedPawn);
+                    gateComp.AddToSendBuffer(carriedPawn);
                 }
             };
         }
+        yield return new Toil
+        {
+            initAction = () =>
+            {
+                pawn.DeSpawn();
+                gateComp.AddToSendBuffer(pawn);
+            }
+        };
     }
 }
