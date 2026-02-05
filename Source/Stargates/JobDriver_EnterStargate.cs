@@ -32,6 +32,8 @@ namespace StargatesMod
                 {
                     initAction = () =>
                     {
+                        if (!pawn.carryTracker.innerContainer.Contains(carriedPawn)) return;
+                        
                         pawn.carryTracker.innerContainer.Remove(carriedPawn);
                         gateComp.AddToSendBuffer(carriedPawn);
                     }

@@ -20,14 +20,14 @@ namespace StargatesMod
         protected override IEnumerable<Toil> MakeNewToils()
         {
             Thing thing = (Thing)job.GetTarget(thingToHaul);
-
-            this.FailOnDestroyedOrNull(targetStargate);
-            this.FailOnDestroyedNullOrForbidden(thingToHaul);
+            
+            this.FailOnDestroyedOrNull(targetStargate); 
             this.FailOn(() => !job.GetTarget(targetStargate).Thing.TryGetComp<CompStargate>().StargateIsActive);
-
+            
+            
             yield return Toils_Goto.GotoCell(thingToHaul, PathEndMode.Touch);
             yield return Toils_Haul.StartCarryThing(thingToHaul);
-            yield return Toils_Goto.GotoCell(job.GetTarget(targetStargate).Thing.InteractionCell, PathEndMode.OnCell);
+            yield return Toils_Goto.GotoCell(job.GetTarget(targetStargate).Thing.InteractionCell, PathEndMode.OnCell).FailOn(() => job.GetTarget(thingToHaul).Thing.Spawned);
             yield return new Toil
             {
                 initAction = () =>

@@ -67,8 +67,7 @@
 	<!--FloatMenu labels-->
 	<SGM.EnterStargateAction>Enter stargate</SGM.EnterStargateAction>
 	<SGM.BringThingToGateAction>Bring item or pawn to stargate</SGM.BringThingToGateAction>
-	<SGM.CarryHeldToStargateAction>Carry {0} to stargate</SGM.CarryHeldToStargateAction>
-	<SGM.CarryHeldToStargateAction_Disabled>Cannot carry to stargate: stargate not active</SGM.CarryHeldToStargateAction_Disabled>
+	<SGM.CarryHeldPawnToStargateAction>Carry pawn to stargate</SGM.CarryHeldPawnToStargateAction>
 	<SGM.DialGate>Dial {0} ({1})</SGM.DialGate>
 	<SGM.DecodeSGSymbols>Decode symbols</SGM.DecodeSGSymbols>
 	<SGM.CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</SGM.CannotDecodeSGSymbols>
