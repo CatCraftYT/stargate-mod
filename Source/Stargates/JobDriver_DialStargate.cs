@@ -51,7 +51,7 @@ public class JobDriver_DialStargate : JobDriver
                     dhdComp.queuedPocketMapAddress = -1;
                 }
                     
-                if (!dhdComp.Props.selfDialler) SGSoundDefOf.StargateMod_DhdUsual_1.PlayOneShot(SoundInfo.InMap(dhdComp.parent));
+                if (!dhdComp.Props.selfDialler) SgSoundDefOf.StargateMod_DhdUsual_1.PlayOneShot(SoundInfo.InMap(dhdComp.parent));
             }
         };
     }

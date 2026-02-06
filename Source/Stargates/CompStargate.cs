@@ -175,16 +175,16 @@ public class CompStargate : ThingComp
             else connectedSgComp.ConnectedAddressPocketMap = GateAddressPocketMap;
                 
 
-            connectedSgComp._puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(connectedSgComp.parent));
-            SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(connectedSgComp.parent));
+            connectedSgComp._puddleSustainer = SgSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(connectedSgComp.parent));
+            SgSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(connectedSgComp.parent));
                     
             CompGlower otherGlowComp = connectedSgComp.parent.GetComp<CompGlower>();
             otherGlowComp.Props.glowRadius = glowRadius;
             otherGlowComp.PostSpawnSetup(false);
         }
             
-        _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
-        SGSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(parent));
+        _puddleSustainer = SgSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
+        SgSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(parent));
 
         CompGlower glowComp = parent.GetComp<CompGlower>();
         glowComp.Props.glowRadius = glowRadius;
@@ -214,7 +214,7 @@ public class CompStargate : ThingComp
             else connectedGateComp.CloseStargate(false);
         }
 
-        SoundDef puddleCloseDef = SGSoundDefOf.StargateMod_SGClose;
+        SoundDef puddleCloseDef = SgSoundDefOf.StargateMod_SGClose;
         puddleCloseDef.PlayOneShot(SoundInfo.InMap(parent));
         if (connectedGateComp != null) puddleCloseDef.PlayOneShot(SoundInfo.InMap(connectedGateComp.parent));
 
@@ -242,7 +242,7 @@ public class CompStargate : ThingComp
     private void DialFail()
     {
         Messages.Message("SGM.GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
-        SGSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
+        SgSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
 
         _queuedAddress = -1;
         _queuedAddressPocketMap = -1;
@@ -306,8 +306,8 @@ public class CompStargate : ThingComp
         if (checkValid && (!Props.canHaveIris || !HasIris)) return;
         IrisIsActivated = !IrisIsActivated;
             
-        if (IrisIsActivated) SGSoundDefOf.StargateMod_IrisOpen.PlayOneShot(SoundInfo.InMap(parent));
-        else SGSoundDefOf.StargateMod_IrisClose.PlayOneShot(SoundInfo.InMap(parent));
+        if (IrisIsActivated) SgSoundDefOf.StargateMod_IrisOpen.PlayOneShot(SoundInfo.InMap(parent));
+        else SgSoundDefOf.StargateMod_IrisClose.PlayOneShot(SoundInfo.InMap(parent));
     }
 
     private void DoUnstableVortex()
@@ -336,7 +336,7 @@ public class CompStargate : ThingComp
 
         foreach (IntVec3 pos in vortexPattern)
         {
-            DamageDef damType = SGDamageDefOf.StargatesMod_KawooshExplosion;
+            DamageDef damType = SgDamageDefOf.StargatesMod_KawooshExplosion;
 
             Explosion explosion = (Explosion)GenSpawn.Spawn(ThingDefOf.Explosion, parent.Position, parent.Map);
             explosion.damageFalloff = false;
@@ -391,7 +391,7 @@ public class CompStargate : ThingComp
             ConflictingGate = null;
                 
                 
-            if (isHibernatingAlready) SGSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
+            if (isHibernatingAlready) SgSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
         }
     }
 
@@ -404,7 +404,7 @@ public class CompStargate : ThingComp
                 case 900:
                 case 600:
                 case 300:
-                    SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
+                    SgSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
                     _prevRingSoundQueue = TicksUntilOpen;
                     break;
             }
@@ -416,7 +416,7 @@ public class CompStargate : ThingComp
             }
         }
         else if (TicksUntilOpen == 200)
-            SGSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
+            SgSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
 
         TicksUntilOpen--;
             
@@ -463,7 +463,7 @@ public class CompStargate : ThingComp
             IntVec3 destPos = pawnCells.RandomElement();
             if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] Directing {pawn} away from vortex to position {destPos}");
             pawn.jobs.ClearQueuedJobs();
-            Job job = JobMaker.MakeJob(SGJobDefOf.StargatesMod_WatchStargate, parent, destPos);
+            Job job = JobMaker.MakeJob(SgJobDefOf.StargatesMod_WatchStargate, parent, destPos);
             pawn.jobs.StartJob(job);
             _pawnsWatchingStargate.Add(pawn);
         }
@@ -472,7 +472,7 @@ public class CompStargate : ThingComp
     private void EndStargateWatching()
     {
         if (!_pawnsWatchingStargate.Any()) return;
-        foreach (Pawn pawn in _pawnsWatchingStargate.ToList().Where(pawn => !pawn.DeadOrDowned && !pawn.Drafted && pawn.CurJob.def == SGJobDefOf.StargatesMod_WatchStargate))
+        foreach (Pawn pawn in _pawnsWatchingStargate.ToList().Where(pawn => !pawn.DeadOrDowned && !pawn.Drafted && pawn.CurJob.def == SgJobDefOf.StargatesMod_WatchStargate))
         {
             pawn.jobs.StopAll();
         }
@@ -492,10 +492,12 @@ public class CompStargate : ThingComp
         if (!thingToDestroy.DestroyedOrNull()) thingToDestroy.Kill(disintDeathInfo);
             
         if (!isRecvBuffer) _sendBuffer.Remove(thingToDestroy);
+        DamageInfo disintDeathInfo = new(SgDamageDefOf.StargatesMod_DisintegrationDeath, 99999f, 999f);
         else
         {
             _recvBuffer.Remove(thingToDestroy);
             SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
+            SgSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
         }
     }
         
@@ -615,7 +617,7 @@ public class CompStargate : ThingComp
             if (ConnectedStargate == null && (connAddress || pocketConnAddress))
                 ConnectedStargate = GetActiveStargateOnMap(connAddress ? Find.WorldObjects.MapParentAt(ConnectedAddress).Map : Find.Maps[ConnectedAddressPocketMap]);
                 
-            _puddleSustainer = SGSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
+            _puddleSustainer = SgSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
         }
 
         //fix nullreferenceexception that happens when the innercontainer disappears for some reason, hopefully this doesn't end up causing a bug that will take hours to track down ;)

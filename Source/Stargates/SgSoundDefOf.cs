@@ -4,9 +4,9 @@ using RimWorld;
 namespace StargatesMod;
 
 [DefOf]
-public static class SGSoundDefOf
+public static class SgSoundDefOf
 {
-    static SGSoundDefOf()
+    static SgSoundDefOf()
     {
         DefOfHelper.EnsureInitializedInCtor(typeof(SoundDefOf));
     }

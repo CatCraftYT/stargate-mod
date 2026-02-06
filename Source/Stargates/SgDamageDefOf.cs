@@ -4,9 +4,9 @@ using Verse;
 namespace StargatesMod;
 
 [DefOf]
-public static class SGDamageDefOf
+public static class SgDamageDefOf
 {
-    static SGDamageDefOf()
+    static SgDamageDefOf()
     {
         DefOfHelper.EnsureInitializedInCtor(typeof(DamageDefOf));
     }

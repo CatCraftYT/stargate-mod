@@ -4,9 +4,9 @@ using Verse;
 namespace StargatesMod;
 
 [DefOf]
-public static class SGJobDefOf
+public static class SgJobDefOf
 {
-    static SGJobDefOf()
+    static SgJobDefOf()
     {
         DefOfHelper.EnsureInitializedInCtor(typeof(JobDefOf));
     }
