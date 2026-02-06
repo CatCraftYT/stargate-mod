@@ -88,7 +88,7 @@ class AddCreateSGSiteToCaravanGizmos
             defaultLabel = "SGM.CreateSGSite".Translate(),
             defaultDesc = "SGM.CreateSGSiteDesc".Translate()
         };
-        StringBuilder reason = new StringBuilder();
+        StringBuilder reason = new();
         if (!containsStargate) commandCreateSite.Disable("SGM.NoGateInCaravan".Translate());
         else if (__instance.Tile.Tile.Landmark != null) commandCreateSite.Disable("SGM.BlockedByLandmark".Translate());
         else if (!TileFinder.IsValidTileForNewSettlement(__instance.Tile, reason)) commandCreateSite.Disable(reason.ToString());
@@ -96,59 +96,15 @@ class AddCreateSGSiteToCaravanGizmos
     }
 }
 
-//FloatmenuOptionProvider_CarryPawn adds a carry <pawn> to <transporter> option to any building using CompTransporter, which is wonky for stargates because of the irregular way it uses CompTransporter.
-//This stops the floatmenu option from being applied to stargates (an actually working version of this option exists in FloatMenuOptionProvider_Stargate)
+//A patch to stop the 'carry pawn to transporter' floatmenu option from being applied to stargates, as it does't work properly due to how CompTransporter is used in this case.
 [HarmonyPatch(typeof(FloatMenuOptionProvider_CarryingPawn), "CarryToTransporter")]
 public static class FloatMenuOptionProvider_CarryingPawn_Patch
 {
-    private static ThingComp GetStargateComp(Thing clickedThing)
+    static bool Prefix(ref bool __result, Thing clickedThing, FloatMenuContext context, Pawn carriedPawn)
     {
-        return clickedThing.TryGetComp<CompStargate>();
-    }
+        if (clickedThing.TryGetComp<CompStargate>() == null) return true;
+        __result = false;
+        return false;
 
-    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)
-    {
-        List<CodeInstruction> codes = new(instructions);
-
-        Label jumpLabel = il.DefineLabel();
-        Label finishJumpLabel = il.DefineLabel();
-
-        CodeInstruction finishJumpCode = new(OpCodes.Ldloc_0);
-        finishJumpCode.labels.Add(finishJumpLabel);
-
-        CodeInstruction jumpCode = new(OpCodes.Ldloc_0);
-        jumpCode.labels.Add(jumpLabel);
-
-
-        int insertionPoint = -1;
-
-        for(int i=0; i<codes.Count; i++)
-        {
-            if (codes[i].opcode != OpCodes.Ret) continue;
-
-            insertionPoint = i+2;
-            break;
-        }
-
-        if(insertionPoint == -1) Log.Error("[StargatesMod] HarmonyPatches: could not find FloatMenuOptionProvider_CarryingPawn_Patch insertion point!");
-        else 
-        {
-            List<CodeInstruction> newCodes =
-            [
-                //LdLoc_0 stolen from original code because there's a jumpLabel on it that would otherwise skip our code
-                new(OpCodes.Ldfld, AccessTools.Field(AccessTools.Inner(typeof(FloatMenuOptionProvider_CarryingPawn), "<>c__DisplayClass12_0"), "clickedThing")), //put clickedThing on stack
-                new(OpCodes.Call, AccessTools.Method(typeof(FloatMenuOptionProvider_CarryingPawn_Patch), nameof(GetStargateComp))), //call custom method, because I have no idea how to call TryGetComp<CompStargate> directly  with all this..
-                new(OpCodes.Brfalse, finishJumpLabel), //if no CompStargate found, continue as normal
-                
-                //Else, return false and exit
-                new(OpCodes.Ldc_I4_0),
-                new(OpCodes.Ret),
-                
-                finishJumpCode, //replace the Ldloc_0 that we stole (with finishJumpCode for finishJumpLabel to target)
-            ];
-
-            codes.InsertRange(insertionPoint, newCodes);
-        }
-        return codes.AsEnumerable();
     }
 }
