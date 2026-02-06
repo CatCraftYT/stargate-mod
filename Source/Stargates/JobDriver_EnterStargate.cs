@@ -32,10 +32,13 @@ public class JobDriver_EnterStargate : JobDriver
             {
                 initAction = () =>
                 {
-                    if (!pawn.carryTracker.innerContainer.Contains(carriedPawn)) return;
+                    if (!pawn.carryTracker.innerContainer.Contains(carriedPawn))
+                    {
+                        carriedPawn = null;
+                        return;
+                    }
                         
                     pawn.carryTracker.innerContainer.Remove(carriedPawn);
-                    gateComp.AddToSendBuffer(carriedPawn);
                 }
             };
         }
@@ -43,8 +46,9 @@ public class JobDriver_EnterStargate : JobDriver
         {
             initAction = () =>
             {
+                bool drafted = pawn.Drafted;
                 pawn.DeSpawn();
-                gateComp.AddToSendBuffer(pawn);
+                gateComp.AddToSendBuffer(new BufferItem(pawn, drafted, carriedPawn));
             }
         };
     }

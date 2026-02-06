@@ -23,8 +23,8 @@ public class CompStargate : ThingComp
     const int glowRadius = 10;
     const string alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    private List<Thing> _sendBuffer = [];
-    private List<Thing> _recvBuffer = [];
+    private List<BufferItem> _sendBuffer = [];
+    private List<BufferItem> _recvBuffer = [];
     public int TicksSinceBufferUnloaded;
     public int TicksSinceOpened;
     public PlanetTile GateAddress;
@@ -198,11 +198,7 @@ public class CompStargate : ThingComp
         transComp?.CancelLoad();
 
         //clear buffers just in case
-        foreach (Thing thing in _sendBuffer)
-            GenSpawn.Spawn(thing, parent.InteractionCell, parent.Map);
-
-        foreach (Thing thing in _recvBuffer)
-            GenSpawn.Spawn(thing, parent.InteractionCell, parent.Map);
+        ClearBuffers();
 
         CompStargate connectedGateComp = null;
         if (closeOtherGate)
@@ -247,6 +243,9 @@ public class CompStargate : ThingComp
         _queuedAddress = -1;
         _queuedAddressPocketMap = -1;
         ConnectedStargate = null;
+        
+        //In case buffers contain anything before gate opens (like gate raids)
+        ClearBuffers();
     }
         
     #endregion
@@ -479,39 +478,65 @@ public class CompStargate : ThingComp
         _pawnsWatchingStargate.Clear();
     }
         
-    private void WormholeContentDisposal(bool isRecvBuffer)
+    private void WormholeContentsDisposal(bool isRecvBuffer)
     {
-        Thing thingToDestroy = isRecvBuffer ? _recvBuffer[0] : _sendBuffer[0];
+        BufferItem bufferItem = isRecvBuffer ? _recvBuffer[0] : _sendBuffer[0];
             
         //Remove deathRefusal hediff to avoid error
-        if (thingToDestroy is Pawn pawn && pawn.health.hediffSet.HasHediff(HediffDefOf.DeathRefusal))
+        Pawn pawn = bufferItem.Pawn;
+        if (pawn != null && pawn.health.hediffSet.HasHediff(HediffDefOf.DeathRefusal))
             pawn.health.RemoveHediff(pawn.health.hediffSet.hediffs.Find(hediff  => hediff is Hediff_DeathRefusal));
-            
-        DamageInfo disintDeathInfo = new(SGDamageDefOf.StargatesMod_DisintegrationDeath, 99999f, 999f);
 
-        if (!thingToDestroy.DestroyedOrNull()) thingToDestroy.Kill(disintDeathInfo);
-            
-        if (!isRecvBuffer) _sendBuffer.Remove(thingToDestroy);
+        Pawn carriedPawn = bufferItem.CarriedPawn;
+        if (carriedPawn != null && carriedPawn.health.hediffSet.HasHediff(HediffDefOf.DeathRefusal))
+            carriedPawn.health.RemoveHediff(carriedPawn.health.hediffSet.hediffs.Find(hediff  => hediff is Hediff_DeathRefusal));
+        
         DamageInfo disintDeathInfo = new(SgDamageDefOf.StargatesMod_DisintegrationDeath, 99999f, 999f);
+
+        bufferItem.CarriedPawn?.Kill(disintDeathInfo);
+        bufferItem.Thing.Kill(disintDeathInfo);
+
+        if (!isRecvBuffer)
+        {
+            _sendBuffer.Remove(bufferItem);
+        }
         else
         {
-            _recvBuffer.Remove(thingToDestroy);
-            SGSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
+            _recvBuffer.Remove(bufferItem);
             SgSoundDefOf.StargateMod_IrisHit.PlayOneShot(SoundInfo.InMap(parent));
         }
     }
         
-    public void AddToSendBuffer(Thing thing)
+    public void AddToSendBuffer(BufferItem bufferItem)
     {
-        _sendBuffer.Add(thing);
+        _sendBuffer.Add(bufferItem);
         PlayTeleportSound();
     }
 
-    public void AddToReceiveBuffer(Thing thing)
+    public void AddToReceiveBuffer(BufferItem bufferItem)
     {
-        _recvBuffer.Add(thing);
+        _recvBuffer.Add(bufferItem);
     }
 
+    private void ClearBuffers()
+    {
+        List<BufferItem> bufferList = [];
+        bufferList.AddRange(_sendBuffer);
+        bufferList.AddRange(_recvBuffer);
+        if (bufferList.NullOrEmpty()) return;
+        
+        foreach (BufferItem bufferItem in bufferList)
+        {
+            GenSpawn.Spawn(bufferItem.Thing, parent.InteractionCell, parent.Map);
+            
+            bufferItem.Pawn?.drafter?.Drafted = bufferItem.Drafted;
+            if (bufferItem.CarriedPawn != null) bufferItem.Pawn?.carryTracker.innerContainer.TryAdd(bufferItem.CarriedPawn, false);
+        }
+        
+        _sendBuffer.Clear();
+        _recvBuffer.Clear();
+    }
+    
     #region Comp Overrides
 
     public override void PostDraw()
@@ -564,7 +589,7 @@ public class CompStargate : ThingComp
             if (transportThing != null)
             {
                 if (transportThing.Spawned) transportThing.DeSpawn();
-                AddToSendBuffer(transportThing);
+                AddToSendBuffer(new BufferItem(transportThing));
                 transComp.innerContainer.Remove(transportThing);
             }
             else if (transComp.LoadingInProgressOrReadyToLaunch && !transComp.AnyInGroupHasAnythingLeftToLoad)
@@ -578,7 +603,7 @@ public class CompStargate : ThingComp
                 connectedStargateComp.AddToReceiveBuffer(_sendBuffer[0]);
                 _sendBuffer.Remove(_sendBuffer[0]);
             }
-            else WormholeContentDisposal(false);
+            else WormholeContentsDisposal(false);
         }
 
         if (_recvBuffer.Any() && TicksSinceBufferUnloaded > Rand.Range(10, 80))
@@ -586,11 +611,27 @@ public class CompStargate : ThingComp
             TicksSinceBufferUnloaded = 0;
             if (!IrisIsActivated)
             {
-                GenSpawn.Spawn(_recvBuffer[0], parent.InteractionCell, parent.Map);
-                _recvBuffer.Remove(_recvBuffer[0]);
+                BufferItem bufferItem = _recvBuffer[0];
+                
+                if (bufferItem.Pawn == null)
+                    GenSpawn.Spawn(bufferItem.Thing, parent.InteractionCell, parent.Map);
+                else
+                {
+                    GenSpawn.Spawn(bufferItem.Pawn, parent.InteractionCell, parent.Map);
+                        
+                    if (bufferItem.Pawn.Faction == Faction.OfPlayer) bufferItem.Pawn.drafter.Drafted = bufferItem.Drafted;
+
+                    if (bufferItem.CarriedPawn != null)
+                    {
+                        if (!bufferItem.Pawn.carryTracker.innerContainer.TryAdd(bufferItem.CarriedPawn, false))
+                            GenSpawn.Spawn(bufferItem.Pawn, parent.InteractionCell, parent.Map);
+                    }
+                }
+
+                _recvBuffer.Remove(bufferItem);
                 PlayTeleportSound();
             }
-            else WormholeContentDisposal(true);
+            else WormholeContentsDisposal(true);
         }
 
         TicksSinceBufferUnloaded++;

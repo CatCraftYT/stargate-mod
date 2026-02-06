@@ -34,8 +34,8 @@ public class JobDriver_BringToStargate : JobDriver
             {
                 CompStargate gateComp = job.GetTarget(targetStargate).Thing.TryGetComp<CompStargate>();
                 pawn.carryTracker.innerContainer.Remove(thing);
-                gateComp.AddToSendBuffer(thing);
+                gateComp.AddToSendBuffer(new BufferItem(thing));
             }
-        };
+        }.FailOn(() => job.GetTarget(thingToHaul).Thing.Spawned);
     }
 }

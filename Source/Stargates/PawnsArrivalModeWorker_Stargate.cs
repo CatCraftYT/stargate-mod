@@ -25,7 +25,7 @@ public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
             
         foreach (Pawn pawn in pawns)
         {
-            sgComp.AddToReceiveBuffer(pawn);
+            sgComp.AddToReceiveBuffer(new BufferItem(pawn));
         }
     }
     public override bool TryResolveRaidSpawnCenter(IncidentParms parms)
