@@ -72,13 +72,15 @@
 	<SGM.DecodeSGSymbols>Decode symbols</SGM.DecodeSGSymbols>
 	<SGM.CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</SGM.CannotDecodeSGSymbols>
     
-    <SGM.CannotDialGateIsActive>Cannot dial: stargate is already active</SGM.CannotDialGateIsActive>
-    <SGM.CannotDialNoDestinations>Cannot dial: no available destinations</SGM.CannotDialNoDestinations>
-    <SGM.CannotDialInvalidAddress>Stargate has no registered address. (Try reinstalling this stargate)</SGM.CannotDialInvalidAddress>
-    <SGM.CannotDialIncoming>Cannot dial: incoming wormhole</SGM.CannotDialIncoming>
-    <SGM.CannotDialAlreadyDialling>Cannot dial: already dialling gate</SGM.CannotDialAlreadyDialling>
-    <SGM.CannotDialNoPower>Cannot dial: no power</SGM.CannotDialNoPower>
-    <SGM.CannotDialHibernating>Cannot dial: gate is hibernating</SGM.CannotDialHibernating>
+	<SGM.CannotDial>Cannot dial: {0}</SGM.CannotDial>
+    <SGM.Reason.GateIsActive>stargate is already active</SGM.Reason.GateIsActive>
+    <SGM.Reason.NoDestinations>no available destinations</SGM.Reason.NoDestinations>
+    <SGM.Reason.InvalidAddress>Stargate has no registered address (Try reinstalling this stargate)</SGM.Reason.InvalidAddress>
+    <SGM.Reason.Incoming>incoming wormhole</SGM.Reason.Incoming>
+    <SGM.Reason.AlreadyDialling>already dialling gate</SGM.Reason.AlreadyDialling>
+    <SGM.Reason.NoPower>no power</SGM.Reason.NoPower>
+    <SGM.Reason.Hibernating>gate is hibernating</SGM.Reason.Hibernating>
+	<SGM.Reason.NotConnected>not connected to a stargate</SGM.Reason.NotConnected>
 
     <!--Misc-->
     <SGM.GeneratingStargateSite>Generating stargate site</SGM.GeneratingStargateSite>

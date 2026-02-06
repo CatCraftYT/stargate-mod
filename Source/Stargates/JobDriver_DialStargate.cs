@@ -37,19 +37,10 @@ public class JobDriver_DialStargate : JobDriver
             initAction = () =>
             {
                 CompStargate linkedStargate = dhdComp.GetLinkedStargateComp();
-                int lockDelay = 900;
-                if (_modSettings.ShortenGateDialSeq) lockDelay = 200;
+                int lockDelayTicks = _modSettings.ShortenGateDialSeq ? 200 : 900;
 
-                if (dhdComp.queuedAddress > -1)
-                {
-                    linkedStargate.OpenStargateDelayed(dhdComp.queuedAddress, lockDelay);
-                    dhdComp.queuedAddress = -1;
-                }
-                else
-                {
-                    linkedStargate.OpenStargateDelayed(dhdComp.queuedPocketMapAddress, lockDelay, true);
-                    dhdComp.queuedPocketMapAddress = -1;
-                }
+                linkedStargate.OpenStargateDelayed(dhdComp.queuedAddress, lockDelayTicks, dhdComp.DialMode);
+                dhdComp.queuedAddress = -1;
                     
                 if (!dhdComp.Props.selfDialler) SgSoundDefOf.StargateMod_DhdUsual_1.PlayOneShot(SoundInfo.InMap(dhdComp.parent));
             }

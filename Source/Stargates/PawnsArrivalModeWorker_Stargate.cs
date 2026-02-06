@@ -18,7 +18,7 @@ public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
         int lockDelay = 900;
         if (_modSettings.ShortenGateDialSeq) lockDelay = 450;
 
-        sgComp.OpenStargateDelayed(-1, lockDelay);
+        sgComp.OpenStargateDelayed(-1, lockDelay, DialMode.Map);
             
         /*sgComp.TicksSinceBufferUnloaded = -150;
         sgComp.IsReceivingGate = true;*/

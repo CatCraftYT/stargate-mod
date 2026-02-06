@@ -3,6 +3,14 @@ using Verse;
 
 namespace StargatesMod;
 
+public enum DialMode
+{
+    Map,
+    PocketMap,
+    IncomingRaid,
+    None
+}
+
 public readonly struct BufferItem(Thing thing, bool drafted = false, Pawn carriedPawn = null) : IEquatable<BufferItem>
 {
     public readonly Thing Thing = thing;

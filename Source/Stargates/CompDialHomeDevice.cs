@@ -11,7 +11,7 @@ public class CompDialHomeDevice : ThingComp
 {
     CompFacility compFacility;
     public PlanetTile queuedAddress = -1;
-    public int queuedPocketMapAddress = -1;
+    public DialMode DialMode;
 
     public CompProperties_DialHomeDevice Props => (CompProperties_DialHomeDevice)props;
 
