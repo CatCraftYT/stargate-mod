@@ -85,7 +85,7 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
             yield return new FloatMenuOption("SGM.DialGate".Translate(CompStargate.GetStargateDesignation(tile), destMapParent.Label), () =>
             {
                 dhdComp.queuedAddress = tile;
-                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
+                Job job = JobMaker.MakeJob(SGJobDefOf.StargatesMod_DialStargate, dhdComp.parent);
                 context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                     
             }, MenuOptionPriority.SummonThreat);
@@ -107,7 +107,7 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
             yield return new FloatMenuOption("SGM.DialGate".Translate(CompStargate.GetStargateDesignation(pocketMapParent.sourceMap.Tile), pocketMapParent.Map.generatorDef.label), () =>
             {
                 dhdComp.queuedPocketMapAddress = index;
-                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DialStargate"), dhdComp.parent);
+                Job job = JobMaker.MakeJob(SGJobDefOf.StargatesMod_DialStargate, dhdComp.parent);
                 context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
             }, MenuOptionPriority.SummonThreat);
         }

@@ -336,7 +336,7 @@ public class CompStargate : ThingComp
 
         foreach (IntVec3 pos in vortexPattern)
         {
-            DamageDef damType = DefDatabase<DamageDef>.GetNamed("StargateMod_KawooshExplosion");
+            DamageDef damType = SGDamageDefOf.StargatesMod_KawooshExplosion;
 
             Explosion explosion = (Explosion)GenSpawn.Spawn(ThingDefOf.Explosion, parent.Position, parent.Map);
             explosion.damageFalloff = false;
@@ -463,7 +463,7 @@ public class CompStargate : ThingComp
             IntVec3 destPos = pawnCells.RandomElement();
             if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] Directing {pawn} away from vortex to position {destPos}");
             pawn.jobs.ClearQueuedJobs();
-            Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate"), parent, destPos);
+            Job job = JobMaker.MakeJob(SGJobDefOf.StargatesMod_WatchStargate, parent, destPos);
             pawn.jobs.StartJob(job);
             _pawnsWatchingStargate.Add(pawn);
         }
@@ -472,7 +472,7 @@ public class CompStargate : ThingComp
     private void EndStargateWatching()
     {
         if (!_pawnsWatchingStargate.Any()) return;
-        foreach (Pawn pawn in _pawnsWatchingStargate.ToList().Where(pawn => !pawn.DeadOrDowned && !pawn.Drafted && pawn.CurJob.def == DefDatabase<JobDef>.GetNamed("StargateMod_WatchStargate")))
+        foreach (Pawn pawn in _pawnsWatchingStargate.ToList().Where(pawn => !pawn.DeadOrDowned && !pawn.Drafted && pawn.CurJob.def == SGJobDefOf.StargatesMod_WatchStargate))
         {
             pawn.jobs.StopAll();
         }
@@ -487,7 +487,7 @@ public class CompStargate : ThingComp
         if (thingToDestroy is Pawn pawn && pawn.health.hediffSet.HasHediff(HediffDefOf.DeathRefusal))
             pawn.health.RemoveHediff(pawn.health.hediffSet.hediffs.Find(hediff  => hediff is Hediff_DeathRefusal));
             
-        DamageInfo disintDeathInfo = new(DefDatabase<DamageDef>.GetNamed("StargateMod_DisintegrationDeath"), 99999f, 999f);
+        DamageInfo disintDeathInfo = new(SGDamageDefOf.StargatesMod_DisintegrationDeath, 99999f, 999f);
 
         if (!thingToDestroy.DestroyedOrNull()) thingToDestroy.Kill(disintDeathInfo);
             

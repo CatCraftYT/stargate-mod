@@ -17,7 +17,7 @@ public class CompGlyphScrap : ThingComp
         {
             yield return new FloatMenuOption("SGM.DecodeSGSymbols".Translate(), () =>
             {
-                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_DecodeGlyphs"), parent);
+                Job job = JobMaker.MakeJob(SGJobDefOf.StargatesMod_DecodeGlyphs, parent);
                 selPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
             });
         }

@@ -41,7 +41,7 @@ public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
             {
                 Pawn carriedPawn = pawn.carryTracker.CarriedThing as Pawn;
                         
-                Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), sgComp.parent, carriedPawn);
+                Job job = JobMaker.MakeJob(SGJobDefOf.StargatesMod_EnterStargate, sgComp.parent, carriedPawn);
                 job.playerForced = true;
                 job.count = 1;
                 pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
@@ -58,7 +58,7 @@ public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
                 {
                     Pawn carriedPawn = pawn.carryTracker.CarriedThing as Pawn;
                         
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), carriedPawn, sgComp.parent);
+                    Job job = JobMaker.MakeJob(SGJobDefOf.StargatesMod_BringToStargate, carriedPawn, sgComp.parent);
                     job.playerForced = true;
                     job.count = 1;
                     pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
@@ -94,7 +94,7 @@ public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
                 
                 Find.Targeter.BeginTargeting(targetingParameters, delegate (LocalTargetInfo t)
                 {
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), t.Thing, sgComp.parent); 
+                    Job job = JobMaker.MakeJob(SGJobDefOf.StargatesMod_BringToStargate, t.Thing, sgComp.parent); 
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 });
             }, MenuOptionPriority.SummonThreat);

@@ -2,7 +2,7 @@
 <Defs>
 
     <DamageDef>
-        <defName>StargateMod_KawooshExplosion</defName>
+        <defName>StargatesMod_KawooshExplosion</defName>
         <label>unstable vortex</label>
         <workerClass>DamageWorker_AddInjury</workerClass>
         <externalViolence>true</externalViolence>
@@ -25,7 +25,7 @@
     </DamageDef>
 	
     <DamageDef>
-        <defName>StargateMod_DisintegrationDeath</defName>
+        <defName>StargatesMod_DisintegrationDeath</defName>
         <label>DisintegrationDeath</label>
         <workerClass>DamageWorker_AddInjury</workerClass>
         <externalViolence>true</externalViolence>
