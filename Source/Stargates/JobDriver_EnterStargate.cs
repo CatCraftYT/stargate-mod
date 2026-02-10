@@ -9,10 +9,7 @@ public class JobDriver_EnterStargate : JobDriver
     private const TargetIndex stargateTarg = TargetIndex.A;
     private const TargetIndex carriedPawnTarg = TargetIndex.B; // Optional
 
-    public override bool TryMakePreToilReservations(bool errorOnFailed)
-    {
-        return true;
-    }
+    public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 
     protected override IEnumerable<Toil> MakeNewToils()
     {

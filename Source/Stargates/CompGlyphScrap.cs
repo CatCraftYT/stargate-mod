@@ -8,10 +8,8 @@ public class CompGlyphScrap : ThingComp
 {
     public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selPawn)
     {
-        if (!selPawn.CanReach(parent, PathEndMode.Touch, Danger.Deadly, false, false, TraverseMode.ByPawn))
-        {
+        if (!selPawn.CanReach(parent, PathEndMode.Touch, Danger.Deadly))
             yield break;
-        }
 
         if (DefDatabase<ResearchProjectDef>.GetNamed("StargateMod_GlyphDeciphering").IsFinished)
         {
@@ -29,6 +27,6 @@ public class CompProperties_GlyphScrap : CompProperties
 {
     public CompProperties_GlyphScrap()
     {
-        this.compClass = typeof(CompGlyphScrap);
+        compClass = typeof(CompGlyphScrap);
     }
 }

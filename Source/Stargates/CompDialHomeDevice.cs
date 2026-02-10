@@ -9,38 +9,22 @@ namespace StargatesMod;
 
 public class CompDialHomeDevice : ThingComp
 {
-    CompFacility compFacility;
-    public PlanetTile queuedAddress = -1;
+    private CompFacility _compFacility;
+    public PlanetTile QueuedAddress = -1;
     public DialMode DialMode;
 
     public CompProperties_DialHomeDevice Props => (CompProperties_DialHomeDevice)props;
 
     public CompStargate GetLinkedStargateComp()
     {
-        if (Props.selfDialler) return parent.TryGetComp<CompStargate>(); 
-        switch (compFacility.LinkedBuildings.Count)
+        if (Props.selfDialler) return parent.TryGetComp<CompStargate>();
+        
+        return _compFacility.LinkedBuildings.Count switch
         {
-            case 0:
-                return null;
-            case > 1:
-            {
-                foreach (Thing thing in compFacility.LinkedBuildings.Where(t => !t.TryGetComp<CompStargate>().IsHibernating))
-                {
-                    return thing.TryGetComp<CompStargate>();
-                }
-                break;
-            }
-        }
-
-        return compFacility.LinkedBuildings[0].TryGetComp<CompStargate>();
-    }
-
-    public static Thing GetDHDOnMap(Map map)
-    {
-        Thing dhdOnMap = map.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompDialHomeDevice>() != null  && t.def.thingClass != typeof(Building_Stargate)).FirstOrFallback() ??
-                         map.listerBuildings.allBuildingsNonColonist.Where(t => t.TryGetComp<CompDialHomeDevice>() != null  && t.def.thingClass != typeof(Building_Stargate)).FirstOrFallback();
-            
-        return dhdOnMap;
+            1 when !_compFacility.LinkedBuildings[0].TryGetComp<CompStargate>().IsHibernating => _compFacility.LinkedBuildings[0].TryGetComp<CompStargate>(),
+            > 1 => _compFacility.LinkedBuildings.Where(t => !t.TryGetComp<CompStargate>().IsHibernating).FirstOrFallback().TryGetComp<CompStargate>(),
+            _ => null
+        };
     }
 
     public bool IsConnectedToStargate
@@ -48,14 +32,14 @@ public class CompDialHomeDevice : ThingComp
         get
         {
             if (Props.selfDialler) return true;
-            return compFacility.LinkedBuildings.Count != 0;
+            return _compFacility.LinkedBuildings.Count != 0;
         }
     }
 
     public override void PostSpawnSetup(bool respawningAfterLoad)
     {
         base.PostSpawnSetup(respawningAfterLoad);
-        compFacility = parent.GetComp<CompFacility>();
+        _compFacility = parent.GetComp<CompFacility>();
     }
         
     public override IEnumerable<Gizmo> CompGetGizmosExtra()

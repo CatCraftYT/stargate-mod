@@ -10,14 +10,7 @@ public class JobDriver_InstallIris : JobDriver
     private const TargetIndex irisItemTarg = TargetIndex.A;
     private const TargetIndex stargateTarg = TargetIndex.B;
 
-    public override bool TryMakePreToilReservations(bool errorOnFailed)
-    {
-        job.count = 1;
-        Thing stargate = (Thing)job.GetTarget(stargateTarg);
-        Thing iris = (Thing)job.GetTarget(irisItemTarg);
-            
-        return pawn.Reserve(stargate, job) && pawn.Reserve(iris, job);
-    }
+    public override bool TryMakePreToilReservations(bool errorOnFailed) => pawn.Reserve(job.GetTarget(stargateTarg).Thing, job) && pawn.Reserve(job.GetTarget(irisItemTarg).Thing, job);
 
     protected override IEnumerable<Toil> MakeNewToils()
     {

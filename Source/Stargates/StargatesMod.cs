@@ -7,14 +7,10 @@ namespace StargatesMod;
 public class StargatesMod : Mod
 {
     /*Reference to settings*/
-    private StargatesModSettings _modSettings;
+    private readonly StargatesModSettings _modSettings;
         
     /*Resolve settings reference*/
-    public StargatesMod(ModContentPack content) : base(content)
-    {
-        _modSettings = GetSettings<StargatesModSettings>();
-    }
-
+    public StargatesMod(ModContentPack content) : base(content) => _modSettings = GetSettings<StargatesModSettings>();
 
     /*Settings GUI*/
     public override void DoSettingsWindowContents(Rect inRect)
@@ -23,13 +19,10 @@ public class StargatesMod : Mod
         listingStandard.Begin(inRect);
             
         /*Section 1*/
-        Listing_Standard sec1 = listingStandard.BeginSection(150);
+        Listing_Standard sec1 = listingStandard.BeginSection(300);
         sec1.Label("SGM.SettingsCat.Options".Translate());
         sec1.GapLine();
         sec1.CheckboxLabeled("SGM.ShortenDialSeq.Label".Translate(), ref _modSettings.ShortenGateDialSeq, "SGM.ShortenDialSeq.TT".Translate());
-        /*sec1.Label("Setting2");
-        sec1.Label("Setting3");
-        sec1.Label("Setting4");*/
         listingStandard.EndSection(sec1);
 
         listingStandard.Gap();
@@ -41,22 +34,10 @@ public class StargatesMod : Mod
         sec2.CheckboxLabeled("SGM.DebugMode.Label".Translate(), ref _modSettings.DebugMode, "SGM.DebugMode.TT".Translate());
         listingStandard.EndSection(sec2);
             
-        listingStandard.Gap();
-            
-        /*Toggleable patches notice*/
-        Listing_Standard secTp = listingStandard.BeginSection(75);
-        secTp.Label("SGM.ToggleablePatches.Header".Translate());
-        secTp.GapLine();
-        secTp.Label("SGM.ToggleablePatches.Text".Translate());
-        listingStandard.EndSection(secTp);
-            
         listingStandard.End();
         base.DoSettingsWindowContents(inRect);
     }
 
     /*Settings mod label*/
-    public override string SettingsCategory()
-    {
-        return "StargatesMod".Translate();
-    }
+    public override string SettingsCategory() => "StargatesMod".Translate();
 }

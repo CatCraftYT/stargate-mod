@@ -27,7 +27,7 @@ public class JobDriver_BringToStargate : JobDriver
             
         yield return Toils_Goto.GotoCell(thingToHaul, PathEndMode.Touch);
         yield return Toils_Haul.StartCarryThing(thingToHaul);
-        yield return Toils_Goto.GotoCell(job.GetTarget(targetStargate).Thing.InteractionCell, PathEndMode.OnCell).FailOn(() => job.GetTarget(thingToHaul).Thing.Spawned);
+        yield return Toils_Goto.GotoCell(job.GetTarget(targetStargate).Thing.InteractionCell, PathEndMode.OnCell).FailOn(() => thing.Spawned);
         yield return new Toil
         {
             initAction = () =>
@@ -36,6 +36,6 @@ public class JobDriver_BringToStargate : JobDriver
                 pawn.carryTracker.innerContainer.Remove(thing);
                 gateComp.AddToSendBuffer(new BufferItem(thing));
             }
-        }.FailOn(() => job.GetTarget(thingToHaul).Thing.Spawned);
+        }.FailOn(() => thing.Spawned);
     }
 }

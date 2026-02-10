@@ -6,10 +6,7 @@ namespace StargatesMod;
 [DefOf]
 public static class SgJobDefOf
 {
-    static SgJobDefOf()
-    {
-        DefOfHelper.EnsureInitializedInCtor(typeof(JobDefOf));
-    }
+    static SgJobDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(JobDefOf));
     
     public static JobDef StargatesMod_WatchStargate;
 

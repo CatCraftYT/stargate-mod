@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Text;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using RimWorld.Planet;
 using Verse;
-using Verse.AI;
 
 namespace StargatesMod;
 
@@ -17,7 +15,6 @@ public class HarmonyPatches
     static HarmonyPatches()
     {
         Harmony harmony = new Harmony("CCYT.StargatesMod");
-        //patch all of the decorators in this assembly
         harmony.PatchAll();
     }
 }
@@ -28,7 +25,7 @@ class KeepMapWithStargateOpen
 {
     static void Postfix(Map ___map, ref bool __result)
     {
-        Thing sgThing = CompStargate.GetActiveStargateOnMap(___map);
+        Thing sgThing = SgUtilities.GetActiveStargateOnMap(___map);
         CompStargate sgComp = sgThing?.TryGetComp<CompStargate>();
             
         if (sgComp == null) return;
@@ -39,7 +36,7 @@ class KeepMapWithStargateOpen
 
 [HarmonyPatch(typeof(Caravan))]
 [HarmonyPatch(nameof(Caravan.GetGizmos))]
-class AddCreateSGSiteToCaravanGizmos
+class AddCreateSgSiteToCaravanGizmos
 {
     static IEnumerable<Gizmo> Postfix(IEnumerable<Gizmo> gizmos, Caravan __instance)
     {
@@ -56,7 +53,7 @@ class AddCreateSGSiteToCaravanGizmos
                 ThingDef dhdDef = null;
 
                 List<Thing> things = __instance.AllThings.ToList();
-                foreach (var thing in things)
+                foreach (Thing thing in things)
                 {
                     Thing inner = thing.GetInnerIfMinified();
                     if (inner == null || inner.def.thingClass != typeof(Building_Stargate)) continue;
@@ -79,7 +76,7 @@ class AddCreateSGSiteToCaravanGizmos
                         break;
                     }
                 }
-                WorldObject_PermSGSite wo = (WorldObject_PermSGSite)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("StargateMod_SGSitePerm"));
+                WorldObject_PermSgSite wo = (WorldObject_PermSgSite)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("StargateMod_SGSitePerm"));
                 wo.Tile = __instance.Tile;
                 wo.GateDef = gateDef;
                 wo.DhdDef = dhdDef;
@@ -96,7 +93,7 @@ class AddCreateSGSiteToCaravanGizmos
     }
 }
 
-//A patch to stop the 'carry pawn to transporter' floatmenu option from being applied to stargates, as it does't work properly due to how CompTransporter is used in this case.
+//A patch to stop the 'carry pawn to transporter' floatmenu option from being applied to stargates, as it doesn't work properly due to how CompTransporter is used in this case.
 [HarmonyPatch(typeof(FloatMenuOptionProvider_CarryingPawn), "CarryToTransporter")]
 public static class FloatMenuOptionProvider_CarryingPawn_Patch
 {

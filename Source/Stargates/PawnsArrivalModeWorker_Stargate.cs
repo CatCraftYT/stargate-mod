@@ -11,17 +11,14 @@ public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
     public override void Arrive(List<Pawn> pawns, IncidentParms parms)
     {
         Map map = (Map)parms.target;
-        Thing stargateOnMap = CompStargate.GetActiveStargateOnMap(map);
+        Thing stargateOnMap = SgUtilities.GetActiveStargateOnMap(map);
 
         CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
             
         int lockDelay = 900;
         if (_modSettings.ShortenGateDialSeq) lockDelay = 450;
 
-        sgComp.OpenStargateDelayed(-1, lockDelay, DialMode.Map);
-            
-        /*sgComp.TicksSinceBufferUnloaded = -150;
-        sgComp.IsReceivingGate = true;*/
+        sgComp.OpenStargateDelayed(-1, lockDelay, DialMode.IncomingRaid);
             
         foreach (Pawn pawn in pawns)
         {
@@ -32,7 +29,7 @@ public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
     {
         Map map = (Map)parms.target;
             
-        Thing stargateOnMap = CompStargate.GetActiveStargateOnMap(map);
+        Thing stargateOnMap = SgUtilities.GetActiveStargateOnMap(map);
         CompStargate sgComp = stargateOnMap?.TryGetComp<CompStargate>();
             
         if (stargateOnMap == null || sgComp == null || sgComp.StargateIsActive)

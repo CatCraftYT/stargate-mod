@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -82,11 +81,12 @@ public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
                         if (!targ.HasThing) return false;
                         
                         Pawn targetPawn = targ.Thing as Pawn;
+                        Pawn selectedPawn = context.FirstSelectedPawn;
+
+                        if (targetPawn != null && (targetPawn == selectedPawn || (targetPawn.Faction != Faction.OfPlayer && !targetPawn.IsPrisonerOfColony)
+                                                                              || (selectedPawn.IsColonyMech && targetPawn == selectedPawn.GetOverseer())))
+                            return false;
                         
-                        if (targetPawn != null && targ.Thing == context.FirstSelectedPawn)
-                            return false;
-                        if (targetPawn != null && targ.Thing.Faction != Faction.OfPlayer && !targetPawn.IsPrisonerOfColony)
-                            return false;
                         
                         return targetPawn != null || targ.Thing.def.category == ThingCategory.Item;
                     }
@@ -101,11 +101,5 @@ public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
         }
     }
 
-    private static AcceptanceReport CanReachStargate(Pawn pawn, Thing stargate)
-    {
-        if (!pawn.CanReach(stargate, PathEndMode.ClosestTouch, Danger.Deadly))
-            return "NoPath".Translate();
-            
-        return true;
-    }
+    private static AcceptanceReport CanReachStargate(Pawn pawn, Thing stargate) => pawn.CanReach(stargate, PathEndMode.ClosestTouch, Danger.Deadly) ? true : "NoPath".Translate();
 }

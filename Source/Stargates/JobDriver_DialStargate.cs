@@ -11,10 +11,7 @@ public class JobDriver_DialStargate : JobDriver
         
     private readonly StargatesModSettings _modSettings = LoadedModManager.GetMod<StargatesMod>().GetSettings<StargatesModSettings>();
 
-    public override bool TryMakePreToilReservations(bool errorOnFailed)
-    {
-        return pawn.Reserve(job.GetTarget(targetDHD), job);
-    }
+    public override bool TryMakePreToilReservations(bool errorOnFailed) => pawn.Reserve(job.GetTarget(targetDHD), job);
 
     protected override IEnumerable<Toil> MakeNewToils()
     {
@@ -39,8 +36,8 @@ public class JobDriver_DialStargate : JobDriver
                 CompStargate linkedStargate = dhdComp.GetLinkedStargateComp();
                 int lockDelayTicks = _modSettings.ShortenGateDialSeq ? 200 : 900;
 
-                linkedStargate.OpenStargateDelayed(dhdComp.queuedAddress, lockDelayTicks, dhdComp.DialMode);
-                dhdComp.queuedAddress = -1;
+                linkedStargate.OpenStargateDelayed(dhdComp.QueuedAddress, lockDelayTicks, dhdComp.DialMode);
+                dhdComp.QueuedAddress = -1;
                     
                 if (!dhdComp.Props.selfDialler) SgSoundDefOf.StargateMod_DhdUsual_1.PlayOneShot(SoundInfo.InMap(dhdComp.parent));
             }

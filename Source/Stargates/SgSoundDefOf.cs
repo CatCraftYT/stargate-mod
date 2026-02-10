@@ -6,10 +6,7 @@ namespace StargatesMod;
 [DefOf]
 public static class SgSoundDefOf
 {
-    static SgSoundDefOf()
-    {
-        DefOfHelper.EnsureInitializedInCtor(typeof(SoundDefOf));
-    }
+    static SgSoundDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(SoundDefOf));
 
     public static SoundDef StargateMod_RingUsualStart;
 

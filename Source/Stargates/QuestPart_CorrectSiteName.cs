@@ -12,9 +12,8 @@ public class QuestPart_CorrectSiteName : QuestPart
     public override void Notify_QuestSignalReceived(Signal signal)
     {
         base.Notify_QuestSignalReceived(signal);
+        
         if (signal.tag == inSignal)
-        {
             site.customLabel = quest.name;
-        }
     }
 }

@@ -9,19 +9,14 @@ namespace StargatesMod;
 
 public class SitePartWorker_Stargate : SitePartWorker
 {
-    public override string GetPostProcessedThreatLabel(Site site, SitePart sitePart)
-    {
-        StringBuilder sb = new();
-        sb.Append("SGM.GateAddress".Translate(CompStargate.GetStargateDesignation(site.Tile)));
-        return sb.ToString();
-    }
+    public override string GetPostProcessedThreatLabel(Site site, SitePart sitePart) => "SGM.GateAddress".Translate(SgUtilities.GetStargateDesignation(site.Tile));
  
     public override void PostMapGenerate(Map map)
     {
         base.PostMapGenerate(map);
         if (map == null) { Log.Error("SitePartWorker map was null on PostMapGenerate. That makes no sense."); return; }
             
-        Thing gateOnMap = CompStargate.GetActiveStargateOnMap(map);
+        Thing gateOnMap = SgUtilities.GetActiveStargateOnMap(map);
         if (gateOnMap == null) { Log.Error("[StargatesMod] Stargate was expected but not found on generated map."); return; }
             
         CompStargate gateComp = gateOnMap.TryGetComp<CompStargate>();
@@ -30,10 +25,9 @@ public class SitePartWorker_Stargate : SitePartWorker
         List<IntVec3> gateRadiusCells = GenRadial.RadialCellsAround(gateOnMap.InteractionCell, 11, true).ToList();
 
         //move pawns away from vortex
-        foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned)
+        foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned.Where(p => gateRadiusCells.Contains(p.Position)))
         {
             Room pawnRoom = pawn.Position.GetRoom(pawn.Map);
-            if (!gateRadiusCells.Contains(pawn.Position)) continue;
 
             List<IntVec3> nearSafeCells = GenRadial.RadialCellsAround(pawn.Position, 9, true).Where(c => 
                 c.InBounds(map) && c.Walkable(map) && c.GetRoom(map) == pawnRoom && !vortexCells.Contains(c)).ToList();
@@ -55,7 +49,8 @@ public class SitePartWorker_Stargate : SitePartWorker
         itemsToRebalance.SetAllow(ThingDef.Named("MechSerumHealer"), true);
             
         foreach (Thing removedThing in from thing in map.listerThings.ThingsMatchingFilter(itemsToRebalance) 
-                 where thing.stackCount > 1 select thing.SplitOff(thing.stackCount - 1) into removedThing where !removedThing.DestroyedOrNull() select removedThing)
+                 where thing.stackCount > 1 select thing.SplitOff(thing.stackCount - 1) 
+                 into removedThing where !removedThing.DestroyedOrNull() select removedThing)
         {
             removedThing.Destroy();
         }

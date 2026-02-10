@@ -8,19 +8,20 @@ using RimWorld.Planet;
 
 namespace StargatesMod;
 
-public class WorldObject_PermSGSite : MapParent, IRenameable
+public class WorldObject_PermSgSite : MapParent, IRenameable
 {
-    public string SiteName;
+    private string _siteName;
     public ThingDef GateDef = ThingDef.Named("StargateMod_Stargate");
     public ThingDef DhdDef = ThingDef.Named("StargateMod_DialHomeDevice");
         
     private readonly StargatesModSettings _modSettings = LoadedModManager.GetMod<StargatesMod>().GetSettings<StargatesModSettings>();
 
-    public override string Label => SiteName ?? base.Label;
+    public override string Label => _siteName ?? base.Label;
 
-    public string RenamableLabel {
+    public string RenamableLabel 
+    {
         get => Label;
-        set => SiteName = value;
+        set => _siteName = value;
     }
     public string BaseLabel => Label;
     public string InspectLabel => Label;
@@ -47,7 +48,7 @@ public class WorldObject_PermSGSite : MapParent, IRenameable
         }
             
         StringBuilder sb = new();
-        sb.AppendLine("SGM.GateAddress".Translate(CompStargate.GetStargateDesignation(Tile)));
+        sb.AppendLine("SGM.GateAddress".Translate(SgUtilities.GetStargateDesignation(Tile)));
         sb.AppendLine("-----");
         sb.AppendLine("SGM.StargateStatus".Translate(gatePresenceLabel, gateLabel));
         sb.AppendLine("SGM.DhdStatus".Translate( dhdPresenceLabel, dhdLabel));
@@ -70,11 +71,11 @@ public class WorldObject_PermSGSite : MapParent, IRenameable
     {
         base.PostMapGenerate();
         //from https://github.com/AndroidQuazar/VanillaExpandedFramework/blob/4331195034c15a18930b85c5f5671ff890e6776a/Source/Outposts/Outpost/Outpost_Attacks.cs. I like your bodgy style, VE devs
-        foreach (var pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction.OfPlayer)).ToList()) 
+        foreach (Pawn pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction.OfPlayer)).ToList()) 
             pawn.Destroy();
 
-        Thing gateOnMap = CompStargate.GetActiveStargateOnMap(Map);
-        Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(Map);
+        Thing gateOnMap = SgUtilities.GetActiveStargateOnMap(Map);
+        Thing dhdOnMap = SgUtilities.GetDHDOnMap(Map);
         if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] perm sg site post map gen: dhddef={DhdDef} gatedef={GateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}");
             
         if (gateOnMap != null)
@@ -101,8 +102,8 @@ public class WorldObject_PermSGSite : MapParent, IRenameable
 
     public override void Notify_MyMapAboutToBeRemoved()
     {
-        Thing gateOnMap = CompStargate.GetActiveStargateOnMap(Map);
-        Thing dhdOnMap = CompDialHomeDevice.GetDHDOnMap(Map);
+        Thing gateOnMap = SgUtilities.GetActiveStargateOnMap(Map);
+        Thing dhdOnMap = SgUtilities.GetDHDOnMap(Map);
             
         DhdDef = dhdOnMap?.def;
         GateDef = gateOnMap?.def;
@@ -129,21 +130,18 @@ public class WorldObject_PermSGSite : MapParent, IRenameable
         yield return new Command_Action
         {
             icon = ContentFinder<Texture2D>.Get("UI/Buttons/Rename"),
-            action = () => { Find.WindowStack.Add(new Dialog_RenameSGSite(this)); },
+            action = () => { Find.WindowStack.Add(new Dialog_RenameSgSite(this)); },
             defaultLabel = "SGM.RenameGateSite".Translate(),
             defaultDesc = "SGM.RenameGateSiteDesc".Translate()
         };
     }
 
-    public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan)
-    {
-        return CaravanArrivalActionUtility.GetFloatMenuOptions(() => true, () => new CaravanArrivalAction_PermSgSite(this), $"Approach {Label}", caravan, Tile, this);
-    }
+    public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Caravan caravan) => CaravanArrivalActionUtility.GetFloatMenuOptions(() => true, () => new CaravanArrivalAction_PermSgSite(this), $"Approach {Label}", caravan, Tile, this);
 
     public override void ExposeData()
     {
         base.ExposeData();
-        Scribe_Values.Look(ref SiteName, "SiteName");
+        Scribe_Values.Look(ref _siteName, "SiteName");
         Scribe_Defs.Look(ref DhdDef, "DhdDef");
         Scribe_Defs.Look(ref GateDef, "GateDef");
     }

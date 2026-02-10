@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -66,23 +65,17 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
             yield break;
         }
 
-        if (!addressComp.AddressList.Contains(sgComp.GateAddress))
+        if (!addressComp.AddressList.Contains(sgComp.GateAddress) && !addressComp.PocketMapAddressList.Contains(sgComp.GateAddress))
         {
-            if (!addressComp.PocketMapAddressList.Contains(sgComp.GateAddress))
-            {
-                yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.InvalidAddress".Translate()), null);
-                yield break;
-            }
+            yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.InvalidAddress".Translate()), null);
+            yield break;
         }
             
         if (sgComp.TicksUntilOpen > -1)
         {
-            if (sgComp.IsReceivingGate)
-            {
-                yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.Incoming".Translate()), null);
-                yield break;
-            }
-            yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.AlreadyDialling".Translate()), null);
+            string failReason = sgComp.IsReceivingGate ? "SGM.Reason.Incoming" : "SGM.Reason.AlreadyDialling";
+
+            yield return new FloatMenuOption("SGM.CannotDial".Translate(failReason.Translate()), null);
             yield break; 
         }
                 
@@ -92,9 +85,9 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
                 
             MapParent destMapParent = Find.WorldObjects.MapParentAt(tile);
                 
-            yield return new FloatMenuOption("SGM.DialGate".Translate(CompStargate.GetStargateDesignation(tile), destMapParent.Label), () =>
+            yield return new FloatMenuOption("SGM.DialGate".Translate(SgUtilities.GetStargateDesignation(tile), destMapParent.Label), () =>
             {
-                dhdComp.queuedAddress = tile;
+                dhdComp.QueuedAddress = tile;
                 dhdComp.DialMode = DialMode.Map;
                 
                 Job job = JobMaker.MakeJob(SgJobDefOf.StargatesMod_DialStargate, dhdComp.parent);
@@ -116,9 +109,9 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
             }
 
             int index = mapIndex;
-            yield return new FloatMenuOption("SGM.DialGate".Translate(CompStargate.GetStargateDesignation(pocketMapParent.sourceMap.Tile), pocketMapParent.Map.generatorDef.label), () =>
+            yield return new FloatMenuOption("SGM.DialGate".Translate(SgUtilities.GetStargateDesignation(pocketMapParent.sourceMap.Tile), pocketMapParent.Map.generatorDef.label), () =>
             {
-                dhdComp.queuedAddress = index;
+                dhdComp.QueuedAddress = index;
                 dhdComp.DialMode = DialMode.PocketMap;
                 
                 Job job = JobMaker.MakeJob(SgJobDefOf.StargatesMod_DialStargate, dhdComp.parent);
@@ -127,11 +120,5 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
         }
     }
 
-    private static AcceptanceReport CanReachDhd(Pawn pawn, Thing dhd)
-    {
-        if (!pawn.CanReach(dhd.InteractionCell, PathEndMode.OnCell, Danger.Deadly))
-            return "NoPath".Translate();
-            
-        return true;
-    }
+    private static AcceptanceReport CanReachDhd(Pawn pawn, Thing dhd) => pawn.CanReach(dhd.InteractionCell, PathEndMode.OnCell, Danger.Deadly) ? true : "NoPath".Translate();
 }

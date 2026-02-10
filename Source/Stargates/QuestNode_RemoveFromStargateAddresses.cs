@@ -9,10 +9,7 @@ public class QuestNode_AddStargateAddresses : QuestNode
     public SlateRef<Site> address;
     public SlateRef<bool> remove;
 
-    protected override bool TestRunInt(Slate slate)
-    {
-        return true;
-    }
+    protected override bool TestRunInt(Slate slate) => true;
 
     protected override void RunInt()
     {

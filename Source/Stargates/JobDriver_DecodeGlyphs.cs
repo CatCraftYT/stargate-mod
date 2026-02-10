@@ -11,19 +11,16 @@ public class JobDriver_DecodeGlyphs : JobDriver
     private const TargetIndex glyphScrapItem = TargetIndex.A;
     private const int UseDurationTicks = 500;
 
-    private void GenerateStargateQuest()
+    private static void GenerateStargateQuest()
     {
-        //i was setting individual values like the points in the slate which was causing NullReferenceExceptions, it took me so long to debug and I just got lucky ;(
-        Slate slate = new Slate();
+        //I was setting individual values like the points in the slate which was causing NullReferenceExceptions, it took me so long to debug and I just got lucky ;(
+        Slate slate = new();
         QuestScriptDef questDef = DefDatabase<QuestScriptDef>.GetNamed("StargateMod_StargateSiteScript");
         Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
         QuestUtility.SendLetterQuestAvailable(quest);
     }
 
-    public override bool TryMakePreToilReservations(bool errorOnFailed)
-    {
-        return pawn.Reserve(job.GetTarget(glyphScrapItem), job);
-    }
+    public override bool TryMakePreToilReservations(bool errorOnFailed) => pawn.Reserve(job.GetTarget(glyphScrapItem), job);
 
     protected override IEnumerable<Toil> MakeNewToils()
     {
@@ -32,17 +29,20 @@ public class JobDriver_DecodeGlyphs : JobDriver
         Toil toil = Toils_General.Wait(UseDurationTicks);
         toil.WithProgressBarToilDelay(glyphScrapItem);
         yield return toil;
-        yield return new Toil { initAction = () =>
-        {
-            GenerateStargateQuest();
-                
-            Thing glyphThing = job.GetTarget(glyphScrapItem).Thing;
-            if ( glyphThing.stackCount > 1)
+        yield return new Toil 
+        { 
+            initAction = () =>
             {
-                /*Decreasing stackCount seems to not update graphic of item(stack), with this method it will*/
-                Thing usedGlyphThing = glyphThing.SplitOff(1);
-                if (!usedGlyphThing.DestroyedOrNull()) usedGlyphThing.Destroy();
-            } else glyphThing.Destroy();
-        } };
+                GenerateStargateQuest();
+                    
+                Thing glyphThing = job.GetTarget(glyphScrapItem).Thing;
+                if ( glyphThing.stackCount > 1)
+                {
+                    /*Decreasing stackCount seems to not update graphic of item(stack), with this method it will*/
+                    Thing usedGlyphThing = glyphThing.SplitOff(1);
+                    usedGlyphThing.Destroy();
+                } else glyphThing.Destroy();
+            } 
+        };
     }
 }

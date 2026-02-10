@@ -13,18 +13,12 @@ public class JobDriver_WatchStargate : JobDriver
     private const TargetIndex stargateToWatch = TargetIndex.A;
     private const TargetIndex watchPosition = TargetIndex.B;
 
-    public override bool TryMakePreToilReservations(bool errorOnFailed)
-    {
-        return true;
-    }
+    public override bool TryMakePreToilReservations(bool errorOnFailed) => true;
 
     protected override IEnumerable<Toil> MakeNewToils()
     {
         this.FailOnDestroyedOrNull(stargateToWatch);
-        /*this.FailOn(() => !job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>().StargateIsActive);*/
         this.FailOn(() => pawn.DeadOrDowned);
-
-        /*CompStargate gateComp = job.GetTarget(stargateToWatch).Thing.TryGetComp<CompStargate>();*/
 
 
         yield return Toils_Goto.GotoCell(watchPosition, PathEndMode.OnCell);
@@ -38,8 +32,5 @@ public class JobDriver_WatchStargate : JobDriver
         yield return watch;
     }
 
-    protected void WatchTickAction(int delta)
-    {
-        pawn.rotationTracker.FaceCell(job.GetTarget(stargateToWatch).Cell);
-    }
+    private void WatchTickAction(int delta) => pawn.rotationTracker.FaceCell(job.GetTarget(stargateToWatch).Cell);
 }

@@ -6,10 +6,7 @@ namespace StargatesMod;
 [DefOf]
 public static class SgDamageDefOf
 {
-    static SgDamageDefOf()
-    {
-        DefOfHelper.EnsureInitializedInCtor(typeof(DamageDefOf));
-    }
+    static SgDamageDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(DamageDefOf));
     
     public static DamageDef StargatesMod_KawooshExplosion;
 
