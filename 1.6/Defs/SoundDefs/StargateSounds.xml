@@ -303,6 +303,7 @@
     </subSounds>
   </SoundDef>
 	
+	
   <SoundDef>
     <defName>StargateMod_Steam</defName>
     <context>MapOnly</context>

@@ -36,6 +36,9 @@ public class CompStargate : ThingComp
     private CompTransporter _transComp;
     private Thing _conflictingGate;
 
+    int connectedGateSoundQueue = 220;
+    int connectedGateSoundCounter = 0;
+    
     private int _checkVortexPawnsTick = 120;
     private const int _checkVortexPawnsDelayTick = 10;
     private List<Pawn> _pawnsWatchingStargate;
@@ -340,6 +343,26 @@ public class CompStargate : ThingComp
         else if (TicksUntilOpen == 200)
             SgSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
 
+        if (TicksUntilOpen == 220)
+        {
+            connectedGateSoundQueue = 220;
+            connectedGateSoundCounter = 0;
+        }
+        MapParent targetMapParent = _dialMode switch
+        {
+            DialMode.Map => Find.WorldObjects.MapParentAt(_queuedAddress),
+            DialMode.PocketMap => Find.Maps.ElementAt(_queuedAddress).PocketMapParent,
+            _ => null
+        };
+        if (targetMapParent is { HasMap: true } && TicksUntilOpen <= 220 && connectedGateSoundQueue == TicksUntilOpen && connectedGateSoundCounter < 3)
+        {
+            Thing connectedStargate = SgUtilities.GetActiveStargateOnMap(targetMapParent.Map);
+            DefDatabase<SoundDef>.GetNamed($"StargateMod_ChevUsual_{connectedGateSoundCounter + 1}").PlayOneShot(SoundInfo.InMap(connectedStargate));
+            
+            connectedGateSoundCounter++;
+            connectedGateSoundQueue -= 40;
+        }
+        
         TicksUntilOpen--;
             
         if (TicksUntilOpen != 0) return;
@@ -481,6 +504,20 @@ public class CompStargate : ThingComp
                 {
                     CheckVortexPawns();
                     _checkVortexPawnsTick = TicksUntilOpen - _checkVortexPawnsDelayTick;
+
+                    //Make pawns avoid vortex area for receiving gate on loaded maps
+                    MapParent targetMapParent = null;
+                    switch (_dialMode)
+                    {
+                        case DialMode.Map:
+                            targetMapParent = Find.WorldObjects.MapParentAt(_queuedAddress);
+                            break;
+                        case DialMode.PocketMap:
+                            targetMapParent = Find.Maps.ElementAt(_queuedAddress).PocketMapParent;
+                            break;
+                    }
+                    if (targetMapParent is { HasMap: true }) 
+                        SgUtilities.GetActiveStargateOnMap(targetMapParent.Map).TryGetComp<CompStargate>().CheckVortexPawns();
                 }
             }
         }
