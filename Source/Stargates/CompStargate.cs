@@ -32,6 +32,8 @@ public class CompStargate : ThingComp
     private PlanetTile _queuedAddress = -1;
     private PlanetTile _connectedAddress = -1;
     private Thing _connectedStargate;
+    private CompStargate _connectedStargateComp;
+    private CompTransporter _transComp;
     private Thing _conflictingGate;
 
     private int _checkVortexPawnsTick = 120;
@@ -52,7 +54,7 @@ public class CompStargate : ThingComp
         field ??= GraphicDatabase.Get<Graphic_Single>(Props.irisTexture,
             ShaderDatabase.Mote, Props.puddleDrawSize, Color.white);
 
-    private bool GateIsLoadingTransporter => parent.GetComp<CompTransporter>() is { LoadingInProgressOrReadyToLaunch: true, AnyInGroupHasAnythingLeftToLoad: true };
+    private bool GateIsLoadingTransporter => _transComp is { LoadingInProgressOrReadyToLaunch: true, AnyInGroupHasAnythingLeftToLoad: true };
 
     public IEnumerable<IntVec3> VortexCells => Props.vortexPattern.Select(offset => parent.Position + offset.RotatedBy(parent.Rotation));
 
@@ -132,11 +134,11 @@ public class CompStargate : ThingComp
             }
                 
             _connectedStargate = connectedGate;
-                
-            CompStargate connectedSgComp = _connectedStargate.TryGetComp<CompStargate>();
-            connectedSgComp.StargateIsActive = true;
-            connectedSgComp.IsReceivingGate = true;
-            connectedSgComp._connectedStargate = parent;
+            _connectedStargateComp = _connectedStargate.TryGetComp<CompStargate>();
+            
+            _connectedStargateComp.StargateIsActive = true;
+            _connectedStargateComp.IsReceivingGate = true;
+            _connectedStargateComp._connectedStargate = parent;
                 
             switch (_dialMode)
             {
@@ -148,12 +150,12 @@ public class CompStargate : ThingComp
                     break;
             }
 
-            connectedSgComp._connectedAddress = GateAddress;
+            _connectedStargateComp._connectedAddress = GateAddress;
 
-            connectedSgComp._puddleSustainer = SgSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(connectedSgComp.parent));
-            SgSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(connectedSgComp.parent));
+            _connectedStargateComp._puddleSustainer = SgSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(_connectedStargateComp.parent));
+            SgSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(_connectedStargateComp.parent));
                     
-            CompGlower otherGlowComp = connectedSgComp.parent.GetComp<CompGlower>();
+            CompGlower otherGlowComp = _connectedStargateComp.parent.GetComp<CompGlower>();
             otherGlowComp.Props.glowRadius = glowRadius;
             otherGlowComp.PostSpawnSetup(false);
         }
@@ -169,8 +171,7 @@ public class CompStargate : ThingComp
         
     public void CloseStargate(bool closeOtherGate)
     {
-        CompTransporter transComp = parent.GetComp<CompTransporter>();
-        transComp?.CancelLoad();
+        _transComp?.CancelLoad();
 
         //clear buffers just in case
         ClearBuffers();
@@ -209,6 +210,7 @@ public class CompStargate : ThingComp
         _ticksSinceOpened = 0;
         _connectedAddress = -1;
         _connectedStargate = null;
+        _connectedStargateComp = null;
         IsReceivingGate = false;
     }
 
@@ -308,7 +310,8 @@ public class CompStargate : ThingComp
             }
             IsHibernating = false;
             _conflictingGate = null;
-                
+
+            _transComp ??= parent.GetComp<CompTransporter>();
                 
             if (isHibernatingAlready) SgSoundDefOf.StargateMod_Steam.PlayOneShot(SoundInfo.InMap(parent));
         }
@@ -492,29 +495,28 @@ public class CompStargate : ThingComp
             
         if (_ticksSinceOpened == 210) 
             EndStargateWatching();
+
+        _connectedStargateComp ??= parent.GetComp<CompStargate>();
+        _transComp ??= parent.GetComp<CompTransporter>();
             
-            
-        CompStargate connectedStargateComp = _connectedStargate.TryGetComp<CompStargate>();
-        CompTransporter transComp = parent.GetComp<CompTransporter>();
-            
-        if (transComp != null)
+        if (_transComp != null)
         {
-            Thing transportThing = transComp.innerContainer.FirstOrFallback();
+            Thing transportThing = _transComp.innerContainer.FirstOrFallback();
             if (transportThing != null)
             {
                 if (transportThing.Spawned) transportThing.DeSpawn();
                 AddToSendBuffer(new BufferItem(transportThing));
-                transComp.innerContainer.Remove(transportThing);
+                _transComp.innerContainer.Remove(transportThing);
             }
-            else if (transComp.LoadingInProgressOrReadyToLaunch && !transComp.AnyInGroupHasAnythingLeftToLoad)
-                transComp.CancelLoad();
+            else if (_transComp.LoadingInProgressOrReadyToLaunch && !_transComp.AnyInGroupHasAnythingLeftToLoad)
+                _transComp.CancelLoad();
         }
 
         if (_sendBuffer.Any())
         {
             if (!IsReceivingGate)
             {
-                connectedStargateComp.AddToReceiveBuffer(_sendBuffer[0]);
+                _connectedStargateComp.AddToReceiveBuffer(_sendBuffer[0]);
                 _sendBuffer.Remove(_sendBuffer[0]);
             }
             else WormholeContentsDisposal(false);
@@ -552,7 +554,7 @@ public class CompStargate : ThingComp
             CloseStargate(false);
             
 
-        if (IsReceivingGate && _ticksSinceBufferUnloaded > 2500 && !connectedStargateComp.GateIsLoadingTransporter)
+        if (IsReceivingGate && _ticksSinceBufferUnloaded > 2500 && !_connectedStargateComp.GateIsLoadingTransporter)
             CloseStargate(true);
     }
 
@@ -571,9 +573,8 @@ public class CompStargate : ThingComp
         }
 
         //fix nullreferenceexception that happens when the innercontainer disappears for some reason, hopefully this doesn't end up causing a bug that will take hours to track down ;)
-        CompTransporter transComp = parent.GetComp<CompTransporter>();
-        if (transComp is { innerContainer: null })
-            transComp.innerContainer = new ThingOwner<Thing>(transComp);
+        if (_transComp is { innerContainer: null })
+            _transComp.innerContainer = new ThingOwner<Thing>(_transComp);
             
         if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] compsg postspawnssetup: sgactive={StargateIsActive} connectgate={_connectedStargate} connectaddress={_connectedAddress}, mapparent={parent.Map.Parent}");
     }
@@ -621,11 +622,14 @@ public class CompStargate : ThingComp
             
         string conflictingGateStr = _conflictingGate == null ? "null" : _conflictingGate.ToString();
         sb.AppendLine($"_conflictingGate = " + conflictingGateStr);
-            
+        
+        sb.AppendLine($"_transComp = {_transComp}");
+        sb.AppendLine($"_connectedStargateComp = {_connectedStargateComp}");
+        
         string pawnsWatchingStargateStr = _pawnsWatchingStargate == null || !_pawnsWatchingStargate.Any() 
             ? "null" : _pawnsWatchingStargate[0].ToString();
         sb.AppendLine($"_PawnsWatchingStargate0 = {pawnsWatchingStargateStr}");
-
+        
         return sb.ToString().TrimEndNewlines();
     }
 
