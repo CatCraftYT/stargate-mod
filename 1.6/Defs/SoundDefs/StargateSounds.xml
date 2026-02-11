@@ -321,4 +321,59 @@
       </li>
     </subSounds>
   </SoundDef>
+
+	
+	<SoundDef>
+		<defName>StargateMod_ChevIncoming_1</defName>
+		<context>MapOnly</context>
+		<maxSimultaneous>1</maxSimultaneous>
+		<subSounds>
+			<li>
+				<muteWhenPaused>true</muteWhenPaused>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Misc/Stargate/chevron/chevron_incoming_1</clipPath>
+					</li>
+				</grains>
+				<volumeRange>12</volumeRange>
+				<tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
+			</li>
+		</subSounds>
+	</SoundDef>
+
+	<SoundDef>
+		<defName>StargateMod_ChevIncoming_2</defName>
+		<context>MapOnly</context>
+		<maxSimultaneous>1</maxSimultaneous>
+		<subSounds>
+			<li>
+				<muteWhenPaused>true</muteWhenPaused>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Misc/Stargate/chevron/chevron_incoming_2</clipPath>
+					</li>
+				</grains>
+				<volumeRange>12</volumeRange>
+				<tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
+			</li>
+		</subSounds>
+	</SoundDef>
+
+	<SoundDef>
+		<defName>StargateMod_ChevIncoming_3</defName>
+		<context>MapOnly</context>
+		<maxSimultaneous>1</maxSimultaneous>
+		<subSounds>
+			<li>
+				<muteWhenPaused>true</muteWhenPaused>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Misc/Stargate/chevron/chevron_incoming_3</clipPath>
+					</li>
+				</grains>
+				<volumeRange>12</volumeRange>
+				<tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
+			</li>
+		</subSounds>
+	</SoundDef>
 </Defs>
