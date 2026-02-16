@@ -51,7 +51,7 @@
     <SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
     <SGM.RenameGateSiteDesc>Give this stargate site a more recognisable name.</SGM.RenameGateSiteDesc>
     
-    <SGM.TransmitGDO>Transmit GDO code</SGM.TransmitGDO>
+    <SGM.TransmitGDO>Remotely open iris</SGM.TransmitGDO>
     <SGM.TransmitGDODesc>Transmit an identification code through the gate, opening the iris on the other side.</SGM.TransmitGDODesc>
     
     <SGM.SelectConnectedGate>View connected gate</SGM.SelectConnectedGate>
@@ -63,6 +63,7 @@
 	<!--Gizmo disabled messages-->
 	<SGM.GateIsNotActive>Stargate is not active.</SGM.GateIsNotActive>
 	<SGM.CannotGDO>Iris is already open.</SGM.CannotGDO>
+	<SGM.CannotCloseIncoming>Cannot close incoming wormhole.</SGM.CannotCloseIncoming>
 	
 	<!--FloatMenu labels-->
 	<SGM.EnterStargateAction>Enter stargate</SGM.EnterStargateAction>

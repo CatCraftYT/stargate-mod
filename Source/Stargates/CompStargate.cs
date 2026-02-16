@@ -424,8 +424,7 @@ public class CompStargate : ThingComp
     private void WormholeContentsDisposal(bool isRecvBuffer)
     {
         BufferItem bufferItem = isRecvBuffer ? _recvBuffer[0] : _sendBuffer[0];
-            
-        //Remove deathRefusal hediff to avoid error
+        
         List<Pawn> pawns = [bufferItem.Pawn];
         if (bufferItem.CarriedPawn != null) pawns.Add(bufferItem.CarriedPawn);
         
@@ -433,6 +432,7 @@ public class CompStargate : ThingComp
 
         foreach (Pawn p in pawns)
         {
+            //Remove deathRefusal hediff to avoid error
             if (p.health.hediffSet.HasHediff(HediffDefOf.DeathRefusal))
                 p.health.RemoveHediff(p.health.hediffSet.hediffs.Find(hediff => hediff is Hediff_DeathRefusal));
             
