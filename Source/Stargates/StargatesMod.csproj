@@ -1,91 +1,34 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C950BFA4-5CD1-468F-BAC0-C1747D53B060}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>StargatesMod</RootNamespace>
-    <AssemblyName>Stargates</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <LangVersion>14</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\1.6\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="netstandard">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\netstandard.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Building_Stargate.cs" />
-    <Compile Include="CaravanArrivalAction_PermSGSite.cs" />
-    <Compile Include="CompGlyphScrap.cs" />
-    <Compile Include="CompTargetable_Stargate.cs" />
-    <Compile Include="Dialog_RenameSGSite.cs" />
-    <Compile Include="FloatMenuOptionProvider_DHD.cs" />
-    <Compile Include="FloatMenuOptionProvider_Stargate.cs" />
-    <Compile Include="HarmonyPatches.cs" />
-    <Compile Include="JobDriver_DecodeGlyphs.cs" />
-    <Compile Include="JobDriver_InstallIris.cs" />
-    <Compile Include="JobDriver_BringToStargate.cs" />
-    <Compile Include="JobDriver_WatchStargate.cs" />
-    <Compile Include="Mod Settings\StargateMod_Settings.cs" />
-    <Compile Include="Mod Settings\StargatesMod_Mod.cs" />
-    <Compile Include="PlaceWorker_Stargate.cs" />
-    <Compile Include="PawnsArrivalModeWorker_Stargate.cs" />
-    <Compile Include="JobDriver_DialStargate.cs" />
-    <Compile Include="QuestNode_CorrectSiteName.cs" />
-    <Compile Include="QuestNode_RemoveFromStargateAddresses.cs" />
-    <Compile Include="QuestPart_CorrectSiteName.cs" />
-    <Compile Include="SGSoundDefOf.cs" />
-    <Compile Include="SitePartWorker_Stargate.cs" />
-    <Compile Include="WorldComp_StargateAddresses.cs" />
-    <Compile Include="CompDialHomeDevice.cs" />
-    <Compile Include="JobDriver_EnterStargate.cs" />
-    <Compile Include="CompStargate.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldObject_PermSGSite.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net48</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<LangVersion>14</LangVersion>
+		<Deterministic>true</Deterministic>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AssemblyName>Stargates</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<OutputPath>../../1.6/Assemblies</OutputPath>
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>pdbonly</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<OutputPath>../../1.6/Assemblies</OutputPath>
+		<DebugType>none</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4633" />
+		<PackageReference Include="Lib.Harmony.Ref" Version="2.4.2" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+
 </Project>
