@@ -42,6 +42,8 @@ public class WorldComp_StargateAddresses(World world) : WorldComponent(world)
             }
         }
 
+        public bool EnoughAddressesToDial() => AddressList.Count + PocketMapAddressList.Count >= 2;
+        
     public bool IsRegistered(PlanetTile address) => address != PlanetTile.Invalid && (AddressList.Contains(address) || PocketMapAddressList.Contains(address.tileId));
 
     public override void ExposeData()

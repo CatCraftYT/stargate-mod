@@ -22,67 +22,24 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
     {
         CompDialHomeDevice dhdComp =  clickedThing.TryGetComp<CompDialHomeDevice>();
         if (dhdComp == null) yield break;
-        if (!dhdComp.IsConnectedToStargate)
-        {
-            yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.NotConnected".Translate()), null);
-            yield break;
-        }
         
         CompStargate sgComp = dhdComp.GetLinkedStargateComp();
-
-        AcceptanceReport canReachReport = CanReachDhd(context.FirstSelectedPawn, clickedThing);
-        if (!canReachReport.Accepted)
+        
+        AcceptanceReport reachDhdReport = CanReachDhd(context.FirstSelectedPawn, clickedThing);
+        if (!reachDhdReport.Accepted)
         {
-            yield return new FloatMenuOption("SGM.CannotDial".Translate(canReachReport.Reason), null);
+            yield return new FloatMenuOption(reachDhdReport.Reason.Translate(), null);
             yield break;
-        }
-            
-        if (dhdComp.Props.requiresPower)
-        {
-            CompPowerTrader compPowerTrader = dhdComp.parent.TryGetComp<CompPowerTrader>();
-            if (compPowerTrader is { PowerOn: false })
-            {
-                yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.NoPower".Translate()), null);
-                yield break;
-            }
-        }
-        if (sgComp.IsHibernating)
-        {
-            yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.Hibernating".Translate()), null);
-            yield break;
-        }
-        if (sgComp.StargateIsActive)
-        {
-            yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.GateIsActive".Translate()), null);
-            yield break;
-        }
-            
-        WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
-        addressComp.CleanupAddresses();
-        if (addressComp.AddressList.Count < 2)
-        {
-            yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.NoDestinations".Translate()), null);
-            yield break;
-        }
-
-        if (!addressComp.IsRegistered(sgComp.GateAddress))
-        {
-            yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.InvalidAddress".Translate()), null);
-            yield break;
-        }
-
-        if (sgComp.IsExpectingIncomingWormhole)
-        {
-            yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.Incoming".Translate()), null);
-            yield break; 
         }
         
-        if (sgComp.TicksUntilOpen > -1)
-        {
-            string failReason = sgComp.IsReceivingGate ? "SGM.Reason.Incoming" : "SGM.Reason.AlreadyDialling";
+        WorldComp_StargateAddresses addressComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
+        addressComp.CleanupAddresses();
 
-            yield return new FloatMenuOption("SGM.CannotDial".Translate(failReason.Translate()), null);
-            yield break; 
+        AcceptanceReport dialReport = CanDialGate(dhdComp, sgComp, addressComp);
+        if (!dialReport.Accepted)
+        {
+            yield return new FloatMenuOption("SGM.CannotDial".Translate(dialReport.Reason.Translate()), null);
+            yield break;
         }
                 
         foreach (PlanetTile tile in addressComp.AddressList)
@@ -126,5 +83,19 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
         }
     }
 
+    private static AcceptanceReport CanDialGate(CompDialHomeDevice dhdComp, CompStargate sgComp, WorldComp_StargateAddresses addressComp)
+    {
+        if (!dhdComp.IsConnectedToStargate) return "SGM.Reason.NotConnected";
+        if (dhdComp.Props.requiresPower) return "SGM.Reason.NoPower";
+        if (sgComp.IsHibernating) return "SGM.Reason.Hibernating";
+        if (sgComp.StargateIsActive) return "SGM.Reason.GateIsActive";
+        if (!addressComp.EnoughAddressesToDial()) return "SGM.Reason.NoDestinations";
+        if (!addressComp.IsRegistered(sgComp.GateAddress)) return "SGM.Reason.InvalidAddress";
+        if (sgComp.IsExpectingIncomingWormhole) return "SGM.Reason.Incoming";
+        if (sgComp.TicksUntilOpen > -1) return sgComp.IsReceivingGate ? "SGM.Reason.Incoming" : "SGM.Reason.AlreadyDialling";
+
+        return true;
+    }
+    
     private static AcceptanceReport CanReachDhd(Pawn pawn, Thing dhd) => pawn.CanReach(dhd.InteractionCell, PathEndMode.OnCell, Danger.Deadly) ? true : "NoPath".Translate();
 }
