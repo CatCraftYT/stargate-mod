@@ -48,11 +48,12 @@ public class SitePartWorker_Stargate : SitePartWorker
         itemsToRebalance.SetAllow(ThingDef.Named("MechSerumResurrector"), true);
         itemsToRebalance.SetAllow(ThingDef.Named("MechSerumHealer"), true);
             
-        foreach (Thing removedThing in from thing in map.listerThings.ThingsMatchingFilter(itemsToRebalance) 
-                 where thing.stackCount > 1 select thing.SplitOff(thing.stackCount - 1) 
-                 into removedThing where !removedThing.DestroyedOrNull() select removedThing)
-        {
-            removedThing.Destroy();
-        }
+            foreach (Thing thing in map.listerThings.ThingsMatchingFilter(itemsToRebalance))
+            {
+                if (thing.stackCount <= 1) continue;
+                
+                Thing removedThing = thing.SplitOff(thing.stackCount - 1);
+                if (!removedThing.DestroyedOrNull()) removedThing.Destroy();
+            }
     }
 }

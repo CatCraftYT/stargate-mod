@@ -23,20 +23,24 @@ public class WorldComp_StargateAddresses(World world) : WorldComponent(world)
     }
     public void RemovePocketMapAddress(int mapIndex) => PocketMapAddressList.Remove(mapIndex);
 
-    public void CleanupAddresses()
-    {
-        foreach (PlanetTile tile in from tile in new List<PlanetTile>(AddressList) let sgMap = Find.WorldObjects.MapParentAt(tile) let site = sgMap as Site
-                 where sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && sgMap is not WorldObject_PermSgSite) select tile)
+        public void CleanupAddresses()
         {
-            RemoveAddress(tile);
-        }
+            foreach (PlanetTile pT in new List<PlanetTile>(AddressList))
+            {
+                MapParent sgMap = Find.WorldObjects.MapParentAt(pT);
+                Site site = sgMap as Site;
 
-        foreach (int address in from address in new List<int>(PocketMapAddressList) let map = Find.Maps[address] 
-                 let pMParent = map.PocketMapParent where pMParent is not { HasMap: true } select address)
-        {
-            RemovePocketMapAddress(address);
+                if (sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && sgMap is not WorldObject_PermSgSite))
+                    RemoveAddress(pT);
+            }
+
+            foreach (int i in new List<int>(PocketMapAddressList))
+            {
+                Map map = Find.Maps[i];
+                PocketMapParent pMParent = map.PocketMapParent;
+                if (pMParent is not { HasMap: true }) RemovePocketMapAddress(i);
+            }
         }
-    }
 
     public bool IsRegistered(PlanetTile address) => address != PlanetTile.Invalid && (AddressList.Contains(address) || PocketMapAddressList.Contains(address.tileId));
 
