@@ -21,7 +21,7 @@ public class CompDialHomeDevice : ThingComp
         
         return _compFacility.LinkedBuildings.Count switch
         {
-            1 when !_compFacility.LinkedBuildings[0].TryGetComp<CompStargate>().IsHibernating => _compFacility.LinkedBuildings[0].TryGetComp<CompStargate>(),
+            1 => _compFacility.LinkedBuildings[0].TryGetComp<CompStargate>(),
             > 1 => _compFacility.LinkedBuildings.Where(t => !t.TryGetComp<CompStargate>().IsHibernating).FirstOrFallback().TryGetComp<CompStargate>(),
             _ => null
         };
