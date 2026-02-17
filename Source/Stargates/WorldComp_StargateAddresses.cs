@@ -38,9 +38,12 @@ public class WorldComp_StargateAddresses(World world) : WorldComponent(world)
         }
     }
 
+    public bool IsRegistered(PlanetTile address) => address != PlanetTile.Invalid && (AddressList.Contains(address) || PocketMapAddressList.Contains(address.tileId));
+
     public override void ExposeData()
     {
         base.ExposeData();
         Scribe_Collections.Look(ref AddressList, "AddressList");
+        Scribe_Collections.Look(ref PocketMapAddressList, "PocketMapAddressList");
     }
 }

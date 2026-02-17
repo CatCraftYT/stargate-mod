@@ -17,7 +17,7 @@ public class QuestNode_CorrectSiteName : QuestNode
     {
         Slate slate = QuestGen.slate;
             
-        QuestPart_CorrectSiteName questPartCorrectSiteName = new QuestPart_CorrectSiteName
+        QuestPart_CorrectSiteName questPartCorrectSiteName = new()
         {
             inSignal = QuestGenUtility.HardcodedSignalWithQuestID(inSignal.GetValue(slate)) ?? QuestGen.slate.Get<string>("inSignal"),
             site = site.GetValue(slate),

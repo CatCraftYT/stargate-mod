@@ -65,12 +65,18 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
             yield break;
         }
 
-        if (!addressComp.AddressList.Contains(sgComp.GateAddress) && !addressComp.PocketMapAddressList.Contains(sgComp.GateAddress))
+        if (!addressComp.IsRegistered(sgComp.GateAddress))
         {
             yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.InvalidAddress".Translate()), null);
             yield break;
         }
-            
+
+        if (sgComp.IsExpectingIncomingWormhole)
+        {
+            yield return new FloatMenuOption("SGM.CannotDial".Translate("SGM.Reason.Incoming".Translate()), null);
+            yield break; 
+        }
+        
         if (sgComp.TicksUntilOpen > -1)
         {
             string failReason = sgComp.IsReceivingGate ? "SGM.Reason.Incoming" : "SGM.Reason.AlreadyDialling";

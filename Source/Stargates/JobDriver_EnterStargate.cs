@@ -13,16 +13,18 @@ public class JobDriver_EnterStargate : JobDriver
 
     protected override IEnumerable<Toil> MakeNewToils()
     {
+        CompStargate sgComp = job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>();
+        
         this.FailOnDestroyedOrNull(stargateTarg);
-        this.FailOn(() => !job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>().StargateIsActive);
+        this.FailOn(() => sgComp.StargateIsActive);
 
-        CompStargate gateComp = job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>();
+        
         Pawn carriedPawn = (Pawn)job.GetTarget(carriedPawnTarg).Thing;
         bool carryPawnToGate = carriedPawn != null;
             
         if (carryPawnToGate) yield return Toils_Haul.StartCarryThing(carriedPawnTarg);
             
-        yield return Toils_Goto.GotoCell(job.GetTarget(stargateTarg).Thing.InteractionCell, PathEndMode.OnCell);
+        yield return Toils_Goto.GotoCell(sgComp.parent.InteractionCell, PathEndMode.OnCell);
         if (carryPawnToGate)
         {
             yield return new Toil
@@ -45,7 +47,7 @@ public class JobDriver_EnterStargate : JobDriver
             {
                 bool drafted = pawn.Drafted;
                 pawn.DeSpawn();
-                gateComp.AddToSendBuffer(new BufferItem(pawn, drafted, carriedPawn));
+                sgComp.AddToSendBuffer(new BufferItem(pawn, drafted, carriedPawn));
             }
         };
     }

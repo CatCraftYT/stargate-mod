@@ -21,6 +21,7 @@ public class CompStargate : ThingComp
     public int TicksUntilOpen = -1;
     private DialMode _dialMode;
     public PlanetTile GateAddress;
+    private string _gateDesignation;
     public bool IsInPocketMap;
     public bool StargateIsActive;
     public bool IsReceivingGate;
@@ -42,11 +43,27 @@ public class CompStargate : ThingComp
     private int _checkVortexPawnsTick = 120;
     private const int _checkVortexPawnsDelayTick = 10;
     private List<Pawn> _pawnsWatchingStargate;
-        
+    
     private Sustainer _puddleSustainer;
 
     private readonly StargatesModSettings _modSettings = LoadedModManager.GetMod<StargatesMod>().GetSettings<StargatesModSettings>();
-        
+    
+    
+    public bool IsExpectingIncomingWormhole => !StargateIsActive && _connectedStargate != null && _connectedStargateComp != null;
+
+    private WorldComp_StargateAddresses AddressComp => field ??= Find.World.GetComponent<WorldComp_StargateAddresses>();
+    
+    private string GateDesignation
+    {
+        get => !AddressComp.IsRegistered(GateAddress) ? "INVALID" : _gateDesignation;
+        set => _gateDesignation = value;
+    }
+
+    private bool GateIsLoadingTransporter => _transComp is { LoadingInProgressOrReadyToLaunch: true, AnyInGroupHasAnythingLeftToLoad: true };
+
+    public IEnumerable<IntVec3> VortexCells => Props.vortexPattern.Select(offset => parent.Position + offset.RotatedBy(parent.Rotation));
+    
+    
     public CompProperties_Stargate Props => (CompProperties_Stargate)props;
 
     private Graphic StargatePuddle =>
@@ -57,10 +74,6 @@ public class CompStargate : ThingComp
         field ??= GraphicDatabase.Get<Graphic_Single>(Props.irisTexture,
             ShaderDatabase.Mote, Props.puddleDrawSize, Color.white);
 
-    private bool GateIsLoadingTransporter => _transComp is { LoadingInProgressOrReadyToLaunch: true, AnyInGroupHasAnythingLeftToLoad: true };
-
-    public IEnumerable<IntVec3> VortexCells => Props.vortexPattern.Select(offset => parent.Position + offset.RotatedBy(parent.Rotation));
-
     #region DHD Controls
 
     public void OpenStargateDelayed(PlanetTile address, int delay, DialMode dialMode)
@@ -70,11 +83,21 @@ public class CompStargate : ThingComp
 
         TicksUntilOpen = delay;
         _checkVortexPawnsTick = 120;
+
+
+        _connectedStargate = SgUtilities.GetActiveStargateOnMap(Find.WorldObjects.MapParentAt(address)?.Map);
+        if (_connectedStargate == null) return;
+        
+        _connectedStargateComp = _connectedStargate.TryGetComp<CompStargate>();
+        _connectedStargateComp._connectedStargate = parent;
+        _connectedStargateComp._connectedStargateComp = this;
     }
 
 
     private void OpenStargate(PlanetTile address)
     {
+        if (StargateIsActive) {Log.Error($"[StargatesMod] Tried to open an outgoing connection from {parent} while it was already active."); DialFail(); return;}
+        
         var connectedMapParent = (MapParent)null;
         switch (_dialMode)
         {
@@ -131,7 +154,7 @@ public class CompStargate : ThingComp
             if (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive)
             {
                 if (connectedGate == null) Log.Error($"[StargatesMod] Failed to find target stargate");
-                else if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] failed to dial stargate; target stargate was already active");
+                else if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] failed to dial stargate: target stargate was already active");
                 DialFail();
                 return;
             }
@@ -142,6 +165,7 @@ public class CompStargate : ThingComp
             _connectedStargateComp.StargateIsActive = true;
             _connectedStargateComp.IsReceivingGate = true;
             _connectedStargateComp._connectedStargate = parent;
+            _connectedStargateComp._connectedStargateComp = this;
                 
             switch (_dialMode)
             {
@@ -224,7 +248,8 @@ public class CompStargate : ThingComp
 
         _queuedAddress = -1;
         _connectedStargate = null;
-
+        _connectedStargateComp = null;
+        
         _dialMode = DialMode.None;
         
         //In case buffers contain anything before gate opens (like gate raids)
@@ -287,9 +312,9 @@ public class CompStargate : ThingComp
     {
         bool isHibernatingAlready = IsHibernating;
             
-        if (SgUtilities.GetAllStargatesOnMap(parent.Map, includeLinkedMaps: true).Any())
+        if (SgUtilities.GetAllStargatesOnMap(parent.Map, [parent], includeLinkedMaps: true).Any())
         {
-            _conflictingGate = SgUtilities.GetAllStargatesOnMap(parent.Map, includeLinkedMaps: true).First();
+            _conflictingGate = SgUtilities.GetAllStargatesOnMap(parent.Map, [parent], includeLinkedMaps: true).First();
                 
             if (isHibernatingAlready) Messages.Message("SGM.Notif.CannotWake".Translate(), MessageTypeDefOf.RejectInput);
             else Messages.Message("SGM.Notif.GateHibernating".Translate(), MessageTypeDefOf.CautionInput);
@@ -298,21 +323,26 @@ public class CompStargate : ThingComp
         }
         else
         {
-            var addressWorldComp = Find.World.GetComponent<WorldComp_StargateAddresses>();
-                
             IsInPocketMap = parent.Map.IsPocketMap;
             if (IsInPocketMap)
             {
                 GateAddress = parent.Map.Index;
-                addressWorldComp.AddPocketMapAddress(GateAddress);
+                AddressComp.AddPocketMapAddress(GateAddress);
             }
             else
             {
                 GateAddress = parent.Map.Tile;
-                addressWorldComp.AddAddress(GateAddress);
+                AddressComp.AddAddress(GateAddress);
             }
             IsHibernating = false;
             _conflictingGate = null;
+
+            GateDesignation = IsInPocketMap switch
+            {
+                true when parent.Map.PocketMapParent.sourceMap == null => "Unknown",
+                true => SgUtilities.GetStargateDesignation(parent.Map.PocketMapParent.sourceMap.Tile),
+                false => SgUtilities.GetStargateDesignation(GateAddress)
+            };
 
             _transComp ??= parent.GetComp<CompTransporter>();
                 
@@ -343,6 +373,7 @@ public class CompStargate : ThingComp
         else if (TicksUntilOpen == 200)
             SgSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
 
+        //TODO make into not a shitshow
         if (TicksUntilOpen == 220)
         {
             connectedGateSoundQueue = 220;
@@ -589,8 +620,7 @@ public class CompStargate : ThingComp
             
         if (_dialMode == DialMode.IncomingRaid && !_recvBuffer.Any())
             CloseStargate(false);
-            
-
+        
         if (IsReceivingGate && _ticksSinceBufferUnloaded > 2500 && !_connectedStargateComp.GateIsLoadingTransporter)
             CloseStargate(true);
     }
@@ -599,7 +629,7 @@ public class CompStargate : ThingComp
     {
         base.PostSpawnSetup(respawningAfterLoad);
 
-        InitGate();
+        if (!IsHibernating && !AddressComp.IsRegistered(GateAddress)) InitGate();
         
         if (StargateIsActive)
         {
@@ -619,27 +649,21 @@ public class CompStargate : ThingComp
     public string GetInspectString()
     {
         if (!parent.Spawned) return "";
-        
-        string displayedAddress = "" + SgUtilities.GetStargateDesignation(!IsInPocketMap ? GateAddress : parent.Map.PocketMapParent.sourceMap.Tile);
-
-        string connectedDisplayAddress = _dialMode switch
-        {
-            DialMode.Map => "" + SgUtilities.GetStargateDesignation(_connectedAddress),
-            DialMode.PocketMap when (_connectedStargate?.Map.PocketMapParent?.sourceMap?.Tile != null) => "" + SgUtilities.GetStargateDesignation(_connectedStargate.Map.PocketMapParent.sourceMap.Tile),
-            _ => "SGM.Unknown".Translate()
-        };
 
         StringBuilder sb = new();
         sb.AppendLine(!IsHibernating
-            ? "SGM.GateAddress".Translate(displayedAddress)
+            ? "SGM.GateAddress".Translate(GateDesignation)
             : "SGM.GateHibernating".Translate());
         switch (StargateIsActive)
         {
-            case false when TicksUntilOpen <= -1 && !IsHibernating:
+            case false when TicksUntilOpen <= -1 && !IsHibernating && !IsExpectingIncomingWormhole:
                 sb.AppendLine("SGM.StargateIdle".Translate());
                 break;
+            case false when IsExpectingIncomingWormhole:
+                sb.AppendLine("SGM.ExpectingIncomingWormhole".Translate(GateDesignation));
+                break;
             case true:
-                sb.AppendLine("SGM.ConnectedToGate".Translate(connectedDisplayAddress,
+                sb.AppendLine("SGM.ConnectedToGate".Translate(_connectedStargateComp.GateDesignation,  
                     (IsReceivingGate ? "SGM.Incoming" : "SGM.Outgoing").Translate()));
                 break;
         }
@@ -656,7 +680,10 @@ public class CompStargate : ThingComp
         
         sb.AppendLine($"connectedAddress = {_connectedAddress}");
         sb.AppendLine($"DialMode = {_dialMode}");
-            
+
+        sb.AppendLine($"_gateAddress = {GateAddress}");
+        sb.AppendLine($"_gateDesignation = {_gateDesignation}");
+        
         string conflictingGateStr = _conflictingGate == null ? "null" : _conflictingGate.ToString();
         sb.AppendLine($"_conflictingGate = " + conflictingGateStr);
         
@@ -784,8 +811,8 @@ public class CompStargate : ThingComp
     {
         if (_connectedStargate != null) CloseStargate(true);
 
-        if (IsInPocketMap) Find.World.GetComponent<WorldComp_StargateAddresses>().RemovePocketMapAddress(GateAddress);
-        else Find.World.GetComponent<WorldComp_StargateAddresses>().RemoveAddress(GateAddress);
+        if (IsInPocketMap) AddressComp.RemovePocketMapAddress(GateAddress);
+        else AddressComp.RemoveAddress(GateAddress);
             
         List<Thing> gates = SgUtilities.GetAllStargatesOnMap(map, excludeHibernating: false, includeLinkedMaps: true);
         if (!gates.Any()) return;
