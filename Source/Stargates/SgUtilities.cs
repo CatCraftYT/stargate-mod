@@ -38,9 +38,6 @@ public readonly struct BufferItem(Thing thing, bool drafted = false, Pawn carrie
 
 public static class SgUtilities
 {
-    public static Thing GetActiveStargateOnMap(Map map, Thing thingToIgnore = null) => map.listerBuildings.allBuildingsColonist.Where(t => t.def.thingClass == typeof(Building_Stargate) && !t.TryGetComp<CompStargate>().IsHibernating && t != thingToIgnore).FirstOrFallback() ??
-                                                                                       map.listerBuildings.allBuildingsNonColonist.Where(t => t.def.thingClass == typeof(Building_Stargate) && !t.TryGetComp<CompStargate>().IsHibernating && t != thingToIgnore).FirstOrFallback();
-
     public static List<Thing> GetAllStargatesOnMap(Map map, List<Thing> thingsToIgnore = null, bool excludeHibernating = true, bool includeLinkedMaps = false)
     {
         List<Thing> gates = [];
@@ -52,11 +49,9 @@ public static class SgUtilities
         if (thingsToIgnore != null) gates.RemoveWhere(thingsToIgnore.Contains);
 
         if (!includeLinkedMaps) return gates;
-            
         if (map.IsPocketMap && map.PocketMapParent.sourceMap != null) gates.AddRange(GetAllStargatesOnMap(map.PocketMapParent.sourceMap, excludeHibernating: false));
         
         if (!map.ChildPocketMaps.Any()) return gates;
-        
         foreach (Map childMap in map.ChildPocketMaps)
         {
             gates.AddRange(GetAllStargatesOnMap(childMap, excludeHibernating: false));

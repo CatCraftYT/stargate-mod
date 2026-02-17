@@ -74,7 +74,7 @@ public class WorldObject_PermSgSite : MapParent, IRenameable
         foreach (Pawn pawn in Map.mapPawns.AllPawns.Where(p => p.RaceProps.Humanlike || p.HostileTo(Faction.OfPlayer)).ToList()) 
             pawn.Destroy();
 
-        Thing gateOnMap = SgUtilities.GetActiveStargateOnMap(Map);
+        Thing gateOnMap = SgUtilities.GetAllStargatesOnMap(Map).FirstOrFallback();
         Thing dhdOnMap = SgUtilities.GetDHDOnMap(Map);
         if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] perm sg site post map gen: dhddef={DhdDef} gatedef={GateDef} gateonmap={gateOnMap} dhdonmap={dhdOnMap}");
             
@@ -102,7 +102,7 @@ public class WorldObject_PermSgSite : MapParent, IRenameable
 
     public override void Notify_MyMapAboutToBeRemoved()
     {
-        Thing gateOnMap = SgUtilities.GetActiveStargateOnMap(Map);
+        Thing gateOnMap = SgUtilities.GetAllStargatesOnMap(Map).FirstOrFallback();
         Thing dhdOnMap = SgUtilities.GetDHDOnMap(Map);
             
         DhdDef = dhdOnMap?.def;

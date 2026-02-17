@@ -25,8 +25,8 @@ class KeepMapWithStargateOpen
 {
     static void Postfix(Map ___map, ref bool __result)
     {
-        Thing sgThing = SgUtilities.GetActiveStargateOnMap(___map);
-        CompStargate sgComp = sgThing?.TryGetComp<CompStargate>();
+        Thing stargate = SgUtilities.GetAllStargatesOnMap(___map).FirstOrFallback();
+        CompStargate sgComp = stargate?.TryGetComp<CompStargate>();
             
         if (sgComp == null) return;
 

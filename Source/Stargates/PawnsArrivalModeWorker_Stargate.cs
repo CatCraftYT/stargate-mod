@@ -11,7 +11,7 @@ public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
     public override void Arrive(List<Pawn> pawns, IncidentParms parms)
     {
         Map map = (Map)parms.target;
-        Thing stargateOnMap = SgUtilities.GetActiveStargateOnMap(map);
+        Thing stargateOnMap = SgUtilities.GetAllStargatesOnMap(map, includeLinkedMaps: true).FirstOrFallback();
 
         CompStargate sgComp = stargateOnMap.TryGetComp<CompStargate>();
             
@@ -29,7 +29,7 @@ public class PawnsArrivalModeWorker_Stargate : PawnsArrivalModeWorker
     {
         Map map = (Map)parms.target;
             
-        Thing stargateOnMap = SgUtilities.GetActiveStargateOnMap(map);
+        Thing stargateOnMap = SgUtilities.GetAllStargatesOnMap(map, includeLinkedMaps: true).FirstOrFallback();
         CompStargate sgComp = stargateOnMap?.TryGetComp<CompStargate>();
             
         if (stargateOnMap == null || sgComp == null || sgComp.StargateIsActive)

@@ -85,7 +85,7 @@ public class CompStargate : ThingComp
         _checkVortexPawnsTick = 120;
 
 
-        _connectedStargate = SgUtilities.GetActiveStargateOnMap(Find.WorldObjects.MapParentAt(address)?.Map);
+        _connectedStargate = SgUtilities.GetAllStargatesOnMap(Find.WorldObjects.MapParentAt(address)?.Map).FirstOrFallback();
         if (_connectedStargate == null) return;
         
         _connectedStargateComp = _connectedStargate.TryGetComp<CompStargate>();
@@ -149,7 +149,7 @@ public class CompStargate : ThingComp
 
         if (_dialMode != DialMode.IncomingRaid)
         {
-            Thing connectedGate = SgUtilities.GetActiveStargateOnMap(connectedMapParent.Map);
+            Thing connectedGate = SgUtilities.GetAllStargatesOnMap(connectedMapParent.Map).FirstOrFallback();
                 
             if (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive)
             {
@@ -387,7 +387,7 @@ public class CompStargate : ThingComp
         };
         if (targetMapParent is { HasMap: true } && TicksUntilOpen <= 220 && connectedGateSoundQueue == TicksUntilOpen && connectedGateSoundCounter < 3)
         {
-            Thing connectedStargate = SgUtilities.GetActiveStargateOnMap(targetMapParent.Map);
+            Thing connectedStargate = SgUtilities.GetAllStargatesOnMap(targetMapParent.Map).FirstOrFallback();
             DefDatabase<SoundDef>.GetNamed($"StargateMod_ChevUsual_{connectedGateSoundCounter + 1}").PlayOneShot(SoundInfo.InMap(connectedStargate));
             
             connectedGateSoundCounter++;
@@ -548,7 +548,7 @@ public class CompStargate : ThingComp
                             break;
                     }
                     if (targetMapParent is { HasMap: true }) 
-                        SgUtilities.GetActiveStargateOnMap(targetMapParent.Map).TryGetComp<CompStargate>().CheckVortexPawns();
+                        SgUtilities.GetAllStargatesOnMap(targetMapParent.Map).FirstOrFallback().TryGetComp<CompStargate>().CheckVortexPawns();
                 }
             }
         }
@@ -634,7 +634,7 @@ public class CompStargate : ThingComp
         if (StargateIsActive)
         {
             if (_connectedStargate == null && _dialMode <= DialMode.PocketMap)
-                _connectedStargate = SgUtilities.GetActiveStargateOnMap(_dialMode == DialMode.Map ? Find.WorldObjects.MapParentAt(_connectedAddress).Map : Find.Maps[_connectedAddress.tileId]);
+                _connectedStargate = SgUtilities.GetAllStargatesOnMap(_dialMode == DialMode.Map ? Find.WorldObjects.MapParentAt(_connectedAddress).Map : Find.Maps[_connectedAddress.tileId]).FirstOrFallback();
                 
             _puddleSustainer = SgSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
         }

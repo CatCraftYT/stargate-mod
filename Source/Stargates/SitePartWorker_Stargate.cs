@@ -16,7 +16,7 @@ public class SitePartWorker_Stargate : SitePartWorker
         base.PostMapGenerate(map);
         if (map == null) { Log.Error("SitePartWorker map was null on PostMapGenerate. That makes no sense."); return; }
             
-        Thing gateOnMap = SgUtilities.GetActiveStargateOnMap(map);
+        Thing gateOnMap = SgUtilities.GetAllStargatesOnMap(map).FirstOrFallback();
         if (gateOnMap == null) { Log.Error("[StargatesMod] Stargate was expected but not found on generated map."); return; }
             
         CompStargate gateComp = gateOnMap.TryGetComp<CompStargate>();
