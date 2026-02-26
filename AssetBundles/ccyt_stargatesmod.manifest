@@ -1,0 +1,61 @@
+ManifestFileVersion: 0
+CRC: 1575597425
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 68c46682e2f53e86954d8a0394a03db0
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: ce3b6d18a872ca8039cd5eb3c4fb7ef5
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 68c46682e2f53e86954d8a0394a03db0
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/dial_success_1_orlin.ogg
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/chevron/chev_usual_2.wav
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/macncheese/teleport_2.ogg
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/chevron/chev_usual_3.wav
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/chevron/chevron_incoming_2.mp3
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Items/Stargate/glyph_scrap/glyph_scrap_a.png
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/ring_usual_start.wav
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/macncheese/teleport_1.ogg
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/idle.ogg
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Building/Stargate/eventhorizon.png
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/iris_hit.ogg
+- Assets/Data/ccyt.stargatesmod/Textures/UI/Gizmos/StargateTransmitGDO.png
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Building/Stargate/iris.png
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/iris_open.ogg
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/dial_success_2.ogg
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Building/Stargate/dhd.png
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Items/Stargate/glyph_scrap/glyph_scrap_b.png
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Items/Stargate/glyph_scrap/glyph_scrap_c.png
+- Assets/Data/ccyt.stargatesmod/Textures/World/WorldObjects/Expanding/sgsite_perm.png
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/iris_close.ogg
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/macncheese/teleport_4.ogg
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Building/Stargate/stargate_sg1.png
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Building/Stargate/stargate_orlin.png
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/gate_close.ogg
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/chevron/chev_usual_1.wav
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/dial_success_1.ogg
+- Assets/Data/ccyt.stargatesmod/Textures/UI/Gizmos/StargateUnHibernate.png
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/universe/steam.wav
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/macncheese/teleport_3.ogg
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/gate_open.ogg
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Items/Stargate/iris_upgrade_kit.png
+- Assets/Data/ccyt.stargatesmod/Textures/World/WorldObjects/Expanding/Sites/Stargate/sgcomplex.png
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/chevron/chevron_incoming_3.mp3
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/dhd/dhd_usual_1.wav
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/dial_success.ogg
+- Assets/Data/ccyt.stargatesmod/Textures/Things/Building/Stargate/stargate_tollan.png
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/chevron/chevron_incoming_1.mp3
+- Assets/Data/ccyt.stargatesmod/Textures/UI/Gizmos/SelectStargate.png
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/fail.mp3
+- Assets/Data/ccyt.stargatesmod/Sounds/Misc/Stargate/dhd/dhd_usual_dial.wav
+Dependencies: []

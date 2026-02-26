@@ -32,13 +32,15 @@ public class CompStargate : ThingComp
     private int _chevronSoundCounter;
     private PlanetTile _queuedAddress = -1;
     private PlanetTile _connectedAddress = -1;
+    
     private Thing _connectedStargate;
     private CompStargate _connectedStargateComp;
+    
     private CompTransporter _transComp;
     private Thing _conflictingGate;
 
-    int connectedGateSoundQueue = 220;
-    int connectedGateSoundCounter = 0;
+    int _connectedGateSoundQueue = 220;
+    int _connectedGateSoundCounter = 0;
     
     private int _checkVortexPawnsTick = 120;
     private const int _checkVortexPawnsDelayTick = 10;
@@ -49,7 +51,7 @@ public class CompStargate : ThingComp
     private readonly StargatesModSettings _modSettings = LoadedModManager.GetMod<StargatesMod>().GetSettings<StargatesModSettings>();
     
     
-    public bool IsExpectingIncomingWormhole => !StargateIsActive && _connectedStargate != null && _connectedStargateComp != null;
+    public bool IsExpectingIncomingWormhole => !StargateIsActive && _connectedStargate != null && _connectedStargateComp != null && IsReceivingGate;
 
     private WorldComp_StargateAddresses AddressComp => field ??= Find.World.GetComponent<WorldComp_StargateAddresses>();
     
@@ -75,7 +77,7 @@ public class CompStargate : ThingComp
             ShaderDatabase.Mote, Props.puddleDrawSize, Color.white);
 
     #region DHD Controls
-
+    
     public void OpenStargateDelayed(PlanetTile address, int delay, DialMode dialMode)
     {
         _queuedAddress = address;
@@ -84,13 +86,19 @@ public class CompStargate : ThingComp
         TicksUntilOpen = delay;
         _checkVortexPawnsTick = 120;
 
-
-        _connectedStargate = SgUtilities.GetAllStargatesOnMap(Find.WorldObjects.MapParentAt(address)?.Map).FirstOrFallback();
+        Map map = _dialMode switch
+        {
+            DialMode.Map => Find.WorldObjects.MapParentAt(address)?.Map,
+            DialMode.PocketMap => Find.Maps[address.tileId].PocketMapParent.Map,
+            _ => null
+        };
+        if (map != null) _connectedStargate = SgUtilities.GetAllStargatesOnMap(map).FirstOrFallback();
         if (_connectedStargate == null) return;
-        
         _connectedStargateComp = _connectedStargate.TryGetComp<CompStargate>();
+        
         _connectedStargateComp._connectedStargate = parent;
         _connectedStargateComp._connectedStargateComp = this;
+        _connectedStargateComp.IsReceivingGate = true;
     }
 
 
@@ -114,14 +122,13 @@ public class CompStargate : ThingComp
                 connectedMapParent = Find.WorldObjects.MapParentAt(address);
                 break;
             case DialMode.PocketMap:
-                int pocketMapIndex = _queuedAddress.tileId;
-                connectedMapParent = Find.Maps.ElementAt(pocketMapIndex).PocketMapParent;
+                connectedMapParent = Find.Maps.ElementAt(address.tileId).PocketMapParent;
                 break;
         }
              
         if (_dialMode != DialMode.IncomingRaid && connectedMapParent == null)
         {
-            Log.Error($"[StargatesMod] Failed to find MapParent at {_queuedAddress} with dial mode {_dialMode}");
+            Log.Error($"[StargatesMod] Failed to find MapParent at {address} with dial mode {_dialMode}");
             DialFail();
             return;
         }
@@ -150,17 +157,17 @@ public class CompStargate : ThingComp
         if (_dialMode != DialMode.IncomingRaid)
         {
             Thing connectedGate = SgUtilities.GetAllStargatesOnMap(connectedMapParent.Map).FirstOrFallback();
+            _connectedStargateComp = connectedGate.TryGetComp<CompStargate>();
                 
-            if (connectedGate == null || connectedGate.TryGetComp<CompStargate>().StargateIsActive)
+            if (connectedGate == null || _connectedStargateComp == null || _connectedStargateComp.StargateIsActive || _connectedStargateComp.TicksUntilOpen > -1)
             {
-                if (connectedGate == null) Log.Error($"[StargatesMod] Failed to find target stargate");
-                else if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] failed to dial stargate: target stargate was already active");
+                if (connectedGate == null || _connectedStargateComp == null) Log.Error($"[StargatesMod] Failed to connect to stargate stargate = {connectedGate}, sgComp = {_connectedStargateComp}:");
+                else if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Warning("[StargatesMod] failed to dial stargate: target stargate was already active");
                 DialFail();
                 return;
             }
                 
             _connectedStargate = connectedGate;
-            _connectedStargateComp = _connectedStargate.TryGetComp<CompStargate>();
             
             _connectedStargateComp.StargateIsActive = true;
             _connectedStargateComp.IsReceivingGate = true;
@@ -232,13 +239,7 @@ public class CompStargate : ThingComp
 
         EndStargateWatching();
         
-        StargateIsActive = false;
-        _ticksSinceBufferUnloaded = 0;
-        _ticksSinceOpened = 0;
-        _connectedAddress = -1;
-        _connectedStargate = null;
-        _connectedStargateComp = null;
-        IsReceivingGate = false;
+        ResetDialState();
     }
 
     private void DialFail()
@@ -246,14 +247,24 @@ public class CompStargate : ThingComp
         Messages.Message("SGM.GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
         SgSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
 
-        _queuedAddress = -1;
-        _connectedStargate = null;
-        _connectedStargateComp = null;
-        
-        _dialMode = DialMode.None;
+        ResetDialState();
         
         //In case buffers contain anything before gate opens (like gate raids)
         ClearBuffers();
+    }
+
+    private void ResetDialState()
+    {
+        _dialMode = DialMode.None;
+        _ticksSinceBufferUnloaded = -1;
+        _ticksSinceOpened = -1;
+        TicksUntilOpen = -1;
+        StargateIsActive = false;
+        IsReceivingGate = false;
+        _queuedAddress = -1;
+        _connectedAddress = -1;
+        _connectedStargate = null;
+        _connectedStargateComp = null;
     }
         
     #endregion
@@ -301,7 +312,6 @@ public class CompStargate : ThingComp
                 
             foreach (Thing thing in destroySpecial)
             {
-                if(Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] destroying specialThing {thing}");
                 thing.Destroy();
             }
             destroySpecial.Clear();
@@ -372,26 +382,16 @@ public class CompStargate : ThingComp
         }
         else if (TicksUntilOpen == 200)
             SgSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
-
-        //TODO make into not a shitshow
-        if (TicksUntilOpen == 220)
+        
+        
+        if (TicksUntilOpen <= 220 && _connectedStargateComp != null)
         {
-            connectedGateSoundQueue = 220;
-            connectedGateSoundCounter = 0;
-        }
-        MapParent targetMapParent = _dialMode switch
-        {
-            DialMode.Map => Find.WorldObjects.MapParentAt(_queuedAddress),
-            DialMode.PocketMap => Find.Maps.ElementAt(_queuedAddress).PocketMapParent,
-            _ => null
-        };
-        if (targetMapParent is { HasMap: true } && TicksUntilOpen <= 220 && connectedGateSoundQueue == TicksUntilOpen && connectedGateSoundCounter < 3)
-        {
-            Thing connectedStargate = SgUtilities.GetAllStargatesOnMap(targetMapParent.Map).FirstOrFallback();
-            DefDatabase<SoundDef>.GetNamed($"StargateMod_ChevUsual_{connectedGateSoundCounter + 1}").PlayOneShot(SoundInfo.InMap(connectedStargate));
-            
-            connectedGateSoundCounter++;
-            connectedGateSoundQueue -= 40;
+            if (TicksUntilOpen == _connectedGateSoundQueue && _connectedGateSoundCounter < 3)
+            {
+                DefDatabase<SoundDef>.GetNamed($"StargateMod_ChevIncoming_{_connectedGateSoundCounter + 1}").PlayOneShot(SoundInfo.InMap(_connectedStargate));
+                _connectedGateSoundQueue -= 40;
+                _connectedGateSoundCounter++;
+            }
         }
         
         TicksUntilOpen--;
@@ -403,11 +403,13 @@ public class CompStargate : ThingComp
         OpenStargate(_queuedAddress);
                     
         _queuedAddress = -1;
-
         _checkVortexPawnsTick = -1;
-                
+        
         _prevRingSoundQueue = 0;
         _chevronSoundCounter = 0;
+
+        _connectedGateSoundCounter = 0;
+        _connectedGateSoundQueue = 220;
     }
         
     private void CheckVortexPawns()
@@ -420,7 +422,7 @@ public class CompStargate : ThingComp
         if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] Checking on pawns in stargate danger zone.. (on TicksUntilOpen {TicksUntilOpen})");
         if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] check radius center cell = {radialCenter}");
             
-        foreach (Thing thing in cells.SelectMany(pos => map.thingGrid.ThingsAt(pos)).Where(thing => thing is Pawn { DeadOrDowned: false, Drafted: false } pawn && !_pawnsWatchingStargate.Contains(pawn)))
+        foreach (Thing thing in cells.SelectMany(pos => map.thingGrid.ThingsAt(pos)).Where(thing => thing is Pawn { DeadOrDowned: false, Drafted: false } pawn && pawn.Faction == Faction.OfPlayer && !_pawnsWatchingStargate.Contains(pawn)))
         {
             Pawn pawn = (Pawn)thing;
                 
@@ -526,29 +528,18 @@ public class CompStargate : ThingComp
         if (TicksUntilOpen > 0) 
             GateDialTick();
             
-        if (!StargateIsActive && !IrisIsActivated)
+        if (!StargateIsActive)
         {
             if (TicksUntilOpen > -1)
             {
                 if (_checkVortexPawnsTick < 0) _checkVortexPawnsTick = _checkVortexPawnsDelayTick;
                 if (TicksUntilOpen == _checkVortexPawnsTick)
                 {
-                    CheckVortexPawns();
+                    if (!IrisIsActivated) CheckVortexPawns();
                     _checkVortexPawnsTick = TicksUntilOpen - _checkVortexPawnsDelayTick;
 
                     //Make pawns avoid vortex area for receiving gate on loaded maps
-                    MapParent targetMapParent = null;
-                    switch (_dialMode)
-                    {
-                        case DialMode.Map:
-                            targetMapParent = Find.WorldObjects.MapParentAt(_queuedAddress);
-                            break;
-                        case DialMode.PocketMap:
-                            targetMapParent = Find.Maps.ElementAt(_queuedAddress).PocketMapParent;
-                            break;
-                    }
-                    if (targetMapParent is { HasMap: true }) 
-                        SgUtilities.GetAllStargatesOnMap(targetMapParent.Map).FirstOrFallback().TryGetComp<CompStargate>().CheckVortexPawns();
+                    if (_connectedStargateComp is { IrisIsActivated: false }) _connectedStargateComp.CheckVortexPawns();
                 }
             }
         }
@@ -660,7 +651,7 @@ public class CompStargate : ThingComp
                 sb.AppendLine("SGM.StargateIdle".Translate());
                 break;
             case false when IsExpectingIncomingWormhole:
-                sb.AppendLine("SGM.ExpectingIncomingWormhole".Translate(GateDesignation));
+                sb.AppendLine("SGM.ExpectingIncomingWormhole".Translate(_connectedStargateComp.GateDesignation));
                 break;
             case true:
                 sb.AppendLine("SGM.ConnectedToGate".Translate(_connectedStargateComp.GateDesignation,  
@@ -677,9 +668,11 @@ public class CompStargate : ThingComp
         sb.AppendLine($"TicksUntilOpen = {TicksUntilOpen}");
         sb.AppendLine($"ticksSinceBufferUnloaded = {_ticksSinceBufferUnloaded}");
         sb.AppendLine($"IsInPocketMap = {IsInPocketMap}");
-        
+
+        sb.AppendLine($"_queuedAddress = {_queuedAddress}");
         sb.AppendLine($"connectedAddress = {_connectedAddress}");
         sb.AppendLine($"DialMode = {_dialMode}");
+        sb.AppendLine($"IsReceivingGate = {IsReceivingGate}");
 
         sb.AppendLine($"_gateAddress = {GateAddress}");
         sb.AppendLine($"_gateDesignation = {_gateDesignation}");
@@ -789,7 +782,7 @@ public class CompStargate : ThingComp
             action = delegate
             {
                 CloseStargate(false);
-                Log.Message($"[StargatesMod] Stargate {parent.ThingID} was force-closed.");
+                Log.Message($"[StargatesMod] Stargate {parent} was force-closed.");
             }
         };
         yield return devForceClose;

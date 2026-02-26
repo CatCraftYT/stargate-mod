@@ -16,7 +16,7 @@ public class JobDriver_EnterStargate : JobDriver
         CompStargate sgComp = job.GetTarget(stargateTarg).Thing.TryGetComp<CompStargate>();
         
         this.FailOnDestroyedOrNull(stargateTarg);
-        this.FailOn(() => sgComp.StargateIsActive);
+        this.FailOn(() => !sgComp.StargateIsActive);
 
         
         Pawn carriedPawn = (Pawn)job.GetTarget(carriedPawnTarg).Thing;
