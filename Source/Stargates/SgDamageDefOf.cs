@@ -11,4 +11,6 @@ public static class SgDamageDefOf
     public static DamageDef StargatesMod_KawooshExplosion;
 
     public static DamageDef StargatesMod_DisintegrationDeath;
+
+    public static DamageDef StargatesMod_IrisCollisionDeath;
 }

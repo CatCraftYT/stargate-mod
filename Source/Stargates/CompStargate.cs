@@ -461,7 +461,7 @@ public class CompStargate : ThingComp
         List<Pawn> pawns = [bufferItem.Pawn];
         if (bufferItem.CarriedPawn != null) pawns.Add(bufferItem.CarriedPawn);
         
-        DamageInfo disintDeathInfo = new(SgDamageDefOf.StargatesMod_DisintegrationDeath, 99999f, 999f);
+        DamageInfo deathInfo = new(isRecvBuffer ? SgDamageDefOf.StargatesMod_IrisCollisionDeath : SgDamageDefOf.StargatesMod_DisintegrationDeath, 99999f, 999f);
 
         foreach (Pawn p in pawns)
         {
@@ -469,7 +469,7 @@ public class CompStargate : ThingComp
             if (p.health.hediffSet.HasHediff(HediffDefOf.DeathRefusal))
                 p.health.RemoveHediff(p.health.hediffSet.hediffs.Find(hediff => hediff is Hediff_DeathRefusal));
             
-            p.Kill(disintDeathInfo);
+            p.Kill(deathInfo);
         }
 
         if (isRecvBuffer)

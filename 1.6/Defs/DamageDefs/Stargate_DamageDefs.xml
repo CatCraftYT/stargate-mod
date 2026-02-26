@@ -24,12 +24,13 @@
         <combatLogRules>Damage_Flame</combatLogRules>
     </DamageDef>
 	
+	<!--Used for death messages when pawn is killed in stargate wormhole-->
     <DamageDef>
         <defName>StargatesMod_DisintegrationDeath</defName>
         <label>DisintegrationDeath</label>
         <workerClass>DamageWorker_AddInjury</workerClass>
         <externalViolence>true</externalViolence>
-        <deathMessage>{0} has died as a result of failed reintegration in a stargate wormhole.</deathMessage>
+        <deathMessage>{0} has died as a result of entering an incoming wormhole.</deathMessage>
         <hediff>Crush</hediff>
         <hediffSkin>Cut</hediffSkin>
         <hediffSolid>Crack</hediffSolid>
@@ -39,4 +40,18 @@
         <overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
     </DamageDef>
 
+	<DamageDef>
+		<defName>StargatesMod_IrisCollisionDeath</defName>
+		<label>IrisCollisionDeath</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<deathMessage>{0} has died inside a wormhole due to impact with a closed iris.</deathMessage>
+		<hediff>Crush</hediff>
+		<hediffSkin>Cut</hediffSkin>
+		<hediffSolid>Crack</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Blunt</armorCategory>
+		<overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
+	</DamageDef>
 </Defs>
