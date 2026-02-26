@@ -26,8 +26,17 @@ public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
             
         if (sgComp == null) yield break;
         if (!sgComp.StargateIsActive || sgComp.IrisIsActivated) yield break;
-            
-        if (!context.IsMultiselect && !CanReachStargate(context.FirstSelectedPawn, sgComp.parent)) yield break;
+
+        if (!context.IsMultiselect)
+        {
+            AcceptanceReport reachGateReport = CanReachStargate(context.FirstSelectedPawn, sgComp.parent);
+
+            if (!reachGateReport.Accepted)
+            {
+                yield return new FloatMenuOption(reachGateReport.Reason, null);
+                yield break;
+            }
+        }
 
         stargateEnteringPawns.Clear();
         stargateEnteringPawns.AddRange(context.ValidSelectedPawns.Where(validSelectedPawn => CanReachStargate(validSelectedPawn, sgComp.parent)));
