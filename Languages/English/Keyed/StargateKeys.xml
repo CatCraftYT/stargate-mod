@@ -18,7 +18,8 @@
 	<SGM.Unknown>unknown</SGM.Unknown>
 	
 	<!--Notification message text-->
-	<SGM.GateDialFailed>Could not activate stargate: Receiving gate no longer exists or is currently in use.</SGM.GateDialFailed>
+	<SGM.GateDialFailed_IsInUse>Could not activate stargate: target stargate is already active.</SGM.GateDialFailed_IsInUse>
+	<SGM.GateDialFailed_NotFound>Could not activate stargate: target stargate could not be found.</SGM.GateDialFailed_NotFound>
 	<SGM.NoGateInCaravan>Stargate required in caravan inventory.</SGM.NoGateInCaravan>
 	<SGM.BlockedByLandmark>Stargate sites cannot be created on landmarks.</SGM.BlockedByLandmark>
     

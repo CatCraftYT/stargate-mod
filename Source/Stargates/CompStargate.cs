@@ -95,6 +95,8 @@ public class CompStargate : ThingComp
         if (map != null) _connectedStargate = SgUtilities.GetAllStargatesOnMap(map).FirstOrFallback();
         if (_connectedStargate == null) return;
         _connectedStargateComp = _connectedStargate.TryGetComp<CompStargate>();
+
+        if (_connectedStargateComp.StargateIsActive) return;
         
         _connectedStargateComp._connectedStargate = parent;
         _connectedStargateComp._connectedStargateComp = this;
@@ -129,7 +131,7 @@ public class CompStargate : ThingComp
         if (_dialMode != DialMode.IncomingRaid && connectedMapParent == null)
         {
             Log.Error($"[StargatesMod] Failed to find MapParent at {address} with dial mode {_dialMode}");
-            DialFail();
+            DialFail("SGM.GateDialFailed_NotFound");
             return;
         }
                  
@@ -161,9 +163,19 @@ public class CompStargate : ThingComp
                 
             if (connectedGate == null || _connectedStargateComp == null || _connectedStargateComp.StargateIsActive || _connectedStargateComp.TicksUntilOpen > -1)
             {
-                if (connectedGate == null || _connectedStargateComp == null) Log.Error($"[StargatesMod] Failed to connect to stargate stargate = {connectedGate}, sgComp = {_connectedStargateComp}:");
-                else if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Warning("[StargatesMod] failed to dial stargate: target stargate was already active");
-                DialFail();
+                string failReason = "";
+                if (connectedGate == null || _connectedStargateComp == null)
+                {
+                    Log.Error($"[StargatesMod] Failed to connect to stargate stargate = {connectedGate}, sgComp = {_connectedStargateComp}:");
+                    failReason = "SGM.GateDialFailed_NotFound";
+                }
+                else if (Prefs.LogVerbose || _modSettings.DebugMode)
+                {
+                    Log.Warning("[StargatesMod] failed to dial stargate: target stargate was already active");
+                    failReason = "SGM.GateDialFailed_IsInUse";
+                }
+                
+                DialFail(failReason);
                 return;
             }
                 
@@ -242,9 +254,9 @@ public class CompStargate : ThingComp
         ResetDialState();
     }
 
-    private void DialFail()
+    private void DialFail(string failReasonKey = null)
     {
-        Messages.Message("SGM.GateDialFailed".Translate(), MessageTypeDefOf.NegativeEvent);
+        if (!string.IsNullOrEmpty(failReasonKey)) Messages.Message(failReasonKey.Translate(), MessageTypeDefOf.NegativeEvent);
         SgSoundDefOf.StargateMod_SGFailDial.PlayOneShot(SoundInfo.InMap(parent));
 
         ResetDialState();
@@ -384,7 +396,7 @@ public class CompStargate : ThingComp
             SgSoundDefOf.StargateMod_RingUsualStart.PlayOneShot(SoundInfo.InMap(parent));
         
         
-        if (TicksUntilOpen <= 220 && _connectedStargateComp != null)
+        if (TicksUntilOpen <= 220 && _connectedStargateComp is { StargateIsActive: false })
         {
             if (TicksUntilOpen == _connectedGateSoundQueue && _connectedGateSoundCounter < 3)
             {
