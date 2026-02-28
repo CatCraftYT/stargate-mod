@@ -159,7 +159,7 @@ public class CompStargate : ThingComp
         if (_dialMode != DialMode.IncomingRaid)
         {
             Thing connectedGate = SgUtilities.GetAllStargatesOnMap(connectedMapParent.Map).FirstOrFallback();
-            _connectedStargateComp = connectedGate.TryGetComp<CompStargate>();
+            _connectedStargateComp = connectedGate?.TryGetComp<CompStargate>();
                 
             if (connectedGate == null || _connectedStargateComp == null || _connectedStargateComp.StargateIsActive || _connectedStargateComp.TicksUntilOpen > -1)
             {
