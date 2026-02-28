@@ -358,13 +358,8 @@ public class CompStargate : ThingComp
             }
             IsHibernating = false;
             _conflictingGate = null;
-
-            GateDesignation = IsInPocketMap switch
-            {
-                true when parent.Map.PocketMapParent.sourceMap == null => "Unknown",
-                true => SgUtilities.GetStargateDesignation(parent.Map.PocketMapParent.sourceMap.Tile),
-                false => SgUtilities.GetStargateDesignation(GateAddress)
-            };
+            
+            GateDesignation = SgUtilities.GetStargateDesignation(!IsInPocketMap || parent.Map.PocketMapParent.sourceMap == null ? GateAddress : parent.Map.PocketMapParent.sourceMap.Tile);
 
             _transComp ??= parent.GetComp<CompTransporter>();
                 
