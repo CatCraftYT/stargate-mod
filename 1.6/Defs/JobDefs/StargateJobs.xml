@@ -11,7 +11,7 @@
 	<JobDef>
 		<defName>StargatesMod_DialStargate</defName>
 		<driverClass>StargatesMod.JobDriver_DialStargate</driverClass>
-		<reportString>using TargetA.</reportString>
+		<reportString>dialling stargate</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
 	
@@ -39,7 +39,7 @@
 	<JobDef>
 		<defName>StargatesMod_WatchStargate</defName>
 		<driverClass>StargatesMod.JobDriver_WatchStargate</driverClass>
-		<reportString>watching stargate open.</reportString>
+		<reportString>watching TargetA open.</reportString>
 		<isIdle>true</isIdle>
 		<suspendable>false</suspendable>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>

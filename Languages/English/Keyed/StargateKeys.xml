@@ -34,7 +34,7 @@
     <SGM.StargateStatus>Stargate: {0} {1}</SGM.StargateStatus>
     <SGM.DhdStatus>DHD: {0} {1}</SGM.DhdStatus>
     <SGM.GateHibernating>Address conflict: Gate in hibernation mode.</SGM.GateHibernating>
-	<SGM.ExpectingIncomingWormhole>Expecting incoming wormhole ({0})</SGM.ExpectingIncomingWormhole>
+	<SGM.IncomingWormhole>Incoming wormhole ({0})</SGM.IncomingWormhole>
     <SGM.RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</SGM.RespawnGateString>
 	
 	<!--Gizmo labels and descriptions-->
