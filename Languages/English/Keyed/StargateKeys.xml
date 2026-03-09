@@ -15,7 +15,8 @@
 	<SGM.NotNeeded>(not needed)</SGM.NotNeeded>
     
     <SGM.StargateIdle>Idle</SGM.StargateIdle>
-	<SGM.Unknown>unknown</SGM.Unknown>
+	<SGM.Unknown>Unknown</SGM.Unknown>
+	<SGM.UnknownAddress>Unknown address</SGM.UnknownAddress>
 	
 	<!--Notification message text-->
 	<SGM.GateDialFailed_IsInUse>Could not activate stargate: target stargate is already active.</SGM.GateDialFailed_IsInUse>

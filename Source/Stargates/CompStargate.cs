@@ -548,7 +548,7 @@ public class CompStargate : ThingComp
         if (_ticksSinceOpened == 210) 
             EndStargateWatching();
 
-        _connectedStargateComp ??= parent.GetComp<CompStargate>();
+        _connectedStargateComp ??= _connectedStargate?.TryGetComp<CompStargate>();
         _transComp ??= parent.GetComp<CompTransporter>();
             
         if (_transComp != null)
@@ -568,8 +568,16 @@ public class CompStargate : ThingComp
         {
             if (!IsReceivingGate)
             {
-                _connectedStargateComp.AddToReceiveBuffer(_sendBuffer[0]);
-                _sendBuffer.Remove(_sendBuffer[0]);
+                if (_connectedStargateComp != null)
+                {
+                    _connectedStargateComp.AddToReceiveBuffer(_sendBuffer[0]);
+                    _sendBuffer.Remove(_sendBuffer[0]);
+                }
+                else
+                {
+                    Log.Error("[StargatesMod] Connected CompStargate was null while trying to send Thing(s) through gate");
+                    CloseStargate(true);
+                }
             }
             else WormholeContentsDisposal(false);
         }
@@ -645,10 +653,10 @@ public class CompStargate : ThingComp
                 break;
             case false when TicksUntilOpen > -1:
                 if (IsExpectingIncomingWormhole) sb.AppendLine("SGM.IncomingWormhole".Translate(_connectedStargateComp.GateDesignation));
-                else if (_dialMode == DialMode.IncomingRaid) sb.AppendLine("SGM.IncomingWormhole".Translate("Address unknown"));
+                else if (_dialMode == DialMode.IncomingRaid) sb.AppendLine("SGM.IncomingWormhole".Translate("SGM.UnknownAddress".Translate()));
                 break;
             case true:
-                sb.AppendLine("SGM.ConnectedToGate".Translate(_connectedStargateComp != null ? _connectedStargateComp.GateDesignation : "Unknown",  
+                sb.AppendLine("SGM.ConnectedToGate".Translate(_connectedStargateComp != null ? _connectedStargateComp.GateDesignation : "SGM.Unknown".Translate(),  
                     (IsReceivingGate ? "SGM.Incoming" : "SGM.Outgoing").Translate()));
                 break;
         }
