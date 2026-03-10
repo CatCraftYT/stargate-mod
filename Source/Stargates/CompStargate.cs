@@ -625,7 +625,7 @@ public class CompStargate : ThingComp
         
         if (StargateIsActive)
         {
-            if (_connectedStargate == null && _dialMode <= DialMode.PocketMap)
+            if (_connectedStargate == null && _dialMode <= DialMode.PocketMap && _dialMode != DialMode.None)
                 _connectedStargate = SgUtilities.GetAllStargatesOnMap(_dialMode == DialMode.Map ? Find.WorldObjects.MapParentAt(_connectedAddress).Map : Find.Maps[_connectedAddress.tileId]).FirstOrFallback();
                 
             _puddleSustainer = SgSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));

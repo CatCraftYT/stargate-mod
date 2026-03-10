@@ -8,10 +8,10 @@ namespace StargatesMod;
 
 public enum DialMode
 {
+    None,
     Map,
     PocketMap,
-    IncomingRaid,
-    None
+    IncomingRaid
 }
 
 public readonly struct BufferItem(Thing thing, bool drafted = false, Pawn carriedPawn = null) : IEquatable<BufferItem>
