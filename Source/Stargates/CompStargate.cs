@@ -774,7 +774,23 @@ public class CompStargate : ThingComp
                 yield return selectConflictingGate;
             }
         }
-            
+
+        if (_transComp.LoadingInProgressOrReadyToLaunch)
+        {
+            Command_Action cancelLoad = new()
+            {
+                defaultLabel = "CommandCancelLoad".Translate(),
+                defaultDesc = "SGM.CommandCancelLoadStargateDesc".Translate(),
+                icon = ContentFinder<Texture2D>.Get("UI/Designators/Cancel"),
+                action = delegate
+                {
+                    SoundDefOf.Designate_Cancel.PlayOneShotOnCamera();
+                    _transComp.CancelLoad();
+                }
+            };
+            yield return cancelLoad;
+        }
+        
         if (!Prefs.DevMode) yield break;
             
         Command_Action devForceClose = new()

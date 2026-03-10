@@ -63,6 +63,8 @@
     <SGM.SelectGateConflict>View conflicting gate</SGM.SelectGateConflict>
     <SGM.SelectGateConflictDesc>Jump to the gate that's preventing this gate from waking.</SGM.SelectGateConflictDesc>
 	
+	<SGM.CommandCancelLoadStargateDesc>Cancel loading this stargate, stopping the process with any people and items not already loaded.</SGM.CommandCancelLoadStargateDesc>
+	
 	<!--Gizmo disabled messages-->
 	<SGM.GateIsNotActive>Stargate is not active.</SGM.GateIsNotActive>
 	<SGM.CannotGDO>Iris is already open.</SGM.CannotGDO>
