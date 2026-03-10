@@ -37,6 +37,9 @@
 				<massCapacity>999999</massCapacity>
 			</li>
 		</comps>
+		<inspectorTabs>
+			<li>ITab_ContentsTransporter</li>
+		</inspectorTabs>
 	</ThingDef>
 
 	<ThingDef ParentName="StargateMod_StargateBase">
