@@ -134,7 +134,7 @@ public class CompStargate : ThingComp
             DialFail("SGM.GateDialFailed_NotFound");
             return;
         }
-                 
+        
         if (_dialMode == DialMode.Map && connectedMapParent is { HasMap: false })
         {
             if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] generating map for {connectedMapParent}");
@@ -613,7 +613,7 @@ public class CompStargate : ThingComp
         if (_dialMode == DialMode.IncomingRaid && !_recvBuffer.Any())
             CloseStargate(false);
         
-        if (IsReceivingGate && _ticksSinceBufferUnloaded > 2500 && !_connectedStargateComp.GateIsLoadingTransporter)
+        if (IsReceivingGate && _ticksSinceBufferUnloaded > 2500 && !_connectedStargateComp.GateIsLoadingTransporter && _sendBuffer.Empty())
             CloseStargate(true);
     }
 
