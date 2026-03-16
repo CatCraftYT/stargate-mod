@@ -621,7 +621,7 @@ public class CompStargate : ThingComp
     {
         base.PostSpawnSetup(respawningAfterLoad);
 
-        if (!IsHibernating && !AddressComp.IsRegistered(GateAddress)) InitGate();
+        if (!respawningAfterLoad) InitGate();
         
         if (StargateIsActive)
         {
@@ -775,7 +775,7 @@ public class CompStargate : ThingComp
             }
         }
 
-        if (_transComp.LoadingInProgressOrReadyToLaunch)
+        if (StargateIsActive && _transComp.LoadingInProgressOrReadyToLaunch)
         {
             Command_Action cancelLoad = new()
             {
