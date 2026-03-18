@@ -684,6 +684,10 @@ public class CompStargate : ThingComp
         
         sb.AppendLine($"_transComp = {_transComp}");
         sb.AppendLine($"_connectedStargateComp = {_connectedStargateComp}");
+
+        sb.AppendLine($"GlowComp = {parent.TryGetComp<CompGlower>()}");
+        sb.AppendLine($"GlowRadius = {parent.TryGetComp<CompGlower>().GlowRadius}");
+        sb.AppendLine($"Glows = {parent.TryGetComp<CompGlower>().Glows}");
         
         string pawnsWatchingStargateStr = _pawnsWatchingStargate == null || !_pawnsWatchingStargate.Any() 
             ? "null" : _pawnsWatchingStargate[0].ToString();
@@ -775,7 +779,7 @@ public class CompStargate : ThingComp
             }
         }
 
-        if (StargateIsActive && _transComp.LoadingInProgressOrReadyToLaunch)
+        if (StargateIsActive && _transComp is {LoadingInProgressOrReadyToLaunch: true})
         {
             Command_Action cancelLoad = new()
             {
@@ -849,13 +853,21 @@ public class CompStargate : ThingComp
     {
         base.PostExposeData();
         Scribe_Values.Look(ref StargateIsActive, "StargateIsActive");
+        Scribe_Values.Look(ref GateAddress, "GateAddress");
+        Scribe_Values.Look(ref _gateDesignation, "_gateDesignation");
+        Scribe_Values.Look(ref _dialMode, "_dialMode");
+        Scribe_Values.Look(ref _queuedAddress, "_queuedAddress");
         Scribe_Values.Look(ref IsReceivingGate, "IsReceivingGate");
         Scribe_Values.Look(ref IsInPocketMap, "IsInPocketMap");
         Scribe_Values.Look(ref HasIris, "HasIris");
         Scribe_Values.Look(ref IrisIsActivated, "IrisIsActivated");
+        Scribe_Values.Look(ref TicksUntilOpen, "TicksUntilOpen");
         Scribe_Values.Look(ref _ticksSinceOpened, "TicksSinceOpened");
+        Scribe_Values.Look(ref _ticksSinceBufferUnloaded, "_ticksSinceBufferUnloaded");
         Scribe_Values.Look(ref IsHibernating, "IsHibernating");
         Scribe_Values.Look(ref _connectedAddress, "_connectedAddress");
+        Scribe_Values.Look(ref _prevRingSoundQueue, "_prevRingSoundQueue");
+        Scribe_Values.Look(ref _chevronSoundCounter, "_chevronSoundCounter");
         Scribe_References.Look(ref _connectedStargate, "_connectedStargate");
         Scribe_Collections.Look(ref _recvBuffer, "_recvBuffer", LookMode.GlobalTargetInfo);
         Scribe_Collections.Look(ref _sendBuffer, "_sendBuffer", LookMode.GlobalTargetInfo);
