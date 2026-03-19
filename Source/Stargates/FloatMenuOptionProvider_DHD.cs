@@ -97,5 +97,5 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
         return true;
     }
     
-    private static AcceptanceReport CanReachDhd(Pawn pawn, Thing dhd) => pawn.CanReach(dhd.InteractionCell, PathEndMode.OnCell, Danger.Deadly) ? true : "NoPath".Translate();
+    private static AcceptanceReport CanReachDhd(Pawn pawn, Thing dhd) => pawn.CanReach(dhd.InteractionCell, PathEndMode.OnCell, Danger.Deadly) ? true : "NoPath";
 }

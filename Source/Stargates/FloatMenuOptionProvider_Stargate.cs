@@ -33,7 +33,7 @@ public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
 
             if (!reachGateReport.Accepted)
             {
-                yield return new FloatMenuOption(reachGateReport.Reason, null);
+                yield return new FloatMenuOption(reachGateReport.Reason.Translate(), null);
                 yield break;
             }
         }
@@ -110,5 +110,5 @@ public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
         }
     }
 
-    private static AcceptanceReport CanReachStargate(Pawn pawn, Thing stargate) => pawn.CanReach(stargate, PathEndMode.ClosestTouch, Danger.Deadly) ? true : "NoPath".Translate();
+    private static AcceptanceReport CanReachStargate(Pawn pawn, Thing stargate) => pawn.CanReach(stargate, PathEndMode.ClosestTouch, Danger.Deadly) ? true : "NoPath";
 }
