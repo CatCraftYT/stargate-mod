@@ -824,6 +824,8 @@ public class CompStargate : ThingComp
 
     private void CleanupGate(Map map)
     {
+        if (IsHibernating) return;
+        
         if (_connectedStargate != null) CloseStargate(true);
 
         if (IsInPocketMap) AddressComp.RemovePocketMapAddress(GateAddress);
@@ -868,6 +870,7 @@ public class CompStargate : ThingComp
         Scribe_Values.Look(ref _connectedAddress, "_connectedAddress");
         Scribe_Values.Look(ref _prevRingSoundQueue, "_prevRingSoundQueue");
         Scribe_Values.Look(ref _chevronSoundCounter, "_chevronSoundCounter");
+        Scribe_References.Look(ref _conflictingGate, "_conflictingGate");
         Scribe_References.Look(ref _connectedStargate, "_connectedStargate");
         Scribe_Collections.Look(ref _recvBuffer, "_recvBuffer", LookMode.GlobalTargetInfo);
         Scribe_Collections.Look(ref _sendBuffer, "_sendBuffer", LookMode.GlobalTargetInfo);
