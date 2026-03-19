@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+    <!--Mod name-->
+    <StargatesMod>Stargates!</StargatesMod>
 
+    <!-- misc -->
 	<SGM.Incoming>incoming</SGM.Incoming>
 	<SGM.Outgoing>outgoing</SGM.Outgoing>
+    
 	<SGM.IrisClosed>CLOSED</SGM.IrisClosed>
 	<SGM.IrisOpen>OPEN</SGM.IrisOpen>
+    
 	<SGM.Present>Present</SGM.Present>
 	<SGM.Missing>Missing</SGM.Missing>
 	<SGM.NotNeeded>(not needed)</SGM.NotNeeded>
+    
+    <SGM.StargateIdle>Idle</SGM.StargateIdle>
+	<SGM.Unknown>Unknown</SGM.Unknown>
+	<SGM.UnknownAddress>Unknown address</SGM.UnknownAddress>
 	
 	<!--Notification message text-->
-	<SGM.PocketMapDisallowed>Stargates cannot be placed on pocket maps.</SGM.PocketMapDisallowed>
-	<SGM.OnlyOneSGPerMap>Only one of this kind of building can be built per map.</SGM.OnlyOneSGPerMap>
-	<SGM.GateDialFailed>Could not activate stargate: Recieving gate no longer exists or is currently in use.</SGM.GateDialFailed>
+	<SGM.GateDialFailed_IsInUse>Could not activate stargate: target stargate is already active.</SGM.GateDialFailed_IsInUse>
+	<SGM.GateDialFailed_NotFound>Could not activate stargate: target stargate could not be found.</SGM.GateDialFailed_NotFound>
 	<SGM.NoGateInCaravan>Stargate required in caravan inventory.</SGM.NoGateInCaravan>
-	<SGM.BlockedByLandmark>Not allowed on landmarks.</SGM.BlockedByLandmark>
+	<SGM.BlockedByLandmark>Stargate sites cannot be created on landmarks.</SGM.BlockedByLandmark>
+    
+    <SGM.Notif.CannotWake>Cannot wake gate: active gate already present in the local area.</SGM.Notif.CannotWake>
+    <SGM.Notif.GateHibernating>Built gate is hibernating: active gate already present in the local area.</SGM.Notif.GateHibernating>
 
 	<!--InspectString text-->
 	<SGM.GateAddress>Stargate address: {0}</SGM.GateAddress>
@@ -23,38 +34,73 @@
 	<SGM.TimeUntilGateLock>Time until lock: {0}</SGM.TimeUntilGateLock>
     <SGM.StargateStatus>Stargate: {0} {1}</SGM.StargateStatus>
     <SGM.DhdStatus>DHD: {0} {1}</SGM.DhdStatus>
+    <SGM.GateHibernating>Address conflict: Gate in hibernation mode.</SGM.GateHibernating>
+	<SGM.IncomingWormhole>Incoming wormhole ({0})</SGM.IncomingWormhole>
     <SGM.RespawnGateString>Please respawn this gate (and its accompanying DHD) using devmode, as an update has broken it.</SGM.RespawnGateString>
 	
 	<!--Gizmo labels and descriptions-->
-	<SGM.OpenCloseIris>Open/close iris</SGM.OpenCloseIris>
-	<SGM.OpenCloseIrisDesc>Open or close this stargate's iris.</SGM.OpenCloseIrisDesc>
-	<SGM.CloseStargate>Close stargate</SGM.CloseStargate>
-	<SGM.CloseStargateDesc>Close the linked stargate.</SGM.CloseStargateDesc>
-	<SGM.CreateSGSite>Create new stargate site</SGM.CreateSGSite>
-	<SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
-	<SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
-	<SGM.RenameGateSiteDesc>Rename this stargate site to a more recognizable name.</SGM.RenameGateSiteDesc>
-    <SGM.CannotCloseIncoming>Cannot disengage an incoming wormhole.</SGM.CannotCloseIncoming>
-    <SGM.GateIsNotActive>Stargate is not active.</SGM.GateIsNotActive>
+	<SGM.WakeHibernation>Wake from hibernation</SGM.WakeHibernation>
+	<SGM.WakeHibernationDesc>Make this the active gate in the local area. Only one gate can be active at the same time. \nThe local area includes this map, and any associated sub-maps (pocket maps).</SGM.WakeHibernationDesc>
+    
+    <SGM.OpenCloseIris>Open/close iris</SGM.OpenCloseIris>
+    <SGM.OpenCloseIrisDesc>Open or close this stargate's iris.</SGM.OpenCloseIrisDesc>
+    
+    <SGM.CloseStargate>Close stargate</SGM.CloseStargate>
+    <SGM.CloseStargateDesc>Close the active wormhole connection.</SGM.CloseStargateDesc>
+    
+    <SGM.CreateSGSite>Create new stargate site</SGM.CreateSGSite>
+    <SGM.CreateSGSiteDesc>Create a new stargate site at this location.</SGM.CreateSGSiteDesc>
+    
+    <SGM.RenameGateSite>Rename stargate site</SGM.RenameGateSite>
+    <SGM.RenameGateSiteDesc>Give this stargate site a more recognisable name.</SGM.RenameGateSiteDesc>
+    
+    <SGM.TransmitGDO>Remotely open iris</SGM.TransmitGDO>
+    <SGM.TransmitGDODesc>Transmit an identification code through the gate, opening the iris on the other side.</SGM.TransmitGDODesc>
+    
+    <SGM.SelectConnectedGate>View connected gate</SGM.SelectConnectedGate>
+    <SGM.SelectConnectedGateDesc>Jump to the gate on the other side of the wormhole connection.</SGM.SelectConnectedGateDesc>
+    
+    <SGM.SelectGateConflict>View conflicting gate</SGM.SelectGateConflict>
+    <SGM.SelectGateConflictDesc>Jump to the gate that's preventing this gate from waking.</SGM.SelectGateConflictDesc>
+	
+	<SGM.CommandCancelLoadStargateDesc>Cancel loading this stargate, stopping the process with any people and items not already loaded.</SGM.CommandCancelLoadStargateDesc>
+	
+	<!--Gizmo disabled messages-->
+	<SGM.GateIsNotActive>Stargate is not active.</SGM.GateIsNotActive>
+	<SGM.CannotGDO>Iris is already open.</SGM.CannotGDO>
+	<SGM.CannotCloseIncoming>Cannot close incoming wormhole.</SGM.CannotCloseIncoming>
 	
 	<!--FloatMenu labels-->
 	<SGM.EnterStargateAction>Enter stargate</SGM.EnterStargateAction>
 	<SGM.BringThingToGateAction>Bring item or pawn to stargate</SGM.BringThingToGateAction>
-	<SGM.CarryHeldToStargateAction>Carry {0} to stargate</SGM.CarryHeldToStargateAction>
-	<SGM.CarryHeldToStargateAction_Disabled>Cannot carry to stargate: stargate not active</SGM.CarryHeldToStargateAction_Disabled>
+	<SGM.CarryHeldPawnToStargateAction>Carry pawn to stargate</SGM.CarryHeldPawnToStargateAction>
 	<SGM.DialGate>Dial {0} ({1})</SGM.DialGate>
 	<SGM.DecodeSGSymbols>Decode symbols</SGM.DecodeSGSymbols>
 	<SGM.CannotDecodeSGSymbols>Cannot decode: glyph deciphering not researched</SGM.CannotDecodeSGSymbols>
     
-    <SGM.CannotDialGateIsActive>Cannot dial: stargate is already active</SGM.CannotDialGateIsActive>
-    <SGM.CannotDialNoDestinations>Cannot dial: no available destinations</SGM.CannotDialNoDestinations>
-    <SGM.CannotDialInvalidAddress>Stargate has no registered address. (Try reinstalling this stargate)</SGM.CannotDialInvalidAddress>
-    <SGM.CannotDialIncoming>Cannot dial: incoming wormhole</SGM.CannotDialIncoming>
-    <SGM.CannotDialAlreadyDialling>Cannot dial: already dialling gate</SGM.CannotDialAlreadyDialling>
-    <SGM.CannotDialNoPower>Cannot dial: no power</SGM.CannotDialNoPower>
+	<SGM.CannotDial>Cannot dial: {0}</SGM.CannotDial>
+    <SGM.Reason.GateIsActive>stargate is already active</SGM.Reason.GateIsActive>
+    <SGM.Reason.NoDestinations>no available destinations</SGM.Reason.NoDestinations>
+    <SGM.Reason.InvalidAddress>Error: address not registered</SGM.Reason.InvalidAddress>
+    <SGM.Reason.Incoming>incoming wormhole</SGM.Reason.Incoming>
+    <SGM.Reason.AlreadyDialling>already dialling gate</SGM.Reason.AlreadyDialling>
+    <SGM.Reason.NoPower>no power</SGM.Reason.NoPower>
+    <SGM.Reason.Hibernating>gate is hibernating</SGM.Reason.Hibernating>
+	<SGM.Reason.NotConnected>not connected to a stargate</SGM.Reason.NotConnected>
+
+    <!--Misc-->
+    <SGM.GeneratingStargateSite>Generating stargate site</SGM.GeneratingStargateSite>
+    
+    
+	<!-- == Settings keys == -->
+	<!--Settings Categories-->
+	<SGM.SettingsCat.Options>Options</SGM.SettingsCat.Options>
+    <SGM.SettingsCat.Debug>Debug</SGM.SettingsCat.Debug>
 	
-	<!--Misc-->
-	<SGM.GeneratingStargateSite>Generating stargate site</SGM.GeneratingStargateSite>
-
-
+	<!--Settings labels and tooltips-->
+	<SGM.ShortenDialSeq.Label>Shorten gate dial sequence</SGM.ShortenDialSeq.Label>
+    <SGM.ShortenDialSeq.TT>Shorten the time it takes for the gate to dial an address.</SGM.ShortenDialSeq.TT>
+	
+    <SGM.DebugMode.Label>Debug mode</SGM.DebugMode.Label>
+    <SGM.DebugMode.TT>Enable debug mode, for troubleshooting</SGM.DebugMode.TT>
 </LanguageData>

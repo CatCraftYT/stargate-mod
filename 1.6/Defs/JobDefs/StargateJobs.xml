@@ -2,38 +2,49 @@
 <Defs>
 
 	<JobDef>
-		<defName>StargateMod_EnterStargate</defName>
+		<defName>StargatesMod_EnterStargate</defName>
 		<driverClass>StargatesMod.JobDriver_EnterStargate</driverClass>
 		<reportString>entering TargetA.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
 	
 	<JobDef>
-		<defName>StargateMod_DialStargate</defName>
+		<defName>StargatesMod_DialStargate</defName>
 		<driverClass>StargatesMod.JobDriver_DialStargate</driverClass>
-		<reportString>using TargetA.</reportString>
+		<reportString>dialling stargate</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
 	
 	<JobDef>
-		<defName>StargateMod_BringToStargate</defName>
+		<defName>StargatesMod_BringToStargate</defName>
 		<driverClass>StargatesMod.JobDriver_BringToStargate</driverClass>
 		<reportString>bringing TargetA to TargetB.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
 	
 	<JobDef>
-		<defName>StargateMod_InstallIris</defName>
+		<defName>StargatesMod_InstallIris</defName>
 		<driverClass>StargatesMod.JobDriver_InstallIris</driverClass>
 		<reportString>installing iris on TargetB.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
 	</JobDef>
 	
 	<JobDef>
-		<defName>StargateMod_DecodeGlyphs</defName>
+		<defName>StargatesMod_DecodeGlyphs</defName>
 		<driverClass>StargatesMod.JobDriver_DecodeGlyphs</driverClass>
 		<reportString>decoding stargate glyphs.</reportString>
 		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+	</JobDef>
+	
+	<JobDef>
+		<defName>StargatesMod_WatchStargate</defName>
+		<driverClass>StargatesMod.JobDriver_WatchStargate</driverClass>
+		<reportString>watching TargetA open.</reportString>
+		<isIdle>true</isIdle>
+		<suspendable>false</suspendable>
+		<allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+		<carryThingAfterJob>true</carryThingAfterJob>
+		<dropThingBeforeJob>false</dropThingBeforeJob>
 	</JobDef>
  
 </Defs>

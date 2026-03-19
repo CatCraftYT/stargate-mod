@@ -3,35 +3,34 @@ using System.Text;
 using Verse;
 using RimWorld;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class Building_Stargate : Building
 {
-    public class Building_Stargate : Building
+    public override IEnumerable<Gizmo> GetGizmos()
     {
-        public override IEnumerable<Gizmo> GetGizmos()
+        CompStargate sgComp = GetComp<CompStargate>();
+        foreach (Gizmo gizmo in base.GetGizmos())
         {
-            CompStargate sgComp = GetComp<CompStargate>();
-            foreach (Gizmo gizmo in base.GetGizmos())
+            if (gizmo is Command_LoadToTransporter)
             {
-                if (gizmo is Command_LoadToTransporter)
-                {
-                    if (sgComp.StargateIsActive) yield return gizmo;
-                    continue;
-                }
-                yield return gizmo;
+                if (sgComp.StargateIsActive) yield return gizmo;
+                continue;
             }
+            yield return gizmo;
         }
+    }
 
-        public override string GetInspectString()
-        {
-            StringBuilder sb = new StringBuilder();
+    public override string GetInspectString()
+    {
+        StringBuilder sb = new();
 
-            CompStargate sgComp = GetComp<CompStargate>();
-            sb.AppendLine(sgComp.GetInspectString());
+        CompStargate sgComp = GetComp<CompStargate>();
+        sb.AppendLine(sgComp.GetInspectString());
 
-            CompPowerTrader power = this.TryGetComp<CompPowerTrader>();
-            if (power != null) sb.AppendLine(power.CompInspectStringExtra());
+        CompPowerTrader power = this.TryGetComp<CompPowerTrader>();
+        if (power != null) sb.AppendLine(power.CompInspectStringExtra());
             
-            return sb.ToString().TrimEndNewlines();
-        }
+        return sb.ToString().TrimEndNewlines();
     }
 }

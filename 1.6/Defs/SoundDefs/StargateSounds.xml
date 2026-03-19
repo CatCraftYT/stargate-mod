@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-
 	<SoundDef>
 		<defName>StargateMod_SGOpen</defName>
 		<context>MapOnly</context>
@@ -208,10 +207,117 @@
 						<clipPath>Misc/Stargate/iris_hit</clipPath>
 					</li>
 				</grains>
-				<volumeRange>6</volumeRange>
+				<volumeRange>8</volumeRange>
 				<tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
 			</li>
 		</subSounds>
 	</SoundDef>
 
+  <SoundDef>
+    <defName>StargateMod_DhdUsual_1</defName>
+    <context>MapOnly</context>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <muteWhenPaused>true</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Misc/Stargate/dhd/dhd_usual_1</clipPath>
+          </li>
+        </grains>
+        <volumeRange>12</volumeRange>
+        <tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
+      </li>
+    </subSounds>
+  </SoundDef>
+  
+  <SoundDef>
+    <defName>StargateMod_RingUsualStart</defName>
+    <context>MapOnly</context>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <muteWhenPaused>true</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Misc/Stargate/ring_usual_start</clipPath>
+          </li>
+        </grains>
+        <volumeRange>12</volumeRange>
+        <tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>StargateMod_ChevUsual_1</defName>
+    <context>MapOnly</context>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <muteWhenPaused>true</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Misc/Stargate/chevron/chev_usual_1</clipPath>
+          </li>
+        </grains>
+        <volumeRange>12</volumeRange>
+        <tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>StargateMod_ChevUsual_2</defName>
+    <context>MapOnly</context>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <muteWhenPaused>true</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Misc/Stargate/chevron/chev_usual_2</clipPath>
+          </li>
+        </grains>
+        <volumeRange>12</volumeRange>
+        <tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>StargateMod_ChevUsual_3</defName>
+    <context>MapOnly</context>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <muteWhenPaused>true</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Misc/Stargate/chevron/chev_usual_3</clipPath>
+          </li>
+        </grains>
+        <volumeRange>12</volumeRange>
+        <tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
+      </li>
+    </subSounds>
+  </SoundDef>
+	
+  <SoundDef>
+    <defName>StargateMod_Steam</defName>
+    <context>MapOnly</context>
+    <maxSimultaneous>1</maxSimultaneous>
+    <subSounds>
+      <li>
+        <muteWhenPaused>true</muteWhenPaused>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Misc/Stargate/universe/steam</clipPath>
+          </li>
+        </grains>
+        <volumeRange>12</volumeRange>
+        <tempoAffectedByGameSpeed>true</tempoAffectedByGameSpeed>
+      </li>
+    </subSounds>
+  </SoundDef>
 </Defs>

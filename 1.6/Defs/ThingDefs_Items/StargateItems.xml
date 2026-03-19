@@ -56,7 +56,7 @@
 		<tradeability>None</tradeability>
 		<comps>
 			<li Class="CompProperties_Usable">
-				<useJob>StargateMod_InstallIris</useJob>
+				<useJob>StargatesMod_InstallIris</useJob>
 				<useLabel>Install iris</useLabel>
 				<useDuration>5000</useDuration>
 			</li>

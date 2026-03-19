@@ -3,10 +3,9 @@
 
 	<ThingDef Name="StargateMod_StargateBase" ParentName="BuildingBase" Abstract="True">
 		<thingClass>StargatesMod.Building_Stargate</thingClass>
-		<rotatable>false</rotatable>
 		<minifiedDef>MinifiedThing</minifiedDef>
 		<stealable>false</stealable>
-		<pathCost>3</pathCost>
+		<pathCost>60</pathCost>
 		<constructEffect>ConstructMetal</constructEffect>
 		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<fillPercent>0.20</fillPercent>
@@ -38,6 +37,9 @@
 				<massCapacity>999999</massCapacity>
 			</li>
 		</comps>
+		<inspectorTabs>
+			<li>ITab_ContentsTransporter</li>
+		</inspectorTabs>
 	</ThingDef>
 
 	<ThingDef ParentName="StargateMod_StargateBase">
@@ -49,7 +51,10 @@
 			<texPath>Things/Building/Stargate/stargate_sg1</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(5.3,5.3)</drawSize>
-			<drawOffset>(0,0,1.2)</drawOffset>
+			<drawOffsetNorth>(0,0,1.2)</drawOffsetNorth>
+			<drawOffsetSouth>(0,0,-1.2)</drawOffsetSouth>
+			<drawOffsetWest>(-1.2,0,0)</drawOffsetWest>
+			<drawOffsetEast>(1.2,0,0)</drawOffsetEast>
 		</graphicData>
 		<costList>
 		  <Steel>600</Steel>
@@ -84,7 +89,10 @@
 			<texPath>Things/Building/Stargate/stargate_orlin</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(3.5,3.5)</drawSize>
-			<drawOffset>(0,0,0.8)</drawOffset>
+			<drawOffsetNorth>(0,0,0.8)</drawOffsetNorth>
+			<drawOffsetSouth>(0,0,-0.8)</drawOffsetSouth>
+			<drawOffsetWest>(-0.8,0,0)</drawOffsetWest>
+			<drawOffsetEast>(0.8,0,0)</drawOffsetEast>
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>
@@ -139,7 +147,10 @@
 			<texPath>Things/Building/Stargate/stargate_tollan</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(4.9,4.9)</drawSize>
-			<drawOffset>(0,0,1.1)</drawOffset>
+			<drawOffsetNorth>(0,0,1.1)</drawOffsetNorth>
+			<drawOffsetSouth>(0,0,-1.1)</drawOffsetSouth>
+			<drawOffsetWest>(-1.1,0,0)</drawOffsetWest>
+			<drawOffsetEast>(1.1,0,0)</drawOffsetEast>
 		</graphicData>
 		<designationCategory>Misc</designationCategory>
 		<costList>

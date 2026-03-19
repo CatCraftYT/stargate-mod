@@ -1,14 +1,8 @@
 ﻿using Verse;
 
-namespace StargatesMod
-{
-    public class Dialog_RenameSGSite : Dialog_Rename<WorldObject_PermSGSite>
-    {
-        WorldObject_PermSGSite sgSite;
+namespace StargatesMod;
 
-        public Dialog_RenameSGSite(WorldObject_PermSGSite sgSite) : base(sgSite)
-        {
-            this.sgSite = sgSite;
-        }
-    }
+public class Dialog_RenameSgSite(WorldObject_PermSgSite sgSite) : Dialog_Rename<WorldObject_PermSgSite>(sgSite)
+{
+    WorldObject_PermSgSite _sgSite = sgSite;
 }

@@ -1,65 +1,83 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
 
-namespace StargatesMod
+namespace StargatesMod;
+
+public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
 {
-    public class FloatMenuOptionProvider_Stargate : FloatMenuOptionProvider
+    protected override bool Drafted => true;
+
+    protected override bool Undrafted => true;
+
+    protected override bool Multiselect => true;
+
+    protected override bool RequiresManipulation => false;
+
+    protected override bool MechanoidCanDo => true;
+
+    public override IEnumerable<FloatMenuOption> GetOptionsFor(Thing clickedThing, FloatMenuContext context)
     {
-        protected override bool Drafted => true;
+        List<Pawn> stargateEnteringPawns = [];
+            
+        CompStargate sgComp = clickedThing.TryGetComp<CompStargate>();
+            
+        if (sgComp == null) yield break;
+        if (!sgComp.StargateIsActive || sgComp.IrisIsActivated) yield break;
 
-        protected override bool Undrafted => true;
-
-        protected override bool Multiselect => true;
-
-        protected override bool RequiresManipulation => false;
-
-        protected override bool MechanoidCanDo => true;
-
-        public override IEnumerable<FloatMenuOption> GetOptionsFor(Thing clickedThing, FloatMenuContext context)
+        if (!context.IsMultiselect)
         {
-            List<Pawn> tmpStargateEnteringPawns = new List<Pawn>();
-            
-            CompStargate sgComp = clickedThing.TryGetComp<CompStargate>();
-            
-            if (sgComp == null) yield break;
-            if (!sgComp.StargateIsActive || sgComp.IrisIsActivated) yield break;
-            
-            if (!context.IsMultiselect)
+            AcceptanceReport reachGateReport = CanReachStargate(context.FirstSelectedPawn, sgComp.parent);
+
+            if (!reachGateReport.Accepted)
             {
-                AcceptanceReport acceptanceReport = CanReachStargate(context.FirstSelectedPawn, sgComp.parent);
-                if (!acceptanceReport.Accepted)
-                {
-                    yield return new FloatMenuOption(acceptanceReport.Reason, null);
-                    yield break;
-                }
+                yield return new FloatMenuOption(reachGateReport.Reason.Translate(), null);
+                yield break;
             }
+        }
 
-            tmpStargateEnteringPawns.Clear();
-            tmpStargateEnteringPawns.AddRange(context.ValidSelectedPawns.Where(validSelectedPawn => CanReachStargate(validSelectedPawn, sgComp.parent)));
+        stargateEnteringPawns.Clear();
+        stargateEnteringPawns.AddRange(context.ValidSelectedPawns.Where(validSelectedPawn => CanReachStargate(validSelectedPawn, sgComp.parent)));
 
-            if (tmpStargateEnteringPawns.NullOrEmpty()) yield break;
+        if (stargateEnteringPawns.NullOrEmpty()) yield break;
                 
-            yield return new FloatMenuOption("SGM.EnterStargateAction".Translate(), delegate
+        yield return new FloatMenuOption("SGM.EnterStargateAction".Translate(), delegate
+        {
+            foreach (Pawn pawn in stargateEnteringPawns)
             {
-                foreach (Pawn tmpStargateEnteringPawn in tmpStargateEnteringPawns)
-                {
-                    Pawn carriedPawn = tmpStargateEnteringPawn.carryTracker.CarriedThing as Pawn;
+                Pawn carriedPawn = pawn.carryTracker.CarriedThing as Pawn;
                         
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_EnterStargate"), sgComp.parent, carriedPawn);
+                Job job = JobMaker.MakeJob(SgJobDefOf.StargatesMod_EnterStargate, sgComp.parent, carriedPawn);
+                job.playerForced = true;
+                job.count = 1;
+                pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+            }
+        }, MenuOptionPriority.SummonThreat);
+
+            
+        List<Pawn> pawnsCarryingPawns = stargateEnteringPawns.Where(p => p.carryTracker.CarriedThing is Pawn).ToList();
+        if (!pawnsCarryingPawns.NullOrEmpty())
+        {
+            yield return new FloatMenuOption("SGM.CarryHeldPawnToStargateAction".Translate(), delegate
+            {
+                foreach (Pawn pawn in pawnsCarryingPawns)
+                {
+                    Pawn carriedPawn = pawn.carryTracker.CarriedThing as Pawn;
+                        
+                    Job job = JobMaker.MakeJob(SgJobDefOf.StargatesMod_BringToStargate, carriedPawn, sgComp.parent);
                     job.playerForced = true;
                     job.count = 1;
-                    tmpStargateEnteringPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                    pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 }
-            }, MenuOptionPriority.High);
-
-                
+            }, MenuOptionPriority.SummonThreat);
+        }
+        else
+        {
             yield return new FloatMenuOption("SGM.BringThingToGateAction".Translate(), () =>
             {
-                TargetingParameters targetingParameters = new TargetingParameters()
+                TargetingParameters targetingParameters = new()
                 { 
                     canTargetSelf = false,
                     onlyTargetIncapacitatedPawns = false,
@@ -72,11 +90,12 @@ namespace StargatesMod
                         if (!targ.HasThing) return false;
                         
                         Pawn targetPawn = targ.Thing as Pawn;
+                        Pawn selectedPawn = context.FirstSelectedPawn;
+
+                        if (targetPawn != null && (targetPawn == selectedPawn || (targetPawn.Faction != Faction.OfPlayer && !targetPawn.IsPrisonerOfColony)
+                                                                              || (selectedPawn.IsColonyMech && targetPawn == selectedPawn.GetOverseer())))
+                            return false;
                         
-                        if (targetPawn != null && targ.Thing == context.FirstSelectedPawn)
-                            return false;
-                        if (targetPawn != null && targ.Thing.Faction != Faction.OfPlayer && !targetPawn.IsPrisonerOfColony)
-                            return false;
                         
                         return targetPawn != null || targ.Thing.def.category == ThingCategory.Item;
                     }
@@ -84,18 +103,12 @@ namespace StargatesMod
                 
                 Find.Targeter.BeginTargeting(targetingParameters, delegate (LocalTargetInfo t)
                 {
-                    Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("StargateMod_BringToStargate"), t.Thing, sgComp.parent); 
+                    Job job = JobMaker.MakeJob(SgJobDefOf.StargatesMod_BringToStargate, t.Thing, sgComp.parent); 
                     context.FirstSelectedPawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 });
-            });
-        }
-
-        private static AcceptanceReport CanReachStargate(Pawn pawn, Thing stargate)
-        {
-            if (!pawn.CanReach(stargate, PathEndMode.ClosestTouch, Danger.Deadly))
-                return "NoPath".Translate();
-            
-            return true;
+            }, MenuOptionPriority.SummonThreat);
         }
     }
+
+    private static AcceptanceReport CanReachStargate(Pawn pawn, Thing stargate) => pawn.CanReach(stargate, PathEndMode.ClosestTouch, Danger.Deadly) ? true : "NoPath";
 }
