@@ -52,7 +52,7 @@ public class CompStargate : ThingComp
     
     private string GateDesignation
     {
-        get => !AddressComp.IsRegistered(GateAddress) ? "INVALID" : _gateDesignation;
+        get => GateAddress is {Valid: true} && AddressComp.IsRegistered(GateAddress) ? _gateDesignation : "INVALID - please reinstall stargate";
         set => _gateDesignation = value;
     }
 
@@ -820,7 +820,8 @@ public class CompStargate : ThingComp
     {
         if (IsHibernating) return;
         
-        if (_connectedStargate != null) CloseStargate(true);
+        if (StargateIsActive) CloseStargate(_connectedStargate != null);
+        else ResetDialState();
 
         if (IsInPocketMap) AddressComp.RemovePocketMapAddress(GateAddress);
         else AddressComp.RemoveAddress(GateAddress);

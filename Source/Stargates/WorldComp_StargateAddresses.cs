@@ -13,17 +13,29 @@ public class WorldComp_StargateAddresses(World world) : WorldComponent(world)
 
     public void AddAddress(PlanetTile address)
     {
-        if (!AddressList.Contains(address)) AddressList.Add(address);
+        AddressList ??= [];
+        if (address is {Valid: true} && !AddressList.Contains(address)) AddressList.Add(address);
     }
-    public void RemoveAddress(PlanetTile address) => AddressList.Remove(address);
+
+    public void RemoveAddress(PlanetTile address)
+    {
+        if (address is {Valid: true}) AddressList.Remove(address);
+    }
 
     public void AddPocketMapAddress(int mapIndex)
     {
-        if (!PocketMapAddressList.Contains(mapIndex)) PocketMapAddressList.Add(mapIndex);
+        PocketMapAddressList ??= [];
+        if (mapIndex >= 0 && !PocketMapAddressList.Contains(mapIndex)) PocketMapAddressList.Add(mapIndex);
     }
-    public void RemovePocketMapAddress(int mapIndex) => PocketMapAddressList.Remove(mapIndex);
 
-        public void CleanupAddresses()
+    public void RemovePocketMapAddress(int mapIndex)
+    {
+        if (mapIndex >= 0) PocketMapAddressList.Remove(mapIndex);
+    }
+
+    public void CleanupAddresses()
+    {
+        if (!AddressList.NullOrEmpty())
         {
             foreach (PlanetTile pT in new List<PlanetTile>(AddressList))
             {
@@ -33,7 +45,10 @@ public class WorldComp_StargateAddresses(World world) : WorldComponent(world)
                 if (sgMap == null || (!sgMap.HasMap && (site == null || !site.MainSitePartDef.tags.Contains("StargateMod_StargateSite")) && sgMap is not WorldObject_PermSgSite))
                     RemoveAddress(pT);
             }
+        }
 
+        if (!PocketMapAddressList.NullOrEmpty())
+        {
             foreach (int i in new List<int>(PocketMapAddressList))
             {
                 Map map = Find.Maps[i];
@@ -41,10 +56,24 @@ public class WorldComp_StargateAddresses(World world) : WorldComponent(world)
                 if (pMParent is not { HasMap: true }) RemovePocketMapAddress(i);
             }
         }
+    }
 
-        public bool EnoughAddressesToDial() => AddressList.Count + PocketMapAddressList.Count >= 2;
+    public bool EnoughAddressesToDial()
+    {
+        int addressCount = 0;
         
-    public bool IsRegistered(PlanetTile address) => address != PlanetTile.Invalid && (AddressList.Contains(address) || PocketMapAddressList.Contains(address.tileId));
+        if (!AddressList.NullOrEmpty()) addressCount += AddressList.Count;
+        if (!PocketMapAddressList.NullOrEmpty()) addressCount += PocketMapAddressList.Count;
+
+        return addressCount >= 2;
+    }
+        
+    public bool IsRegistered(PlanetTile address)
+    {
+        if (address is not { Valid: true }) return false;
+        if (!AddressList.NullOrEmpty() && AddressList.Contains(address)) return true;
+        return !PocketMapAddressList.NullOrEmpty() && PocketMapAddressList.Contains(address.tileId);
+    }
 
     public override void ExposeData()
     {

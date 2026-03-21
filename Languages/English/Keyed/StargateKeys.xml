@@ -81,7 +81,7 @@
 	<SGM.CannotDial>Cannot dial: {0}</SGM.CannotDial>
     <SGM.Reason.GateIsActive>stargate is already active</SGM.Reason.GateIsActive>
     <SGM.Reason.NoDestinations>no available destinations</SGM.Reason.NoDestinations>
-    <SGM.Reason.InvalidAddress>Error: address not registered</SGM.Reason.InvalidAddress>
+    <SGM.Reason.InvalidAddress>Error: address not registered - please reinstall stargate</SGM.Reason.InvalidAddress>
     <SGM.Reason.Incoming>incoming wormhole</SGM.Reason.Incoming>
     <SGM.Reason.AlreadyDialling>already dialling gate</SGM.Reason.AlreadyDialling>
     <SGM.Reason.NoPower>no power</SGM.Reason.NoPower>

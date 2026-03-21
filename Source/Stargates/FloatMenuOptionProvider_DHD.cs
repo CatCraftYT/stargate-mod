@@ -59,6 +59,8 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
             }, MenuOptionPriority.SummonThreat);
         }
 
+        if (addressComp.PocketMapAddressList.NullOrEmpty()) yield break;
+        
         foreach (int mapIndex in addressComp.PocketMapAddressList)
         {
             if (mapIndex == sgComp.GateAddress.tileId && sgComp.IsInPocketMap) continue;
