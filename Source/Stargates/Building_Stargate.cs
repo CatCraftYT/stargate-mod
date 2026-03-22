@@ -5,8 +5,10 @@ using RimWorld;
 
 namespace StargatesMod;
 
-public class Building_Stargate : Building
+public class Building_Stargate : Building, IThingGlower
 {
+    public bool ShouldBeLitNow() => GetComp<CompStargate>().StargateIsActive;
+
     public override IEnumerable<Gizmo> GetGizmos()
     {
         CompStargate sgComp = GetComp<CompStargate>();

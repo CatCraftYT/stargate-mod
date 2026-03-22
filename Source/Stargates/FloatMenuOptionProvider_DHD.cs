@@ -59,6 +59,8 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
             }, MenuOptionPriority.SummonThreat);
         }
 
+        if (addressComp.PocketMapAddressList.NullOrEmpty()) yield break;
+        
         foreach (int mapIndex in addressComp.PocketMapAddressList)
         {
             if (mapIndex == sgComp.GateAddress.tileId && sgComp.IsInPocketMap) continue;
@@ -86,7 +88,7 @@ public class FloatMenuOptionProvider_Dhd : FloatMenuOptionProvider
     private static AcceptanceReport CanDialGate(CompDialHomeDevice dhdComp, CompStargate sgComp, WorldComp_StargateAddresses addressComp)
     {
         if (!dhdComp.IsConnectedToStargate) return "SGM.Reason.NotConnected";
-        if (dhdComp.Props.requiresPower) return "SGM.Reason.NoPower";
+        if (dhdComp.Props.requiresPower && !dhdComp.parent.GetComp<CompPowerTrader>().PowerOn) return "SGM.Reason.NoPower";
         if (sgComp.IsHibernating) return "SGM.Reason.Hibernating";
         if (sgComp.StargateIsActive) return "SGM.Reason.GateIsActive";
         if (!addressComp.EnoughAddressesToDial()) return "SGM.Reason.NoDestinations";

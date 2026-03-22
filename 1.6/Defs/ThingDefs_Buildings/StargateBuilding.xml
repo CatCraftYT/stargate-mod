@@ -28,10 +28,6 @@
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<comps>
-			<li Class="CompProperties_Glower">
-				<glowRadius>0</glowRadius> <!-- This is changed in C# -->
-				<glowColor>(115,171,224,0)</glowColor>
-			</li>
 			<li Class="CompProperties_Transporter">
 				<max1PerGroup>true</max1PerGroup>
 				<massCapacity>999999</massCapacity>
@@ -70,6 +66,10 @@
 		</statBases>
 		<size>(5,1)</size>
 		<comps>
+			<li Class="CompProperties_Glower">
+				<glowRadius>10</glowRadius>
+				<glowColor>(115,171,224,0)</glowColor>
+			</li>
 			<li Class="StargatesMod.CompProperties_Stargate">
 				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
 				<irisTexture>Things/Building/Stargate/iris</irisTexture>
@@ -110,6 +110,10 @@
 		</statBases>
 		<size>(3,1)</size>
 		<comps>
+			<li Class="CompProperties_Glower">
+				<glowRadius>5</glowRadius>
+				<glowColor>(115,171,224,0)</glowColor>
+			</li>
 			<li Class="StargatesMod.CompProperties_Stargate">
 				<canHaveIris>False</canHaveIris>
 				<explodeOnUse>True</explodeOnUse>
@@ -170,6 +174,10 @@
 		</statBases>
 		<size>(5,1)</size>
 		<comps>
+			<li Class="CompProperties_Glower">
+				<glowRadius>10</glowRadius>
+				<glowColor>(115,171,224,0)</glowColor>
+			</li>
 			<li Class="StargatesMod.CompProperties_Stargate">
 				<puddleTexture>Things/Building/Stargate/eventhorizon</puddleTexture>
 				<irisTexture>Things/Building/Stargate/iris</irisTexture>

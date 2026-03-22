@@ -12,8 +12,6 @@ namespace StargatesMod;
 
 public class CompStargate : ThingComp
 {
-    const int glowRadius = 10;
-
     private List<BufferItem> _sendBuffer = [];
     private List<BufferItem> _recvBuffer = [];
     private int _ticksSinceBufferUnloaded;
@@ -54,7 +52,7 @@ public class CompStargate : ThingComp
     
     private string GateDesignation
     {
-        get => !AddressComp.IsRegistered(GateAddress) ? "INVALID" : _gateDesignation;
+        get => GateAddress is {Valid: true} && AddressComp.IsRegistered(GateAddress) ? _gateDesignation : "INVALID - please reinstall stargate";
         set => _gateDesignation = value;
     }
 
@@ -201,17 +199,15 @@ public class CompStargate : ThingComp
             _connectedStargateComp._puddleSustainer = SgSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(_connectedStargateComp.parent));
             SgSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(_connectedStargateComp.parent));
                     
-            CompGlower otherGlowComp = _connectedStargateComp.parent.GetComp<CompGlower>();
-            otherGlowComp.Props.glowRadius = glowRadius;
-            otherGlowComp.PostSpawnSetup(false);
+            _connectedStargateComp.parent.GetComp<CompGlower>().PostMapInit();
         }
             
         _puddleSustainer = SgSoundDefOf.StargateMod_SGIdle.TrySpawnSustainer(SoundInfo.InMap(parent));
         SgSoundDefOf.StargateMod_SGOpen.PlayOneShot(SoundInfo.InMap(parent));
 
         CompGlower glowComp = parent.GetComp<CompGlower>();
-        glowComp.Props.glowRadius = glowRadius;
-        glowComp.PostSpawnSetup(false);
+        glowComp.UpdateLit(parent.Map);
+        
         if (Prefs.LogVerbose || _modSettings.DebugMode) Log.Message($"[StargatesMod] finished opening gate {parent}");
     }
         
@@ -237,11 +233,7 @@ public class CompStargate : ThingComp
         if (connectedGateComp != null) puddleCloseDef.PlayOneShot(SoundInfo.InMap(connectedGateComp.parent));
 
         _puddleSustainer?.End();
-
-        CompGlower glowComp = parent.GetComp<CompGlower>();
-        glowComp.Props.glowRadius = 0;
-        glowComp.PostSpawnSetup(false);
-
+        
         if (Props.explodeOnUse)
         {
             CompExplosive explosive = parent.TryGetComp<CompExplosive>();
@@ -252,6 +244,8 @@ public class CompStargate : ThingComp
         EndStargateWatching();
         
         ResetDialState();
+        
+        parent.GetComp<CompGlower>().UpdateLit(parent.Map);
     }
 
     private void DialFail(string failReasonKey = null)
@@ -609,7 +603,7 @@ public class CompStargate : ThingComp
 
         _ticksSinceBufferUnloaded++;
         _ticksSinceOpened++;
-            
+        
         if (_dialMode == DialMode.IncomingRaid && !_recvBuffer.Any())
             CloseStargate(false);
         
@@ -826,7 +820,8 @@ public class CompStargate : ThingComp
     {
         if (IsHibernating) return;
         
-        if (_connectedStargate != null) CloseStargate(true);
+        if (StargateIsActive) CloseStargate(_connectedStargate != null);
+        else ResetDialState();
 
         if (IsInPocketMap) AddressComp.RemovePocketMapAddress(GateAddress);
         else AddressComp.RemoveAddress(GateAddress);
